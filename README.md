@@ -1,4 +1,4 @@
-# Torneo de Sudoku — Numerix Academy
+Torneo de Sudoku — Numerix Academy
 
 Sistema de consola que califica automáticamente los intentos de resolución de Sudoku enviados por los jugadores de un torneo. Lee los datos desde archivos de texto delimitados por comas, verifica cada intento contra las reglas del Sudoku, calcula métricas de desempeño y genera reportes en HTML.
 
@@ -8,7 +8,7 @@ Escuela de Ingeniería en Ciencias y Sistemas
 
 
 
-## Características
+Características
 
 - Lectura y validación de tres archivos `.lfp` (tableros, jugadores e intentos)
 - Validación matricial completa: 9 filas, 9 columnas y 9 cajas de 3×3 por intento
@@ -17,8 +17,7 @@ Escuela de Ingeniería en Ciencias y Sistemas
 - Cinco reportes en HTML, generables por separado o todos a la vez
 
 
-
-## Requisitos
+Requisitos
 
 - Python 3.8 o superior
 - Un navegador web para ver los reportes
@@ -26,8 +25,7 @@ Escuela de Ingeniería en Ciencias y Sistemas
 No se requiere instalar ninguna librería adicional.
 
 
-
-## Instalación y ejecución
+Instalación y ejecución
 
 ```bash
 git clone https://github.com/usuario/repositorio.git
@@ -41,7 +39,7 @@ En Windows, si `python` no es reconocido, use `py main.py`.
 
 
 
-## Estructura del proyecto
+Estructura del proyecto
 
 ```
 Practica1/
@@ -61,7 +59,7 @@ Las dependencias apuntan en una sola dirección: `clases.py` no importa nada del
 
 
 
-## Formato de los archivos de entrada
+Formato de los archivos de entrada
 
 Los tres archivos usan la coma como separador de campos, un registro por línea.
 
@@ -94,7 +92,7 @@ Las líneas con formato inválido se reportan individualmente y se descartan, si
 
 
 
-## Uso
+Uso
 
 Al iniciar aparece el menú principal con un indicador de estado que muestra cuántos registros hay cargados y si ya se ejecutó la calificación.
 
@@ -125,7 +123,7 @@ Las opciones de reporte requieren que la calificación (opción 4) se haya ejecu
 
 
 
-## Cómo funciona la validación
+Cómo funciona la validación
 
 Cada intento se reconstruye como una matriz de 9×9 a partir de la cadena de 81 dígitos, usando la correspondencia:
 
@@ -141,7 +139,7 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 
 
 
-## Clases
+Clases
 
 | Clase | Responsabilidad |
 |---|---|
@@ -151,7 +149,7 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 
 
 
-## Documentación
+Documentación
 
 | Documento | Contenido |
 |---|---|
@@ -162,7 +160,7 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 
 
 
-## Detalles de implementación
+Detalles de implementación
 
 - **Programación orientada a objetos** con tres clases y métodos de instancia convencionales
 - **Ordenamiento** implementado manualmente mediante el método burbuja, sin funciones de librería
@@ -172,7 +170,7 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 
 
 
-## Autor
+Autor
 
 Diego Alejandro Barrios  
 Universidad de San Carlos de Guatemala
