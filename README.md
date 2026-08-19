@@ -6,7 +6,7 @@ Sistema de consola que califica automáticamente los intentos de resolución de 
 Universidad de San Carlos de Guatemala · Facultad de Ingeniería  
 Escuela de Ingeniería en Ciencias y Sistemas
 
----
+
 
 ## Características
 
@@ -15,9 +15,8 @@ Escuela de Ingeniería en Ciencias y Sistemas
 - Verificación de que el jugador no haya modificado las pistas originales del tablero
 - Cálculo del porcentaje de validez sobre las 27 unidades evaluadas
 - Cinco reportes en HTML, generables por separado o todos a la vez
-- Sin dependencias externas: solo la librería estándar de Python
 
----
+
 
 ## Requisitos
 
@@ -26,7 +25,7 @@ Escuela de Ingeniería en Ciencias y Sistemas
 
 No se requiere instalar ninguna librería adicional.
 
----
+
 
 ## Instalación y ejecución
 
@@ -40,7 +39,7 @@ En Windows, si `python` no es reconocido, use `py main.py`.
 
 > **Importante:** los cinco archivos `.py` deben permanecer en la misma carpeta. Si se separan, el programa falla con `ModuleNotFoundError: No module named 'lectura'`.
 
----
+
 
 ## Estructura del proyecto
 
@@ -60,7 +59,7 @@ Practica1/
 
 Las dependencias apuntan en una sola dirección: `clases.py` no importa nada del proyecto, `validacion.py` trabaja solo con objetos ya construidos, y `main.py` es el único que conoce a todos los módulos. Esto evita importaciones circulares y permite modificar los reportes sin tocar la validación.
 
----
+
 
 ## Formato de los archivos de entrada
 
@@ -93,7 +92,7 @@ carnet,id_sudoku,solucion_81_digitos,tiempo_segundos,fecha
 
 Las líneas con formato inválido se reportan individualmente y se descartan, sin interrumpir la lectura del resto del archivo.
 
----
+
 
 ## Uso
 
@@ -124,7 +123,7 @@ Sudokus: 0 | Jugadores: 0 | Intentos: 0 | Calificados: No
 
 Las opciones de reporte requieren que la calificación (opción 4) se haya ejecutado antes. Los archivos `.html` se guardan en la carpeta `reportes/` y se abren en cualquier navegador.
 
----
+
 
 ## Cómo funciona la validación
 
@@ -140,7 +139,7 @@ Adicionalmente se verifica que las pistas originales del tablero no hayan sido a
 
 Al calificar también se comprueba la integridad referencial: que cada intento apunte a un carnet y a un `id_sudoku` que existan realmente. Esta verificación solo puede hacerse en ese momento, porque cruza información entre los tres archivos.
 
----
+
 
 ## Clases
 
@@ -150,7 +149,7 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 | `Jugador` | Datos del participante: carnet, nombre, apellido y nivel. |
 | `Intento` | Combina los datos leídos con los resultados de la calificación: unidades válidas, porcentaje, pistas respetadas y veredicto final. |
 
----
+
 
 ## Documentación
 
@@ -161,7 +160,7 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 | `DIAGRAMA_FLUJO` | Diagramas de flujo de los procesos principales |
 | `INFORME_DESARROLLO` | Decisiones de diseño y proceso de desarrollo |
 
----
+
 
 ## Detalles de implementación
 
@@ -171,7 +170,7 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 - **Reportes HTML** construidos por concatenación de cadenas
 
 
----
+
 
 ## Autor
 
