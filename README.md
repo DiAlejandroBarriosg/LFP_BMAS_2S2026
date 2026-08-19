@@ -1,68 +1,109 @@
 # Torneo de Sudoku — Numerix Academy
 
-Motor de calificación y análisis de partidas de Sudoku, desarrollado en Python 3
-para la Práctica 1 del curso de **Lenguajes Formales y de Programación**.
+Sistema de consola que califica automáticamente los intentos de resolución de Sudoku enviados por los jugadores de un torneo. Lee los datos desde archivos de texto delimitados por comas, verifica cada intento contra las reglas del Sudoku, calcula métricas de desempeño y genera reportes en HTML.
 
-El programa lee tres archivos `.lfp` (tableros, jugadores e intentos), reconstruye
-cada tablero como una matriz de 9×9, valida cada intento contra las reglas del
-Sudoku, calcula métricas de desempeño y genera reportes analíticos en HTML.
+**Práctica 1 · Lenguajes Formales y de Programación · 2S2026**  
+Universidad de San Carlos de Guatemala · Facultad de Ingeniería  
+Escuela de Ingeniería en Ciencias y Sistemas
+
+---
+
+## Características
+
+- Lectura y validación de tres archivos `.lfp` (tableros, jugadores e intentos)
+- Validación matricial completa: 9 filas, 9 columnas y 9 cajas de 3×3 por intento
+- Verificación de que el jugador no haya modificado las pistas originales del tablero
+- Cálculo del porcentaje de validez sobre las 27 unidades evaluadas
+- Cinco reportes en HTML, generables por separado o todos a la vez
+- Sin dependencias externas: solo la librería estándar de Python
 
 ---
 
 ## Requisitos
 
-- Python 3.8 o superior (no requiere instalar librerías adicionales)
-- Consola o terminal
-- Navegador web para ver los reportes generados
+- Python 3.8 o superior
+- Un navegador web para ver los reportes
+
+No se requiere instalar ninguna librería adicional.
+
+---
+
+## Instalación y ejecución
+
+```bash
+git clone https://github.com/usuario/repositorio.git
+cd repositorio/Practica1
+python main.py
+```
+
+En Windows, si `python` no es reconocido, use `py main.py`.
+
+> **Importante:** los cinco archivos `.py` deben permanecer en la misma carpeta. Si se separan, el programa falla con `ModuleNotFoundError: No module named 'lectura'`.
 
 ---
 
 ## Estructura del proyecto
 
-Los cinco archivos `.py` están en la carpeta principal, sin subcarpetas de código,
-para que las importaciones sean directas y fáciles de seguir.
-
 ```
 Practica1/
-├── main.py           Menú de consola y flujo del programa
+├── main.py           Menú de consola y control del flujo
 ├── clases.py         Clases Tablero, Jugador e Intento
-├── lectura.py        Lectura de los archivos .lfp y validación de formato
+├── lectura.py        Lectura de archivos .lfp y validación de formato
 ├── validacion.py     Validación matricial del Sudoku
 ├── reportes.py       Cálculo de estadísticas y generación de HTML
-├── README.md
-├── entrada/
+├── entrada/          Archivos .lfp de entrada
 │   ├── sudokus.lfp
 │   ├── jugadores.lfp
 │   └── intentos.lfp
-└── reportes/         Salida .html (se crea automáticamente)
+└── reportes/         Salida .html generada
 ```
 
-### Qué hace cada archivo
-
-| Archivo | Responsabilidad |
-|---|---|
-| `clases.py` | Define los tres moldes de objetos y la función que convierte una cadena de 81 dígitos en matriz 9×9 |
-| `lectura.py` | Abre los archivos, separa cada línea con `split(',')`, valida los datos y crea los objetos |
-| `validacion.py` | Extrae filas, columnas y cajas; revisa si cumplen la regla; califica cada intento |
-| `reportes.py` | Calcula promedios y tasas de éxito, ordena los datos y arma los archivos HTML |
-| `main.py` | Muestra el menú y llama a las funciones anteriores según la opción elegida |
+Las dependencias apuntan en una sola dirección: `clases.py` no importa nada del proyecto, `validacion.py` trabaja solo con objetos ya construidos, y `main.py` es el único que conoce a todos los módulos. Esto evita importaciones circulares y permite modificar los reportes sin tocar la validación.
 
 ---
 
-## Ejecución
+## Formato de los archivos de entrada
 
-```bash
-cd Practica1
-python main.py
+Los tres archivos usan la coma como separador de campos, un registro por línea.
+
+**`sudokus.lfp`** — 3 campos
+
+```
+id_sudoku,dificultad,tablero_81_digitos
 ```
 
-Menú del sistema:
+- `dificultad`: `Facil`, `Media`, `Dificil` o `Experto`
+- `tablero`: exactamente 81 dígitos, donde `0` representa una celda vacía
+
+**`jugadores.lfp`** — 4 campos
+
+```
+carnet,nombre,apellido,nivel
+```
+
+- `nivel`: `Principiante`, `Intermedio` o `Experto`
+
+**`intentos.lfp`** — 5 campos
+
+```
+carnet,id_sudoku,solucion_81_digitos,tiempo_segundos,fecha
+```
+
+- `fecha`: formato `DD-MM-AAAA`
+
+Las líneas con formato inválido se reportan individualmente y se descartan, sin interrumpir la lectura del resto del archivo.
+
+---
+
+## Uso
+
+Al iniciar aparece el menú principal con un indicador de estado que muestra cuántos registros hay cargados y si ya se ejecutó la calificación.
 
 ```
 ==========================================================
            TORNEO DE SUDOKU - NUMERIX ACADEMY
 ==========================================================
-Sudokus: 8 | Jugadores: 10 | Intentos: 55 | Calificados: Si
+Sudokus: 0 | Jugadores: 0 | Intentos: 0 | Calificados: No
 ==========================================================
  1. Cargar archivo de sudokus
  2. Cargar archivo de jugadores
@@ -79,145 +120,60 @@ Sudokus: 8 | Jugadores: 10 | Intentos: 55 | Calificados: Si
 ==========================================================
 ```
 
-**Orden recomendado:** 1 → 2 → 3 → 4 → 10.
+**Orden recomendado:** `1` → `2` → `3` → `4` → `10`
 
-Al cargar un archivo, presione **ENTER** para usar la ruta por defecto
-(`entrada/<archivo>.lfp`) o escriba una ruta distinta.
-
----
-
-## Formato de los archivos de entrada
-
-**`sudokus.lfp`** — `id_sudoku,dificultad,tablero`
-
-```
-1,Facil,307026050040310269926845173063050081059078002000200090084600020000002007000084006
-```
-
-- `dificultad`: `Facil`, `Media`, `Dificil` o `Experto`
-- `tablero`: 81 dígitos recorridos fila por fila; `0` = celda vacía
-
-**`jugadores.lfp`** — `carnet,nombre,apellido,nivel`
-
-```
-202011234,Diego,Fuentes,Intermedio
-```
-
-- `nivel`: `Principiante`, `Intermedio` o `Experto`
-
-**`intentos.lfp`** — `carnet,id_sudoku,solucion,tiempo_segundos,fecha`
-
-```
-202011234,1,317926458845317269926845173263459781459178632178263594784631925631592847592784316,213,20-03-2026
-```
-
-- `solucion`: 81 dígitos (1–9) en el mismo orden de recorrido
-- `fecha`: formato `DD-MM-AAAA`
+Las opciones de reporte requieren que la calificación (opción 4) se haya ejecutado antes. Los archivos `.html` se guardan en la carpeta `reportes/` y se abren en cualquier navegador.
 
 ---
 
-## Mecánica de validación
+## Cómo funciona la validación
 
-Cada intento se califica revisando **27 unidades**: 9 filas, 9 columnas y 9 cajas
-de 3×3. Una unidad es válida si contiene los dígitos del 1 al 9 sin repetirse.
-
-```
-porcentaje_validez = (filas válidas + columnas válidas + cajas válidas) / 27 × 100
-```
-
-Adicionalmente se verifica que las **pistas originales** (celdas distintas de `0`
-en el tablero publicado) no hayan sido modificadas. Un intento se marca como
-*resuelto correctamente* solo si cumple ambas condiciones:
-
-1. `porcentaje_validez == 100%`
-2. Todas las pistas originales se respetaron
-
-Ejemplo de salida de la opción 4:
+Cada intento se reconstruye como una matriz de 9×9 a partir de la cadena de 81 dígitos, usando la correspondencia:
 
 ```
-CARNET     SUDOKU  VALIDEZ   TIEMPO   RESULTADO
-----------------------------------------------------------
-202011234  1       100.00%   213s     Resuelto correctamente
-202017890  1       88.89%    245s     Cambio 1 pista(s) del tablero original
-202017890  2       66.67%    184s     Incompleto: 9 de 27 unidades con error
+posicion = numero_fila * 9 + numero_columna
 ```
+
+De la matriz se extraen **27 unidades**: 9 filas, 9 columnas y 9 cajas de 3×3. Una unidad es válida cuando contiene los dígitos del 1 al 9 exactamente una vez cada uno. El porcentaje de validez es la proporción de unidades correctas sobre esas 27.
+
+Adicionalmente se verifica que las pistas originales del tablero no hayan sido alteradas. Un intento se considera resuelto correctamente solo si las 27 unidades son válidas y las pistas fueron respetadas.
+
+Al calificar también se comprueba la integridad referencial: que cada intento apunte a un carnet y a un `id_sudoku` que existan realmente. Esta verificación solo puede hacerse en ese momento, porque cruza información entre los tres archivos.
 
 ---
 
-## Reportes generados
+## Clases
 
-| Archivo | Contenido |
+| Clase | Responsabilidad |
 |---|---|
-| `reporte_resumen_sudokus.html` | Por tablero: dificultad declarada y real, pistas, intentos, tiempo promedio, validez promedio y tasa de éxito |
-| `reporte_rendimiento_jugadores.html` | Por jugador: nombre, carnet, nivel, tableros intentados, validez promedio, tiempo promedio y tableros perfectos |
-| `reporte_top_tiempos.html` | Top 10 mejores tiempos entre los intentos con 100% de validez |
-| `reporte_sudokus_dificiles.html` | Tableros ordenados por menor tasa de éxito, contrastando dificultad declarada vs. observada |
-| `reporte_analisis_nivel.html` | Desempeño agrupado por nivel de experiencia del jugador |
-
-Los reportes usan solo etiquetas básicas de HTML (`h1`, `p`, `table`, `tr`,
-`th`, `td`), sin hojas de estilo. La cuadrícula la dibuja el atributo
-`border='1'` de la tabla. Al no depender de ningún recurso externo, se pueden
-abrir o enviar tal cual.
-
-La **dificultad real** se infiere de la tasa de éxito observada:
-
-| Tasa de éxito | Dificultad observada |
-|---|---|
-| ≥ 80% | Facil |
-| ≥ 60% | Media |
-| ≥ 40% | Dificil |
-| < 40% | Experto |
-
----
-
-## Manejo de errores
-
-Las líneas mal formadas **no detienen la carga**: se descartan y se reportan al
-final con su número de línea y el motivo.
-
-```
-Intentos cargados correctamente: 55
-Registros descartados por formato incorrecto: 3
-  - Linea 56: la solucion debe tener 81 digitos y tiene 5
-  - Linea 57: el tiempo 'abc' no es un numero entero
-  - Linea 58: la fecha '2026-03-16' no tiene el formato DD-MM-AAAA
-```
-
-Validaciones implementadas:
-
-- Cantidad de campos por registro
-- Tipos de dato (carnet, id y tiempo enteros; fecha `DD-MM-AAAA`)
-- Dominios cerrados (dificultad y nivel)
-- Identificadores duplicados
-- Longitud exacta de 81 dígitos en tableros y soluciones
-- Archivo inexistente
-- Intentos que apuntan a un carnet o a un sudoku que no existe (se descartan al calificar)
+| `Tablero` | Tablero publicado en el torneo. Guarda la cadena original, construye la matriz, cuenta pistas y se dibuja como texto. |
+| `Jugador` | Datos del participante: carnet, nombre, apellido y nivel. |
+| `Intento` | Combina los datos leídos con los resultados de la calificación: unidades válidas, porcentaje, pistas respetadas y veredicto final. |
 
 ---
 
 ## Documentación
 
-| Documento | Archivo |
+| Documento | Contenido |
 |---|---|
-| Manual Técnico | [`MANUAL_TECNICO.md`](MANUAL_TECNICO.md) |
-| Manual de Usuario | [`MANUAL_USUARIO.md`](MANUAL_USUARIO.md) |
-| Diagrama de Flujo | [`DIAGRAMA_FLUJO.md`](DIAGRAMA_FLUJO.md) |
-| Informe de Desarrollo | [`INFORME_DESARROLLO.md`](INFORME_DESARROLLO.md) |
+| `MANUAL_TECNICO.md` | Arquitectura, clases, algoritmos de validación, lectura de archivos, métricas y ordenamientos |
+| `MANUAL_USUARIO.md` | Guía paso a paso de instalación, ejecución y uso del menú |
+| `DIAGRAMA_FLUJO.md` | Diagramas de flujo de los procesos principales |
+| `INFORME_DESARROLLO.md` | Decisiones de diseño y proceso de desarrollo |
 
 ---
 
-## Conceptos de programación utilizados
+## Detalles de implementación
 
-| Concepto | Dónde se usa |
-|---|---|
-| Clases y objetos | `clases.py`: Tablero, Jugador e Intento |
-| Listas y listas anidadas (matrices) | La matriz 9×9 de cada tablero |
-| Diccionarios | Agrupación de estadísticas en `reportes.py` |
-| Ciclo `while` | Menú principal, relleno de espacios |
-| Ciclo `for` con `range` | Recorridos de índices 0 a 8 |
-| Ciclos `for` anidados | Construcción de la matriz y revisión de pistas |
-| Condicionales `if / elif / else` | Validaciones y opciones del menú |
-| Lectura de archivos | `with open(...)` y `readlines()` en `lectura.py` |
-| Manejo de cadenas | `split(',')`, `strip()`, `isdigit()`, concatenación |
-| Método de ordenamiento burbuja | `reportes.py`, para ordenar jugadores y tiempos |
-| Escritura de archivos | Generación de los HTML |
+- **Programación orientada a objetos** con tres clases y métodos de instancia convencionales
+- **Ordenamiento** implementado manualmente mediante el método burbuja, sin funciones de librería
+- **Manejo de errores** por acumulación: las funciones de carga devuelven la lista de objetos válidos junto con la lista de mensajes de error, en lugar de lanzar excepciones
+- **Reportes HTML** construidos por concatenación de cadenas
+- Código conforme a **PEP 8**
+
+---
+
+## Autor
+
+Alejandro Barrios  
+Universidad de San Carlos de Guatemala
