@@ -156,10 +156,10 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 
 | Documento | Contenido |
 |---|---|
-| `MANUAL_TECNICO.md` | Arquitectura, clases, algoritmos de validación, lectura de archivos, métricas y ordenamientos |
-| `MANUAL_USUARIO.md` | Guía paso a paso de instalación, ejecución y uso del menú |
-| `DIAGRAMA_FLUJO.md` | Diagramas de flujo de los procesos principales |
-| `INFORME_DESARROLLO.md` | Decisiones de diseño y proceso de desarrollo |
+| `MANUAL_TECNICO` | Arquitectura, clases, algoritmos de validación, lectura de archivos, métricas y ordenamientos |
+| `MANUAL_USUARIO` | Guía paso a paso de instalación, ejecución y uso del menú |
+| `DIAGRAMA_FLUJO` | Diagramas de flujo de los procesos principales |
+| `INFORME_DESARROLLO` | Decisiones de diseño y proceso de desarrollo |
 
 ---
 
@@ -169,11 +169,11 @@ Al calificar también se comprueba la integridad referencial: que cada intento a
 - **Ordenamiento** implementado manualmente mediante el método burbuja, sin funciones de librería
 - **Manejo de errores** por acumulación: las funciones de carga devuelven la lista de objetos válidos junto con la lista de mensajes de error, en lugar de lanzar excepciones
 - **Reportes HTML** construidos por concatenación de cadenas
-- Código conforme a **PEP 8**
+
 
 ---
 
 ## Autor
 
-Alejandro Barrios  
+Diego Alejandro Barrios  
 Universidad de San Carlos de Guatemala
