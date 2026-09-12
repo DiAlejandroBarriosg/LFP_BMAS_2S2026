@@ -1,0 +1,10 @@
+{
+    "files.encoding": "utf8",
+    "files.eol": "\n",
+    "files.associations": { "*.hor": "plaintext" },
+    "python.analysis.extraPaths": ["."],
+    "editor.rulers": [79],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.exclude": { "**/__pycache__": true }
+}

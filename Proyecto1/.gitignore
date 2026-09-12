@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Salida generada por el programa
+salida/
+*.html.bak
+
+# Editores
+.idea/
+*.swp
+.DS_Store
+
+# El .dot se versiona; los PNG de salida no (los de diseno si)
+salida/*.png
