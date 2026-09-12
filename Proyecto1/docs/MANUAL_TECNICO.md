@@ -1119,6 +1119,8 @@ soportado en esos motores.
 | La rejilla del Reporte 1 usa bloques exactos | Dos clases con horarios que se traslapan parcialmente ocupan filas distintas en lugar de fusionarse visualmente. | El choque igual se detecta y se resalta; solo cambia la presentación. |
 | Solo se analiza un archivo por sesión | La funcionalidad opcional de múltiples archivos no se implementó. | Se implementaron otras cuatro opcionales; el criterio 2.7 exige una. |
 | `DIA_NO_RECONOCIDO` cubre también categorías | El enunciado no define un tipo de error separado para categorías inválidas. | Se reutiliza el tipo con mensaje adaptado. |
+| No hay secuencias de escape dentro de las cadenas | `"dijo \"hola\""` cierra el literal en la segunda comilla, y el resto se lee como texto suelto. | El enunciado no define escapes. Un nombre con comillas no se puede representar. |
+| Un literal con dos o más guiones se clasifica como `CADENA` | `"A--1"` no se reporta como código mal formado. | Es consecuencia de la regla D-01: solo un guión exacto lo convierte en candidato a código. Un título como `"Redes - Avanzadas - Lab"` debe seguir siendo cadena. |
 
 ---
 

@@ -1,0 +1,15 @@
+HORARIO {
+    CURSOS {
+        curso: "Matemática Básica ñ áéíóú ü" [codigo: "MAT-0101", creditos: 5],
+        curso: "Análisis & Diseño <de> Sistemas" [codigo: "ADS-0202", creditos: 4],
+    };
+    CATEDRATICOS {
+        catedratico: "José Ramírez Muñoz" [codigo: "DOC-001", categoria: TITULAR],
+    };
+    AULAS {
+        aula: "S-11" [capacidad: 30, edificio: "Edificio S-11 ala oeste"],
+    };
+    CLASES {
+        clase: "MAT-0101" con "DOC-001" en "S-11" [dia: LUNES, inicio: 07:00, fin: 08:40, seccion: "Ñ"],
+    };
+};

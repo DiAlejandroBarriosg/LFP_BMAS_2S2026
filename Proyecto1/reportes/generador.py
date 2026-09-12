@@ -92,16 +92,28 @@ class GeneradorReportes:
                 '</div>\n</body>\n</html>\n')
 
     def _nombre_curso(self, codigo):
+        """
+        Nombre del curso, con el codigo como respaldo. El respaldo cubre dos
+        casos: que la clase referencie un curso no declarado, y que el curso
+        exista pero tenga el nombre vacio. Sin esto la celda del reporte
+        quedaria en blanco y no se sabria de que clase se trata.
+        """
         curso = self.estructura.buscar_curso(codigo)
-        if curso is None:
+        if curso is None or curso.nombre == '':
             return codigo
         return curso.nombre
 
     def _nombre_catedratico(self, codigo):
         catedratico = self.estructura.buscar_catedratico(codigo)
-        if catedratico is None:
+        if catedratico is None or catedratico.nombre == '':
             return codigo
         return catedratico.nombre
+
+    def _etiqueta_seccion(self, seccion):
+        """Una seccion con nombre vacio se rotula de forma legible."""
+        if seccion == '':
+            return '(sin nombre)'
+        return seccion
 
     def _escribir(self, carpeta, nombre, contenido):
         if not os.path.isdir(carpeta):
@@ -205,7 +217,8 @@ class GeneradorReportes:
         clases = self._clases_de_seccion(seccion)
         bloques = self._bloques_horarios(clases)
 
-        html = '<h2>Seccion ' + self._escapar(seccion) + '</h2>\n'
+        html = ('<h2>Seccion ' +
+                self._escapar(self._etiqueta_seccion(seccion)) + '</h2>\n')
         html = html + '<table class="rejilla">\n<thead>\n<tr>\n'
         html = html + '<th class="hora">Bloque</th>\n'
 
@@ -331,7 +344,9 @@ class GeneradorReportes:
             html = html + ('<td>' +
                            self._escapar(self._nombre_curso(clase.codigo_curso)) +
                            '</td>')
-            html = html + '<td>' + self._escapar(clase.seccion) + '</td>'
+            html = html + ('<td>' +
+                           self._escapar(self._etiqueta_seccion(clase.seccion)) +
+                           '</td>')
             html = html + '<td>' + self._escapar(clase.dia) + '</td>'
             html = html + ('<td class="numero">' + clase.inicio_texto +
                            ' &ndash; ' + clase.fin_texto + '</td>')

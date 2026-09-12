@@ -190,12 +190,15 @@ class Estructurador:
 
         esperado = BLOQUE_ESPERADO[nombre_elemento]
         if self.bloque_actual != esperado:
-            ubicacion = self.bloque_actual
-            if ubicacion == '':
-                ubicacion = 'ningun bloque'
-            self._aviso(A_BLOQUE_INCORRECTO,
-                        "'" + nombre_elemento + "' aparece en " + ubicacion +
-                        ' y deberia estar en ' + esperado, linea)
+            if self.bloque_actual == '':
+                descripcion = ("'" + nombre_elemento + "' no esta dentro de "
+                               'ningun bloque y deberia declararse en ' +
+                               esperado)
+            else:
+                descripcion = ("'" + nombre_elemento + "' aparece dentro de " +
+                               self.bloque_actual + ' y deberia declararse en ' +
+                               esperado)
+            self._aviso(A_BLOQUE_INCORRECTO, descripcion, linea)
 
         if not self._consumir_si(':'):
             self._aviso(A_ESTRUCTURA_INCOMPLETA,

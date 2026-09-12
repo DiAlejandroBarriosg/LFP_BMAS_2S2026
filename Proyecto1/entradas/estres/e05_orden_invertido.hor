@@ -1,0 +1,14 @@
+HORARIO {
+    CLASES {
+        clase: "MAT-0101" con "DOC-001" en "MAGNA" [dia: LUNES, inicio: 07:00, fin: 08:40, seccion: "N"],
+    };
+    AULAS {
+        aula: "MAGNA" [capacidad: 200, edificio: "Edificio Central"],
+    };
+    CATEDRATICOS {
+        catedratico: "Docente" [codigo: "DOC-001", categoria: TITULAR],
+    };
+    CURSOS {
+        curso: "Matematica" [codigo: "MAT-0101", creditos: 5],
+    };
+};

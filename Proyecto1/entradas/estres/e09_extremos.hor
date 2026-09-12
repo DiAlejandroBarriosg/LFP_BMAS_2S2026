@@ -1,0 +1,15 @@
+HORARIO {
+    CURSOS {
+        curso: "" [codigo: "A-1", creditos: 0],
+        curso: "Nombre extremadamente largo que no deberia romper nada aunque ocupe muchisimo espacio en la celda del reporte HTML y en la tabla de tokens" [codigo: "ABCDEFGH-12345678", creditos: 999],
+    };
+    CATEDRATICOS {
+        catedratico: "X" [codigo: "D-0", categoria: AUXILIAR],
+    };
+    AULAS {
+        aula: "Z-9" [capacidad: 999999, edificio: "T"],
+    };
+    CLASES {
+        clase: "A-1" con "D-0" en "Z-9" [dia: LUNES, inicio: 06:00, fin: 06:20, seccion: ""],
+    };
+};

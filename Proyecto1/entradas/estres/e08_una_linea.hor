@@ -1,0 +1,1 @@
+HORARIO { CURSOS { curso: "Uno" [codigo: "UNO-0001", creditos: 1], }; CATEDRATICOS { catedratico: "D" [codigo: "DOC-001", categoria: TITULAR], }; AULAS { aula: "A-1" [capacidad: 1, edificio: "T-1"], }; CLASES { clase: "UNO-0001" con "DOC-001" en "A-1" [dia: SABADO, inicio: 06:00, fin: 21:00, seccion: "A"], }; };

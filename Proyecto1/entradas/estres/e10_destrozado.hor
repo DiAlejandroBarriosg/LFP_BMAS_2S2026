@@ -1,0 +1,14 @@
+HORARIO {
+    CURSOS {
+        curso: "Sin cierre" [codigo: "SIN-0001", creditos: 4
+        curso "Sin dos puntos" [codigo: "DOS-0002", creditos: 4],
+    CATEDRATICOS
+        catedratico: "Sin llave" [codigo: "DOC-001" categoria: TITULAR],
+    };
+    AULAS {
+        aula: [capacidad: 30, edificio: "T-1"],
+    };
+    CLASES {
+        clase: "SIN-0001" "DOC-001" "A-101" [dia: inicio: 07:00, fin: 08:40],
+        clase: "SIN-0001" con en "A-101" [dia: DOMINGO, inicio: 7:00, fin: 08:40, seccion: 1],
+    };

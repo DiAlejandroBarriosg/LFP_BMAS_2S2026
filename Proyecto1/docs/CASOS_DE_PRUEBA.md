@@ -250,6 +250,64 @@ etiquetas. Se comprueba que el escapado funciona.
 
 ---
 
+---
+
+## Prueba de robustez adicional
+
+Ademas de los ocho casos, se ejecutaron **diez archivos deliberadamente
+hostiles** por las tres capas y por el generador de reportes, para verificar
+que el programa no se cae ante entradas que un usuario real podria producir
+por error. Estan en `entradas/estres/` con su propio LEEME.
+
+| Archivo | Que prueba | Resultado |
+|---|---|---|
+| `e01_vacio.hor` | Archivo de 0 bytes | 0 tokens, 5 avisos de bloque faltante, reportes generados |
+| `e02_solo_espacios.hor` | Solo espacios y tabulaciones | igual que el anterior |
+| `e03_solo_comentarios.hor` | Solo comentarios con simbolos fuera del alfabeto | 3 tokens, 0 errores |
+| `e04_sin_bloques.hor` | Elemento suelto sin bloque contenedor | aviso BLOQUE_INCORRECTO, curso armado |
+| `e05_orden_invertido.hor` | Los cuatro bloques en orden inverso | 0 avisos: el recorrido no depende del orden |
+| `e06_bloques_vacios.hor` | Bloques declarados y vacios | 0 errores, 0 avisos |
+| `e07_unicode.hor` | Tildes, enie y `& < >` dentro de comillas | 0 errores, escapado correcto en el HTML |
+| `e08_una_linea.hor` | Archivo completo en una linea, sin salto final | 0 errores |
+| `e09_extremos.hor` | Nombre vacio, nombre de 130 caracteres, capacidad 999999 | 0 errores |
+| `e10_destrozado.hor` | Llaves desbalanceadas, `:` faltantes, `DOMINGO`, `seccion: 1` | 1 error, 16 avisos, sin excepciones |
+
+**Excepciones lanzadas: 0 en los diez archivos.**
+
+### Prueba de volumen
+
+Se genero un archivo de 600 clases (100 por dia, todas con el mismo
+catedratico y la misma aula, el peor caso para el detector O(n^2)):
+
+| Etapa | Tiempo | Resultado |
+|---|---|---|
+| Analisis lexico | 126 ms | 15 059 tokens |
+| Estructurador | 8 ms | 600 clases |
+| Deteccion de choques | 84 ms | 29 700 choques |
+| Sugerencia de bloques libres | 54 ms | — |
+
+Un horario real de facultad tiene decenas de clases, no seiscientas, asi que
+el O(n^2) del detector no representa un problema practico.
+
+### Casos lexicos puntuales verificados
+
+| Entrada | Resultado |
+|---|---|
+| `07:0` | ENTERO, SIMBOLO, ENTERO (no es hora: falta un digito) |
+| `7:00` | ENTERO, SIMBOLO, ENTERO (no es hora: falta un digito en la hora) |
+| `07:000` | `HORA_FUERA_DE_RANGO`, consumido completo |
+| `""` | CADENA vacia, valida |
+| `"` sola | `CADENA_SIN_CERRAR` |
+| `#` sola | `CARACTER_NO_RECONOCIDO` |
+| `####doble` | un solo COMENTARIO_LINEA |
+| `A-` | `CODIGO_MAL_FORMADO` |
+| `"-"` | `CODIGO_MAL_FORMADO` |
+| `"A--1"` | CADENA: con dos guiones no es candidato a codigo (decision D-01) |
+| `{[]};,:` | siete SIMBOLO separados |
+| Comentario al final sin salto de linea | COMENTARIO_LINEA cerrado por EOF |
+
+---
+
 ## Archivos de entrada usados
 
 | Archivo | Para qué sirve |
