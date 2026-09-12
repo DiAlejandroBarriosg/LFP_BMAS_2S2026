@@ -1,0 +1,127 @@
+
+HORARIOSCRIPT - SUITE DE CASOS DE PRUEBA
+Proyecto 1, Lenguajes Formales y de Programacion, seccion B+, 2S2026
+
+==============================================================================
+CASO 1: Archivo valido del enunciado
+------------------------------------------------------------------------------
+Objetivo: El AFD reconoce los 12 tipos de token sin reportar errores, y el estructurador arma todos los elementos declarados.
+
+    [OK  ] tokens reconocidos
+    [OK  ] errores lexicos
+    [OK  ] avisos estructurales
+    [OK  ] choques detectados
+    [OK  ] tipos de token presentes
+    [OK  ] cursos armados
+    [OK  ] catedraticos armados
+    [OK  ] aulas armadas
+    [OK  ] clases armadas
+    [OK  ] secciones detectadas
+
+==============================================================================
+CASO 2: Los cinco tipos de error lexico y la recuperacion en modo panico
+------------------------------------------------------------------------------
+Objetivo: Un archivo con multiples errores debe reportarlos TODOS en una sola pasada, sin detenerse en el primero, y seguir produciendo tokens validos despues de cada error.
+
+    [OK  ] los cinco tipos de error aparecen
+    [OK  ] errores totales
+    [OK  ] el analisis continua y sigue produciendo tokens
+    [OK  ] el estructurador no se cae y arma lo que puede
+    [OK  ] los avisos explican lo que quedo incompleto
+    [OK  ] valores perdidos por error lexico, sin desfasar atributos
+
+==============================================================================
+CASO 3: Ambiguedad entre HORA y ENTERO, y conteo de posicion
+------------------------------------------------------------------------------
+Objetivo: Dos digitos seguidos de ":" solo forman HORA si vienen dos digitos mas. El lookahead no consume, asi que no hace falta retroceder el indice. Tambien se verifica el conteo de linea y columna con tabulaciones y con fin de linea CRLF.
+
+    [OK  ] 40 seguido de ":" son ENTERO y SIMBOLO por separado
+    [OK  ] 07: sin minutos es ENTERO y SIMBOLO
+    [OK  ] 07:00 es una sola HORA
+    [OK  ] 123: no es hora porque no tiene dos digitos
+    [OK  ] 06:00 es el limite inferior valido
+    [OK  ] 21:00 es el limite superior valido
+    [OK  ] 05:59 queda fuera de rango
+    [OK  ] 21:01 queda fuera de rango
+    [OK  ] 07:75 se rechaza por los minutos
+    [OK  ] un tabulador desplaza la columna a 5
+    [OK  ] con CRLF, CURSOS queda en la linea 2 columna 1
+    [OK  ] archivo completo con CRLF y tabulaciones, sin errores
+    [OK  ] la ultima linea del archivo CRLF es la 20
+
+==============================================================================
+CASO 4: Clasificacion de literales: CADENA, CODIGO y CODIGO_MAL_FORMADO
+------------------------------------------------------------------------------
+Objetivo: Decision D-01: al cerrar un literal, si no tiene espacios y tiene exactamente un guion, se valida como codigo. En cualquier otro caso es una cadena. Es lo que hace alcanzable el error CODIGO_MAL_FORMADO.
+
+    [OK  ] LFP-0796 entre comillas es CODIGO
+    [OK  ] BD2-0812 es CODIGO aunque el prefijo tenga un digito
+    [OK  ] A-101 es CODIGO
+    [OK  ] N sin guion es CADENA
+    [OK  ] un texto con espacios es CADENA
+    [OK  ] un texto con guion pero con espacios sigue siendo CADENA
+    [OK  ] MAGNA es CADENA y sirve como nombre de aula
+    [OK  ] CMP- sin digitos es codigo mal formado
+    [OK  ] un sufijo con letras es codigo mal formado
+    [OK  ] un prefijo que empieza con digito es codigo mal formado
+    [OK  ] un codigo sin comillas tambien se reconoce
+    [OK  ] una cadena sin cerrar se reporta en su posicion de apertura
+
+==============================================================================
+CASO 5: Deteccion de choques por catedratico y por aula
+------------------------------------------------------------------------------
+Objetivo: Dos clases chocan si coinciden en dia, se traslapan en el tiempo y comparten catedratico o aula.
+
+    [OK  ] choques detectados
+    [OK  ] desglose por motivo
+    [OK  ] recursos en conflicto
+    [OK  ] clases marcadas en choque
+    [OK  ] el choque de catedratico es el LUNES
+    [OK  ] el traslape del choque de aula dura 40 minutos
+
+==============================================================================
+CASO 6: Casos que NO son choque, y casos borde del traslape
+------------------------------------------------------------------------------
+Objetivo: La desigualdad estricta evita el falso positivo mas comun: una clase que termina 08:40 y otra que empieza 08:40 es continuidad, no conflicto. Tambien se verifican la contencion total, el doble motivo y las tres clases mutuamente traslapadas.
+
+    [OK  ] choques detectados en el archivo de casos borde
+    [OK  ] misma hora sin recurso compartido no es choque
+    [OK  ] tres clases mutuamente traslapadas dan tres pares
+    [OK  ] compartir catedratico y aula es UN choque con dos motivos
+    [OK  ] 08:40 fin y 08:40 inicio del mismo catedratico no es choque
+    [OK  ] mismo horario en dias distintos no es choque
+    [OK  ] en un dia ocupado de 06:00 a 21:00 no se sugiere ningun bloque
+
+==============================================================================
+CASO 7: Validaciones estructurales y de referencia
+------------------------------------------------------------------------------
+Objetivo: Con el flujo de tokens ya valido, el estructurador detecta codigos duplicados, referencias a elementos no declarados y rangos de hora invertidos. Son avisos, NO errores lexicos.
+
+    [OK  ] sin errores lexicos: el archivo es lexicamente correcto
+    [OK  ] avisos estructurales
+    [OK  ] desglose de avisos
+    [OK  ] una clase sin dia valido se descarta
+    [OK  ] ninguna carga docente resulta negativa
+
+==============================================================================
+CASO 8: Generacion de reportes, niveles de carga y ocupacion de aulas
+------------------------------------------------------------------------------
+Objetivo: Los cuatro reportes HTML y el DOT se generan, y los umbrales de carga docente y de ocupacion de aula clasifican correctamente.
+
+    [OK  ] sin errores lexicos
+    [OK  ] clases programadas
+    [OK  ] choques detectados
+    [OK  ] los cuatro niveles de carga quedan representados
+    [OK  ] LAB-3 supera el 80% de ocupacion
+    [OK  ] se generan los cinco archivos
+    [OK  ] ningun archivo generado queda vacio
+    [OK  ] los lexemas se escapan y no inyectan etiquetas HTML
+
+==============================================================================
+RESULTADO FINAL
+------------------------------------------------------------------------------
+  Verificaciones ejecutadas: 67
+  Fallos: 0
+
+  Los ocho casos de prueba pasan.
+

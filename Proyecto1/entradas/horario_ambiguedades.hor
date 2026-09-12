@@ -1,0 +1,20 @@
+## Caso 3 y 4: ambiguedades del AFD, tabulaciones y fin de linea CRLF
+## Este archivo usa CRLF a proposito para verificar el conteo de lineas.
+HORARIO {
+	CURSOS {
+		curso: "Codigo con prefijo alfanumerico" [codigo: "BD2-0812", creditos: 4],
+		curso: "Cadena con guion y espacios" [codigo: "SIS-0410", creditos: 40],
+		curso: "Sin guion es cadena" [codigo: "MAT-0101", creditos: 5],
+	};
+	AULAS {
+		aula: "A-101" [capacidad: 40, edificio: "T-3"],
+		aula: "MAGNA" [capacidad: 200, edificio: "T-1"],
+	};
+	CATEDRATICOS {
+		catedratico: "Docente Limite" [codigo: "DOC-001", categoria: TITULAR],
+	};
+	CLASES {
+		clase: "BD2-0812" con "DOC-001" en "A-101" [dia: LUNES, inicio: 06:00, fin: 07:40, seccion: "N"],
+		clase: "SIS-0410" con "DOC-001" en "MAGNA" [dia: LUNES, inicio: 19:20, fin: 21:00, seccion: "N"],
+	};
+};

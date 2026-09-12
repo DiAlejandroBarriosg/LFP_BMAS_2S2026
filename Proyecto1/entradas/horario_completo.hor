@@ -1,0 +1,54 @@
+## Horario completo de demostracion - Facultad de Ingenieria, 2S2026
+## Cubre los cuatro niveles de carga docente, un aula por encima del 80% de
+## ocupacion, un choque de catedratico y un choque de aula.
+HORARIO {
+    CURSOS {
+        curso: "Lenguajes Formales y de Programacion" [codigo: "LFP-0796", creditos: 4],
+        curso: "Bases de Datos 2" [codigo: "BD2-0812", creditos: 5],
+        curso: "Sistemas Operativos 1" [codigo: "SOP-0850", creditos: 4],
+        curso: "Estructuras de Datos" [codigo: "EDD-0770", creditos: 4],
+        curso: "Laboratorio de Proyectos" [codigo: "IPC-0640", creditos: 2],
+    };
+    CATEDRATICOS {
+        catedratico: "Otto Rodriguez" [codigo: "DOC-001", categoria: TITULAR],
+        catedratico: "Vivian Campos" [codigo: "DOC-002", categoria: INTERINO],
+        catedratico: "Luis Barrios" [codigo: "DOC-003", categoria: AUXILIAR],
+        catedratico: "Sofia Mendez" [codigo: "DOC-004", categoria: TITULAR],
+    };
+    AULAS {
+        aula: "A-101" [capacidad: 40, edificio: "T-3"],
+        aula: "B-202" [capacidad: 60, edificio: "T-1"],
+        aula: "LAB-3" [capacidad: 25, edificio: "T-5"],
+        aula: "LAB-4" [capacidad: 25, edificio: "T-5"],
+    };
+    CLASES {
+        ## DOC-001: carga ALTA
+        clase: "LFP-0796" con "DOC-001" en "A-101" [dia: LUNES, inicio: 07:00, fin: 08:40, seccion: "N"],
+        clase: "LFP-0796" con "DOC-001" en "A-101" [dia: LUNES, inicio: 08:40, fin: 10:20, seccion: "A"],
+        clase: "EDD-0770" con "DOC-001" en "A-101" [dia: MARTES, inicio: 07:00, fin: 08:40, seccion: "N"],
+        clase: "EDD-0770" con "DOC-001" en "A-101" [dia: MARTES, inicio: 08:40, fin: 10:20, seccion: "A"],
+        clase: "LFP-0796" con "DOC-001" en "A-101" [dia: MIERCOLES, inicio: 07:00, fin: 08:40, seccion: "B"],
+        clase: "EDD-0770" con "DOC-001" en "A-101" [dia: JUEVES, inicio: 07:00, fin: 08:40, seccion: "B"],
+        clase: "LFP-0796" con "DOC-001" en "A-101" [dia: VIERNES, inicio: 07:00, fin: 08:40, seccion: "N"],
+        clase: "EDD-0770" con "DOC-001" en "A-101" [dia: VIERNES, inicio: 08:40, fin: 10:20, seccion: "N"],
+        ## choque de catedratico: DOC-001 ya esta en A-101 el LUNES a esa hora
+        clase: "BD2-0812" con "DOC-001" en "B-202" [dia: LUNES, inicio: 07:00, fin: 08:40, seccion: "B"],
+        ## DOC-002: carga NORMAL
+        clase: "BD2-0812" con "DOC-002" en "B-202" [dia: LUNES, inicio: 10:20, fin: 12:00, seccion: "N"],
+        clase: "BD2-0812" con "DOC-002" en "B-202" [dia: MARTES, inicio: 10:20, fin: 12:00, seccion: "A"],
+        clase: "SOP-0850" con "DOC-002" en "B-202" [dia: MIERCOLES, inicio: 14:00, fin: 15:40, seccion: "N"],
+        clase: "SOP-0850" con "DOC-002" en "B-202" [dia: JUEVES, inicio: 14:00, fin: 15:40, seccion: "A"],
+        ## choque de aula: A-101 ya esta ocupada el MIERCOLES a esa hora
+        clase: "SOP-0850" con "DOC-002" en "A-101" [dia: MIERCOLES, inicio: 07:00, fin: 08:40, seccion: "A"],
+        ## DOC-003: carga BAJA
+        clase: "SOP-0850" con "DOC-003" en "LAB-4" [dia: VIERNES, inicio: 14:00, fin: 15:40, seccion: "B"],
+        clase: "EDD-0770" con "DOC-003" en "LAB-4" [dia: SABADO, inicio: 07:00, fin: 08:40, seccion: "B"],
+        ## DOC-004: carga SATURADA y LAB-3 por encima del 80% de ocupacion
+        clase: "IPC-0640" con "DOC-004" en "LAB-3" [dia: LUNES, inicio: 06:00, fin: 19:00, seccion: "N"],
+        clase: "IPC-0640" con "DOC-004" en "LAB-3" [dia: MARTES, inicio: 06:00, fin: 19:00, seccion: "N"],
+        clase: "IPC-0640" con "DOC-004" en "LAB-3" [dia: MIERCOLES, inicio: 06:00, fin: 19:00, seccion: "N"],
+        clase: "IPC-0640" con "DOC-004" en "LAB-3" [dia: JUEVES, inicio: 06:00, fin: 19:00, seccion: "N"],
+        clase: "IPC-0640" con "DOC-004" en "LAB-3" [dia: VIERNES, inicio: 06:00, fin: 19:00, seccion: "N"],
+        clase: "IPC-0640" con "DOC-004" en "LAB-3" [dia: SABADO, inicio: 06:00, fin: 19:00, seccion: "N"],
+    };
+};

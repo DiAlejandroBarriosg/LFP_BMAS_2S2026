@@ -1,0 +1,19 @@
+## Prueba: los cinco tipos de error lexico, uno por linea
+HORARIO {
+    CURSOS {
+        curso: "Compiladores 1" [codigo: "CMP-", creditos: 4],
+        curso: "Redes @ locales" [codigo: "RED-08A2", creditos: 5],
+        curso: "Sistemas" [codigo: "SIS-0410", creditos: 4] @ ,
+        curso: "Analisis sin cerrar [codigo: "ANU-0501", creditos: 4],
+    };
+    CATEDRATICOS {
+        catedratico: "Ana Lopez" [codigo: "DOC-003", categoria: SUPLENTE],
+    };
+    AULAS {
+        aula: "B-202" [capacidad: 35, edificio: "T-1"],
+    };
+    CLASES {
+        clase: "CMP-0901" con "DOC-003" en "B-202" [dia: LUNEZ, inicio: 05:30, fin: 07:75, seccion: "A"],
+        clase: "SIS-0410" con "DOC-003" en "B-202" [dia: VIERNES, inicio: 23:00, fin: 07:000, seccion: "A"],
+    };
+};

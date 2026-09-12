@@ -1,0 +1,244 @@
+// Diagrama de clases de HorarioScript
+// Render: dot -Tpng diagrama_clases.dot -o diagrama_clases.png
+
+digraph Clases {
+    rankdir = TB;
+    newrank = true;
+    bgcolor = "white";
+    compound = true;
+    nodesep = 0.35;
+    ranksep = 0.75;
+    node [shape = plaintext, fontname = "Helvetica", fontsize = 10];
+    edge [fontname = "Helvetica", fontsize = 9, color = "#4a5b6c"];
+
+    // =============== paquete modelos ===============
+    subgraph cluster_modelos {
+        label = "modelos  (datos, sin logica)";
+        fontname = "Helvetica";
+        fontsize = 12;
+        style = "filled,rounded";
+        fillcolor = "#f7f9fb";
+        color = "#d3dae1";
+
+        Token [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#1f5f9e">
+            <tr><td bgcolor="#e6eff8"><b>Token</b></td></tr>
+            <tr><td align="left">- numero : int<br align="left"/>- lexema : str<br align="left"/>- tipo : str<br align="left"/>- linea : int<br align="left"/>- columna : int<br align="left"/></td></tr>
+            <tr><td align="left">+ a_fila()<br align="left"/></td></tr>
+          </table>>];
+
+        ErrorLexico [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#a32626">
+            <tr><td bgcolor="#fbe6e6"><b>ErrorLexico</b></td></tr>
+            <tr><td align="left">- numero : int<br align="left"/>- lexema : str<br align="left"/>- tipo : str<br align="left"/>- descripcion : str<br align="left"/>- linea, columna : int<br align="left"/></td></tr>
+            <tr><td align="left">+ a_fila()<br align="left"/></td></tr>
+          </table>>];
+
+        Aviso [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#b5651d">
+            <tr><td bgcolor="#fdeedd"><b>Aviso</b></td></tr>
+            <tr><td align="left">- numero : int<br align="left"/>- tipo : str<br align="left"/>- descripcion : str<br align="left"/>- linea : int<br align="left"/></td></tr>
+            <tr><td align="left">+ a_fila()<br align="left"/></td></tr>
+          </table>>];
+
+        Curso [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#4a5b6c">
+            <tr><td bgcolor="#eef1f4"><b>Curso</b></td></tr>
+            <tr><td align="left">- nombre : str<br align="left"/>- codigo : str<br align="left"/>- creditos : int<br align="left"/>- linea : int<br align="left"/></td></tr>
+          </table>>];
+
+        Catedratico [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#4a5b6c">
+            <tr><td bgcolor="#eef1f4"><b>Catedratico</b></td></tr>
+            <tr><td align="left">- nombre : str<br align="left"/>- codigo : str<br align="left"/>- categoria : str<br align="left"/>- linea : int<br align="left"/></td></tr>
+          </table>>];
+
+        Aula [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#4a5b6c">
+            <tr><td bgcolor="#eef1f4"><b>Aula</b></td></tr>
+            <tr><td align="left">- codigo : str<br align="left"/>- capacidad : int<br align="left"/>- edificio : str<br align="left"/>- linea : int<br align="left"/></td></tr>
+          </table>>];
+
+        Clase [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#1f7a3f">
+            <tr><td bgcolor="#e3f4e8"><b>Clase</b></td></tr>
+            <tr><td align="left">- codigo_curso : str<br align="left"/>- codigo_catedratico : str<br align="left"/>- codigo_aula : str<br align="left"/>- dia : str<br align="left"/>- inicio, fin : int (minutos)<br align="left"/>- inicio_texto, fin_texto : str<br align="left"/>- seccion : str<br align="left"/>- en_choque : bool<br align="left"/></td></tr>
+            <tr><td align="left">+ duracion_minutos()<br align="left"/>+ duracion_horas()<br align="left"/></td></tr>
+          </table>>];
+
+        Choque [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#a32626">
+            <tr><td bgcolor="#fbe6e6"><b>Choque</b></td></tr>
+            <tr><td align="left">- numero : int<br align="left"/>- clase_a, clase_b : Clase<br align="left"/>- motivos : list<br align="left"/>- dia : str<br align="left"/>- traslape_inicio, _fin : int<br align="left"/></td></tr>
+            <tr><td align="left">+ duracion_traslape()<br align="left"/>+ tiene_motivo()<br align="left"/>+ texto_motivos()<br align="left"/>+ involucra()<br align="left"/></td></tr>
+          </table>>];
+    }
+
+    // =============== paquete analizador ===============
+    subgraph cluster_analizador {
+        label = "analizador  (capa lexica: no sabe nada de horarios)";
+        fontname = "Helvetica";
+        fontsize = 12;
+        style = "filled,rounded";
+        fillcolor = "#eef4fa";
+        color = "#1f5f9e";
+
+        AnalizadorLexico [label = <
+          <table border="2" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#0d3b66">
+            <tr><td bgcolor="#d4e4f4"><b>AnalizadorLexico</b></td></tr>
+            <tr><td align="left">- texto : str<br align="left"/>- pos, linea, columna : int<br align="left"/>- tokens : list&lt;Token&gt;<br align="left"/>- gestor : GestorErrores<br align="left"/>- ultimo_atributo : str<br align="left"/></td></tr>
+            <tr><td align="left"><b>+ siguiente_token()</b><br align="left"/>+ analizar()<br align="left"/>+ contar_por_tipo()<br align="left"/>- _estado_palabra()   q1<br align="left"/>- _estado_codigo()    q2,q3<br align="left"/>- _estado_numero()    q4<br align="left"/>- _estado_hora()      q5,q6,q7<br align="left"/>- _estado_literal()   q8,q9<br align="left"/>- _estado_comentario() q10,q11<br align="left"/>- _avanzar() / _ver()<br align="left"/></td></tr>
+          </table>>];
+
+        GestorErrores [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#a32626">
+            <tr><td bgcolor="#fbe6e6"><b>GestorErrores</b></td></tr>
+            <tr><td align="left">- errores : list&lt;ErrorLexico&gt;<br align="left"/>- contador : int<br align="left"/></td></tr>
+            <tr><td align="left">+ agregar()<br align="left"/>+ hay_errores()<br align="left"/>+ contar_por_tipo()<br align="left"/>+ limpiar()<br align="left"/></td></tr>
+          </table>>];
+
+        alfabeto [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#4a5b6c">
+            <tr><td bgcolor="#eef1f4"><b>alfabeto</b> <i>(modulo, capa mas baja)</i></td></tr>
+            <tr><td align="left">LETRAS_MAYUSCULAS / MINUSCULAS<br align="left"/>DIGITOS / SIMBOLOS / ESPACIOS<br align="left"/>EXTRA_PALABRA<br align="left"/>+ esta_en() / indice_en()<br align="left"/>+ es_letra() / es_digito()<br align="left"/>+ es_simbolo() / es_espacio()<br align="left"/>+ son_iguales() / pertenece()<br align="left"/>+ valor_digito() / valor_entero()<br align="left"/></td></tr>
+          </table>>];
+
+        palabras [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#4a5b6c">
+            <tr><td bgcolor="#eef1f4"><b>palabras_reservadas</b> <i>(modulo)</i></td></tr>
+            <tr><td align="left">BLOQUES, ELEMENTOS<br align="left"/>RELACIONES, ATRIBUTOS<br align="left"/>DIAS, CATEGORIAS<br align="left"/>tipos de token y de error<br align="left"/></td></tr>
+          </table>>];
+    }
+
+    // =============== paquete logica ===============
+    subgraph cluster_logica {
+        label = "logica  (semantica del horario)";
+        fontname = "Helvetica";
+        fontsize = 12;
+        style = "filled,rounded";
+        fillcolor = "#eef8f1";
+        color = "#1f7a3f";
+
+        Estructurador [label = <
+          <table border="2" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#1f7a3f">
+            <tr><td bgcolor="#d4eedd"><b>Estructurador</b></td></tr>
+            <tr><td align="left">- cursos, catedraticos : list<br align="left"/>- aulas, clases : list<br align="left"/>- avisos : list&lt;Aviso&gt;<br align="left"/>- tokens : list&lt;Token&gt;<br align="left"/>- bloque_actual : str<br align="left"/>- bloques_vistos : dict<br align="left"/></td></tr>
+            <tr><td align="left">+ estructurar()<br align="left"/>+ clases_por_dia()<br align="left"/>+ secciones() / resumen()<br align="left"/>+ buscar_curso/catedratico/aula()<br align="left"/>- _leer_elemento()<br align="left"/>- _leer_atributos()<br align="left"/>- _validar_bloques()<br align="left"/>- _validar_duplicados()<br align="left"/>- _validar_referencias()<br align="left"/>- _validar_horas()<br align="left"/></td></tr>
+          </table>>];
+
+        DetectorChoques [label = <
+          <table border="2" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#a32626">
+            <tr><td bgcolor="#fbe6e6"><b>DetectorChoques</b></td></tr>
+            <tr><td align="left">- choques : list&lt;Choque&gt;<br align="left"/>- contador : int<br align="left"/></td></tr>
+            <tr><td align="left">+ detectar()<br align="left"/>+ choques_de() / resumen()<br align="left"/>+ recursos_afectados()<br align="left"/>+ sugerir_bloques_libres()<br align="left"/>+ sugerencias_para_todos()<br align="left"/>- _traslapan()<br align="left"/>- _ordenar_por_inicio()<br align="left"/></td></tr>
+          </table>>];
+    }
+
+    // =============== paquete reportes ===============
+    subgraph cluster_reportes {
+        label = "reportes  (salida)";
+        fontname = "Helvetica";
+        fontsize = 12;
+        style = "filled,rounded";
+        fillcolor = "#fdf5ec";
+        color = "#b5651d";
+
+        GeneradorReportes [label = <
+          <table border="2" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#b5651d">
+            <tr><td bgcolor="#fbe4cb"><b>GeneradorReportes</b></td></tr>
+            <tr><td align="left">- estructura : Estructurador<br align="left"/>- detector : DetectorChoques<br align="left"/>- analizador : AnalizadorLexico<br align="left"/>- nombre_archivo : str<br align="left"/></td></tr>
+            <tr><td align="left">+ generar_todos()<br align="left"/>+ reporte_horario()<br align="left"/>+ reporte_carga()<br align="left"/>+ reporte_estadistico()<br align="left"/>+ reporte_errores()<br align="left"/>- _escapar()<br align="left"/>- _nivel_carga()<br align="left"/>- _ocupacion_aulas()<br align="left"/></td></tr>
+          </table>>];
+
+        Graficador [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#b5651d">
+            <tr><td bgcolor="#fbe4cb"><b>Graficador</b></td></tr>
+            <tr><td align="left">- estructura, detector<br align="left"/></td></tr>
+            <tr><td align="left">+ generar()<br align="left"/>+ guardar()<br align="left"/></td></tr>
+          </table>>];
+
+        estilos [label = <
+          <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#4a5b6c">
+            <tr><td bgcolor="#eef1f4"><b>estilos</b> <i>(modulo)</i></td></tr>
+            <tr><td align="left">CSS embebido<br align="left"/>umbrales de carga<br align="left"/>minutos de la semana<br align="left"/></td></tr>
+          </table>>];
+    }
+
+    // =============== paquete gui ===============
+    subgraph cluster_gui {
+        label = "gui";
+        fontname = "Helvetica";
+        fontsize = 12;
+        style = "filled,rounded";
+        fillcolor = "#f4f0f8";
+        color = "#7048a8";
+
+        Interfaz [label = <
+          <table border="2" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#7048a8">
+            <tr><td bgcolor="#e6dcf2"><b>InterfazHorarioScript</b></td></tr>
+            <tr><td align="left">- analizador : AnalizadorLexico<br align="left"/>- estructura : Estructurador<br align="left"/>- detector : DetectorChoques<br align="left"/>- texto, gutter : tk.Text<br align="left"/>- tabla_tokens/errores/... : Treeview<br align="left"/>- rutas_reportes : dict<br align="left"/></td></tr>
+            <tr><td align="left">+ abrir_archivo() / guardar_archivo()<br align="left"/>+ analizar()<br align="left"/>+ generar_reportes()<br align="left"/>+ exportar_csv() / exportar_json()<br align="left"/>- _indice_tk()<br align="left"/>- _pintar()<br align="left"/>- _ir_a_posicion()<br align="left"/></td></tr>
+          </table>>];
+    }
+
+    main [label = <
+      <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="white" color="#16202a">
+        <tr><td bgcolor="#16202a"><font color="white"><b>main.py</b></font></td></tr>
+        <tr><td align="left">punto de entrada<br align="left"/></td></tr>
+      </table>>];
+
+    // =============== relaciones ===============
+
+    main -> Interfaz [label = "  crea"];
+
+    Interfaz -> AnalizadorLexico [label = "  usa"];
+    Interfaz -> Estructurador [label = "  usa"];
+    Interfaz -> DetectorChoques [label = "  usa"];
+    Interfaz -> GeneradorReportes [label = "  usa"];
+    Interfaz -> Graficador [label = "  usa"];
+
+    AnalizadorLexico -> Token [label = "  crea", style = dashed, arrowhead = vee];
+    AnalizadorLexico -> GestorErrores [label = "  compone", arrowhead = diamond, dir = back];
+    AnalizadorLexico -> alfabeto [label = "  usa", style = dotted];
+    AnalizadorLexico -> palabras [label = "  usa", style = dotted];
+
+    GestorErrores -> ErrorLexico [label = "  crea", style = dashed, arrowhead = vee];
+
+    Estructurador -> Token [label = "  consume", style = dotted];
+    Estructurador -> Curso [label = "  crea", style = dashed, arrowhead = vee];
+    Estructurador -> Catedratico [label = "  crea", style = dashed, arrowhead = vee];
+    Estructurador -> Aula [label = "  crea", style = dashed, arrowhead = vee];
+    Estructurador -> Clase [label = "  crea", style = dashed, arrowhead = vee];
+    Estructurador -> Aviso [label = "  crea", style = dashed, arrowhead = vee];
+
+    DetectorChoques -> Clase [label = "  evalua y marca", style = dotted, constraint = false];
+    DetectorChoques -> Choque [label = "  crea", style = dashed, arrowhead = vee];
+    Choque -> Clase [label = "  referencia 2", style = dotted, constraint = false];
+
+    Estructurador -> alfabeto [label = "  usa", style = dotted, constraint = false];
+    Clase -> alfabeto [label = "  usa", style = dotted, constraint = false];
+    Graficador -> alfabeto [label = "  usa", style = dotted, constraint = false];
+
+    GeneradorReportes -> estilos [label = "  usa", style = dotted];
+    GeneradorReportes -> Estructurador [label = "  lee", style = dotted];
+    GeneradorReportes -> DetectorChoques [label = "  lee", style = dotted];
+
+    // =============== leyenda ===============
+    subgraph cluster_leyenda {
+        label = "Leyenda";
+        fontname = "Helvetica";
+        fontsize = 11;
+        style = rounded;
+        color = "#d3dae1";
+        ley [label = <
+          <table border="0" cellborder="0" cellspacing="2" cellpadding="1">
+            <tr><td align="left">flecha continua .......... usa / crea instancia</td></tr>
+            <tr><td align="left">flecha punteada ......... dependencia de lectura</td></tr>
+            <tr><td align="left">rombo ..................... composicion</td></tr>
+            <tr><td align="left">borde doble ............. clase principal del paquete</td></tr>
+            <tr><td align="left">Los nombres Token, AnalizadorLexico,</td></tr>
+            <tr><td align="left">GestorErrores y GeneradorReportes son</td></tr>
+            <tr><td align="left">los exigidos literalmente por el enunciado.</td></tr>
+          </table>>];
+    }
+}
