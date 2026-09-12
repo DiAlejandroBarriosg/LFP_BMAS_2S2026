@@ -1,0 +1,93 @@
+// AFD de HorarioScript - Proyecto 1 LFP 2S2026
+// Render:  dot -Tpng afd_horarioscript.dot -o afd_horarioscript.png
+//          dot -Tsvg afd_horarioscript.dot -o afd_horarioscript.svg
+
+digraph AFD_HorarioScript {
+    rankdir = LR;
+    bgcolor = "white";
+    node [fontname = "Helvetica", fontsize = 11];
+    edge [fontname = "Helvetica", fontsize = 9];
+
+    // --- nodo de arranque invisible ---
+    inicio [shape = point, width = 0.12];
+
+    // --- estados NO finales ---
+    node [shape = circle, style = filled, fillcolor = "#eef2f7", color = "#33475b"];
+    q0  [label = "q0\ninicial"];
+    q2  [label = "q2\ncod-guion"];
+    q5  [label = "q5\nHH:"];
+    q6  [label = "q6\nHH:D"];
+    q8  [label = "q8\ncadena"];
+    q10 [label = "q10\n#"];
+
+    // --- estados de aceptacion ---
+    node [shape = doublecircle, fillcolor = "#e3f4e8", color = "#1f7a3f"];
+    q1  [label = "q1\npalabra"];
+    q3  [label = "q3\nCODIGO"];
+    q4  [label = "q4\nENTERO"];
+    q7  [label = "q7\nHORA"];
+    q9  [label = "q9\nCADENA"];
+    q11 [label = "q11\nCOMENT"];
+    q12 [label = "q12\nSIMBOLO"];
+
+    // --- estado de error ---
+    node [shape = doublecircle, fillcolor = "#fbe6e6", color = "#a32626"];
+    qE  [label = "qE\nERROR"];
+
+    inicio -> q0;
+
+    // --- desde el estado inicial ---
+    q0 -> q1  [label = "L"];
+    q0 -> q4  [label = "D"];
+    q0 -> q8  [label = "\""];
+    q0 -> q10 [label = "#"];
+    q0 -> q12 [label = "{ } [ ] : , ;"];
+    q0 -> q0  [label = "espacio, tab, \\n"];
+    q0 -> qE  [label = "otro"];
+
+    // --- palabras y codigos sin comillas ---
+    q1 -> q1  [label = "L | D"];
+    q1 -> q2  [label = "-"];
+    q2 -> q3  [label = "D"];
+    q2 -> qE  [label = "L | otro"];
+    q3 -> q3  [label = "D"];
+    q3 -> qE  [label = "L"];
+
+    // --- enteros y horas ---
+    q4 -> q4  [label = "D"];
+    q4 -> q2  [label = "-"];
+    q4 -> q5  [label = ": (si lleva 2 digitos\ny hay lookahead DD)"];
+    q5 -> q6  [label = "D"];
+    q5 -> qE  [label = "otro"];
+    q6 -> q7  [label = "D"];
+    q6 -> qE  [label = "otro"];
+
+    // --- literales entre comillas ---
+    q8 -> q8  [label = "cualquiera\nexcepto \" y \\n"];
+    q8 -> q9  [label = "\""];
+    q8 -> qE  [label = "\\n | EOF\n(cadena sin cerrar)"];
+
+    // --- comentarios ---
+    q10 -> q11 [label = "#"];
+    q10 -> qE  [label = "otro"];
+    q11 -> q11 [label = "cualquiera\nexcepto \\n"];
+
+    // --- leyenda ---
+    subgraph cluster_leyenda {
+        label = "Leyenda";
+        fontname = "Helvetica";
+        fontsize = 10;
+        color = "#cccccc";
+        style = rounded;
+        node [shape = plaintext, style = "", fillcolor = "white"];
+        ley [label = <
+            <table border="0" cellborder="0" cellspacing="2">
+              <tr><td align="left">L = letra A-Z a-z</td></tr>
+              <tr><td align="left">D = digito 0-9</td></tr>
+              <tr><td align="left">Doble circulo = estado de aceptacion</td></tr>
+              <tr><td align="left">q7 valida rango 06:00-21:00 al aceptar</td></tr>
+              <tr><td align="left">q9 clasifica CADENA vs CODIGO al aceptar</td></tr>
+            </table>
+        >];
+    }
+}
