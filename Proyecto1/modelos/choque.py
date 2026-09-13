@@ -10,6 +10,8 @@ inflaria el total y haria que el KPI 'choques detectados' no coincidiera con
 las celdas resaltadas en el Reporte 1.
 """
 
+from modelos.elementos import minutos_a_hora
+
 MOTIVO_CATEDRATICO = 'CATEDRATICO'
 MOTIVO_AULA = 'AULA'
 
@@ -64,7 +66,6 @@ class Choque:
         return clase is self.clase_a or clase is self.clase_b
 
     def a_fila(self):
-        from modelos.elementos import minutos_a_hora
         return (self.numero,
                 self.dia,
                 minutos_a_hora(self.traslape_inicio) + '-' +
@@ -73,8 +74,8 @@ class Choque:
                 self.clase_a.codigo_curso + ' (L' + str(self.clase_a.linea) + ')',
                 self.clase_b.codigo_curso + ' (L' + str(self.clase_b.linea) + ')')
 
-    def __str__(self):
-        from modelos.elementos import minutos_a_hora
+    def descripcion(self):
+        """Texto legible del choque, para imprimir en consola."""
         return ('[C' + str(self.numero) + '] ' + self.dia + ' ' +
                 minutos_a_hora(self.traslape_inicio) + '-' +
                 minutos_a_hora(self.traslape_fin) + ' | ' +
@@ -82,6 +83,3 @@ class Choque:
                 self.clase_a.codigo_curso + ' (L' + str(self.clase_a.linea) +
                 ') vs ' + self.clase_b.codigo_curso +
                 ' (L' + str(self.clase_b.linea) + ')')
-
-    def __repr__(self):
-        return self.__str__()

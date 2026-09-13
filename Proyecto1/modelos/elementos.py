@@ -59,12 +59,9 @@ class Curso:
         self.creditos = creditos
         self.linea = linea
 
-    def __str__(self):
+    def descripcion(self):
         return ('Curso(' + self.codigo + ', "' + self.nombre +
                 '", creditos=' + str(self.creditos) + ')')
-
-    def __repr__(self):
-        return self.__str__()
 
 
 class Catedratico:
@@ -75,12 +72,9 @@ class Catedratico:
         self.categoria = categoria
         self.linea = linea
 
-    def __str__(self):
+    def descripcion(self):
         return ('Catedratico(' + self.codigo + ', "' + self.nombre +
                 '", ' + self.categoria + ')')
-
-    def __repr__(self):
-        return self.__str__()
 
 
 class Aula:
@@ -91,12 +85,9 @@ class Aula:
         self.edificio = edificio
         self.linea = linea
 
-    def __str__(self):
+    def descripcion(self):
         return ('Aula(' + self.codigo + ', capacidad=' + str(self.capacidad) +
                 ', edificio=' + self.edificio + ')')
-
-    def __repr__(self):
-        return self.__str__()
 
 
 class Clase:
@@ -122,14 +113,11 @@ class Clase:
     def duracion_horas(self):
         return self.duracion_minutos() / 60.0
 
-    def __str__(self):
+    def descripcion(self):
         return ('Clase(' + self.codigo_curso + ' / ' + self.codigo_catedratico +
                 ' / ' + self.codigo_aula + ', ' + self.dia + ' ' +
                 self.inicio_texto + '-' + self.fin_texto +
                 ', seccion ' + self.seccion + ')')
-
-    def __repr__(self):
-        return self.__str__()
 
 
 class Aviso:
@@ -152,9 +140,12 @@ class Aviso:
     def a_fila(self):
         return (self.numero, self.tipo, self.descripcion, self.linea)
 
-    def __str__(self):
+    def como_texto(self):
+        """
+        Texto legible del aviso, para imprimir en consola.
+
+        Se llama 'como_texto' y no 'descripcion' porque el atributo
+        self.descripcion ya existe y guarda el mensaje del aviso.
+        """
         return ('[A' + str(self.numero) + '] ' + self.tipo +
                 ': ' + self.descripcion + ' (linea ' + str(self.linea) + ')')
-
-    def __repr__(self):
-        return self.__str__()

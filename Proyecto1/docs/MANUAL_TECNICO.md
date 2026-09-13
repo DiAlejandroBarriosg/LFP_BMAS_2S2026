@@ -1003,6 +1003,43 @@ dígitos y clasificar caracteres, en lugar de duplicar esa lógica cada uno.
 Es la única dependencia que `modelos` tiene hacia afuera, y se acepta
 justamente para que la conversión de dígitos exista en un solo lugar.
 
+### D-13 · Metodos con nombre propio en lugar de `__str__` y `__repr__`
+
+**El problema.** Las clases de `modelos/` definian los metodos especiales
+`__str__` y `__repr__`, que Python invoca de forma implicita al imprimir un
+objeto o una lista de objetos. Funcionan, pero esconden el mecanismo: al leer
+`print(choque)` no se ve de donde sale el texto.
+
+**La decision.** Cada clase expone un metodo con nombre explicito que se
+llama a mano:
+
+| Clase | Metodo |
+|---|---|
+| `Token`, `Curso`, `Catedratico`, `Aula`, `Clase`, `Choque` | `descripcion()` |
+| `ErrorLexico`, `Aviso` | `como_texto()` |
+
+**Por que dos nombres.** `ErrorLexico` y `Aviso` ya tienen un **atributo**
+llamado `descripcion`, que guarda el mensaje del problema. Un metodo con el
+mismo nombre lo sobreescribiria y el atributo dejaria de ser accesible. Por
+eso en esas dos clases el metodo se llama `como_texto()`.
+
+**Consecuencia.** Imprimir una lista de objetos ya no muestra el contenido
+automaticamente; hay que recorrerla y llamar al metodo. Los scripts de prueba
+lo hacen asi:
+
+```python
+for c in detector.choques:
+    print('  ' + c.descripcion())
+```
+
+Es una linea mas por cada impresion, a cambio de que no quede ninguna
+conversion implicita en el codigo.
+
+**Nota relacionada.** `modelos/choque.py` importaba `minutos_a_hora` dentro
+de los metodos, como precaucion contra una importacion circular. Al revisarlo
+se confirmo que el ciclo no existe, porque `elementos.py` no importa
+`choque.py`, asi que el import se movio al inicio del archivo.
+
 ---
 
 ## 14. Observaciones sobre el enunciado

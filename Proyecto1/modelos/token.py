@@ -18,11 +18,9 @@ class Token:
         """Devuelve una tupla lista para insertarse en un Treeview de Tkinter."""
         return (self.numero, self.lexema, self.tipo, self.linea, self.columna)
 
-    def __str__(self):
+    def descripcion(self):
+        """Texto legible del token, para imprimir en consola."""
         return ('[' + str(self.numero) + '] ' + self.tipo +
                 ' -> ' + self.lexema +
                 '  (linea ' + str(self.linea) +
                 ', columna ' + str(self.columna) + ')')
-
-    def __repr__(self):
-        return self.__str__()

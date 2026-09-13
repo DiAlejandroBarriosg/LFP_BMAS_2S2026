@@ -51,7 +51,7 @@ def procesar(ruta):
     if not detector.hay_choques():
         print('  (ninguno)')
     for c in detector.choques:
-        print('  ' + str(c))
+        print('  ' + c.descripcion())
 
     print('')
     print('ESTADO DE CADA CLASE')

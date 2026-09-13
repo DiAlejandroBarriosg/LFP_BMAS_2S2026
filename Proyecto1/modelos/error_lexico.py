@@ -19,9 +19,12 @@ class ErrorLexico:
         return (self.numero, self.lexema, self.tipo,
                 self.descripcion, self.linea, self.columna)
 
-    def __str__(self):
+    def como_texto(self):
+        """
+        Texto legible del error, para imprimir en consola.
+
+        Se llama 'como_texto' y no 'descripcion' porque el atributo
+        self.descripcion ya existe y guarda el mensaje del error.
+        """
         return ('[E' + str(self.numero) + '] ' + self.tipo +
                 ' -> ' + self.descripcion)
-
-    def __repr__(self):
-        return self.__str__()

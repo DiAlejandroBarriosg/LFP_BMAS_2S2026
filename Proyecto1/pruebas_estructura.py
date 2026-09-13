@@ -32,7 +32,7 @@ def imprimir_lista(titulo, elementos):
         print('  (vacio)')
         return
     for e in elementos:
-        print('  L' + str(e.linea).rjust(3) + '  ' + str(e))
+        print('  L' + str(e.linea).rjust(3) + '  ' + e.descripcion())
 
 
 def procesar(ruta):
@@ -61,7 +61,7 @@ def procesar(ruta):
     if len(estructura.avisos) == 0:
         print('  (ninguno)')
     for a in estructura.avisos:
-        print('  ' + str(a))
+        print('  ' + a.como_texto())
 
     print('')
     print('AGRUPACION POR DIA')
