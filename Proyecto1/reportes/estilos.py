@@ -74,7 +74,7 @@ body {
 }
 
 .encabezado {
-    border-bottom: 3px solid var(--tinta);
+    text-align: center;
     padding-bottom: 18px;
     margin-bottom: 30px;
 }
@@ -110,13 +110,15 @@ h3 {
 p.nota {
     color: var(--pizarra);
     font-size: 13.5px;
-    margin: 0 0 18px;
+    margin: 0 auto 18px;
     max-width: 74ch;
+    text-align: center;
 }
 
 .leyenda { margin: 0 0 22px; }
 .leyenda div { margin-bottom: 6px; color: var(--pizarra); font-size: 13.5px; }
 .leyenda .etiqueta { margin-right: 8px; }
+.leyenda { margin: 0 0 22px; text-align: center; }
 
 /* ---------- tablas ---------- */
 
