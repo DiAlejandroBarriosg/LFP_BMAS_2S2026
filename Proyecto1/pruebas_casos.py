@@ -25,6 +25,7 @@ from logica.estructurador import Estructurador
 from logica.detector_choques import DetectorChoques
 from reportes.generador import GeneradorReportes
 from reportes.graficador import Graficador
+from analizador import alfabeto as alf
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -40,7 +41,10 @@ def verificar(descripcion, esperado, obtenido):
     global total_verificaciones
     total_verificaciones = total_verificaciones + 1
     paso = (esperado == obtenido)
-    marca = 'OK  ' if paso else 'FALLA'
+    if paso:
+        marca = 'OK  '
+    else:
+        marca = 'FALLA'
     print('    [' + marca + '] ' + descripcion)
     if not paso:
         print('             esperado: ' + str(esperado))
@@ -269,6 +273,12 @@ def caso_4():
     verificar('MAGNA es CADENA y sirve como nombre de aula',
               [('"MAGNA"', 'CADENA')], clasificar('"MAGNA"'))
 
+    verificar('LFP0796 sin guion es codigo mal formado',
+              [('"LFP0796"', 'CODIGO_MAL_FORMADO')], errores_de('"LFP0796"'))
+    verificar('un literal de solo letras sigue siendo CADENA',
+              [('"MAGNA"', 'CADENA')], clasificar('"MAGNA"'))
+    verificar('un literal de solo digitos sigue siendo CADENA',
+              [('"2026"', 'CADENA')], clasificar('"2026"'))
     verificar('CMP- sin digitos es codigo mal formado',
               [('"CMP-"', 'CODIGO_MAL_FORMADO')], errores_de('"CMP-"'))
     verificar('un sufijo con letras es codigo mal formado',
@@ -494,7 +504,7 @@ def caso_8():
     rutas['jerarquia'] = graficador.guardar(carpeta)
 
     esperados = ['carga', 'errores', 'estadistico', 'horario', 'jerarquia']
-    claves = sorted(rutas.keys())
+    claves = alf.claves_ordenadas(rutas)
     verificar('se generan los cinco archivos', esperados, claves)
 
     vacios = 0

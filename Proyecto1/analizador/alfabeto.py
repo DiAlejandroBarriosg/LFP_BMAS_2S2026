@@ -198,3 +198,43 @@ def valor_entero(digitos):
             valor = valor * 10 + d
         i = i + 1
     return valor
+
+
+# ----------------------------------------------------------------------
+# Ordenamiento
+# ----------------------------------------------------------------------
+
+def ordenar_cadenas(lista):
+    """
+    Devuelve una copia de la lista de cadenas ordenada alfabeticamente,
+    usando ordenamiento por insercion. Se usa para mostrar los tipos de
+    token y de error en orden en los reportes y en la interfaz.
+    """
+    ordenada = []
+    i = 0
+    while i < len(lista):
+        ordenada.append(lista[i])
+        i = i + 1
+
+    i = 1
+    while i < len(ordenada):
+        actual = ordenada[i]
+        j = i - 1
+        while j >= 0 and ordenada[j] > actual:
+            ordenada[j + 1] = ordenada[j]
+            j = j - 1
+        ordenada[j + 1] = actual
+        i = i + 1
+
+    return ordenada
+
+
+def claves_ordenadas(diccionario):
+    """
+    Devuelve las claves de un diccionario en orden alfabetico.
+    Recorrer un diccionario con 'for clave in diccionario' da sus claves.
+    """
+    claves = []
+    for clave in diccionario:
+        claves.append(clave)
+    return ordenar_cadenas(claves)

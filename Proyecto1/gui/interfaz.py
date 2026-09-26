@@ -41,6 +41,7 @@ from logica.detector_choques import DetectorChoques
 from reportes.generador import GeneradorReportes
 from reportes.graficador import Graficador
 from modelos.elementos import minutos_a_hora
+from analizador import alfabeto as alf
 
 # --- paleta, la misma de los reportes HTML ---
 TINTA = '#16202a'
@@ -58,24 +59,27 @@ AZUL = '#1f5f9e'
 FUENTE_UI = ('Segoe UI', 10)
 FUENTE_UI_FUERTE = ('Segoe UI', 10, 'bold')
 FUENTE_CODIGO = ('Consolas', 11)
+FUENTE_CODIGO_NEGRITA = ('Consolas', 11, 'bold')
+FUENTE_CODIGO_CURSIVA = ('Consolas', 11, 'italic')
 FUENTE_TITULO = ('Segoe UI', 15, 'bold')
 
 RETARDO_RESALTADO = 400   # milisegundos
 
 # Color de cada tipo de token en el editor
+# Para cada tipo: 'color' del texto y 'estilo' ('normal', 'negrita' o 'cursiva')
 COLORES_TOKEN = {
-    'RESERVADA_BLOQUE': ('#0d3b66', 'bold'),
-    'RESERVADA_ELEMENTO': ('#1f5f9e', 'bold'),
-    'RESERVADA_RELACION': ('#7048a8', 'normal'),
-    'RESERVADA_ATRIBUTO': ('#1f5f9e', 'normal'),
-    'DIA': ('#1f7a3f', 'bold'),
-    'CATEGORIA': ('#1f7a3f', 'normal'),
-    'CODIGO': ('#b5651d', 'normal'),
-    'CADENA': ('#8a5a00', 'normal'),
-    'HORA': ('#0f766e', 'bold'),
-    'ENTERO': ('#0f766e', 'normal'),
-    'SIMBOLO': ('#4a5b6c', 'normal'),
-    'COMENTARIO_LINEA': ('#7c8794', 'italic'),
+    'RESERVADA_BLOQUE':   {'color': '#0d3b66', 'estilo': 'negrita'},
+    'RESERVADA_ELEMENTO': {'color': '#1f5f9e', 'estilo': 'negrita'},
+    'RESERVADA_RELACION': {'color': '#7048a8', 'estilo': 'normal'},
+    'RESERVADA_ATRIBUTO': {'color': '#1f5f9e', 'estilo': 'normal'},
+    'DIA':                {'color': '#1f7a3f', 'estilo': 'negrita'},
+    'CATEGORIA':          {'color': '#1f7a3f', 'estilo': 'normal'},
+    'CODIGO':             {'color': '#b5651d', 'estilo': 'normal'},
+    'CADENA':             {'color': '#8a5a00', 'estilo': 'normal'},
+    'HORA':               {'color': '#0f766e', 'estilo': 'negrita'},
+    'ENTERO':             {'color': '#0f766e', 'estilo': 'normal'},
+    'SIMBOLO':            {'color': '#4a5b6c', 'estilo': 'normal'},
+    'COMENTARIO_LINEA':   {'color': '#7c8794', 'estilo': 'cursiva'},
 }
 
 
@@ -205,8 +209,8 @@ class InterfazHorarioScript:
                               cursor='arrow')
         self.gutter.pack(side='left', fill='y')
 
-        barra_v = ttk.Scrollbar(contenedor, orient='vertical')
-        barra_v.pack(side='right', fill='y')
+        self.barra_v = ttk.Scrollbar(contenedor, orient='vertical')
+        self.barra_v.pack(side='right', fill='y')
 
         self.texto = tk.Text(contenedor, wrap='none', undo=True,
                              padx=10, pady=8, bg=PAPEL, fg=TINTA,
@@ -220,17 +224,9 @@ class InterfazHorarioScript:
         barra_h.pack(fill='x', padx=10, pady=(0, 8))
         self.texto.configure(xscrollcommand=barra_h.set)
 
-        # el gutter y el editor comparten el desplazamiento vertical
-        def desplazar(*args):
-            self.texto.yview(*args)
-            self.gutter.yview(*args)
-
-        def sincronizar(inicio, fin):
-            barra_v.set(inicio, fin)
-            self.gutter.yview('moveto', inicio)
-
-        barra_v.configure(command=desplazar)
-        self.texto.configure(yscrollcommand=sincronizar)
+        # El editor y la columna de numeros de linea se desplazan juntos
+        self.barra_v.configure(command=self._desplazar_vertical)
+        self.texto.configure(yscrollcommand=self._sincronizar_barra)
 
         self._preparar_etiquetas()
 
@@ -246,18 +242,19 @@ class InterfazHorarioScript:
     def _preparar_etiquetas(self):
         """Registra una etiqueta de color por tipo de token, mas la de error."""
         for tipo in COLORES_TOKEN:
-            color = COLORES_TOKEN[tipo][0]
-            peso = COLORES_TOKEN[tipo][1]
-            fuente = (FUENTE_CODIGO[0], FUENTE_CODIGO[1])
-            if peso == 'bold':
-                fuente = (FUENTE_CODIGO[0], FUENTE_CODIGO[1], 'bold')
-            elif peso == 'italic':
-                fuente = (FUENTE_CODIGO[0], FUENTE_CODIGO[1], 'italic')
+            color = COLORES_TOKEN[tipo]['color']
+            estilo = COLORES_TOKEN[tipo]['estilo']
+
+            fuente = FUENTE_CODIGO
+            if estilo == 'negrita':
+                fuente = FUENTE_CODIGO_NEGRITA
+            if estilo == 'cursiva':
+                fuente = FUENTE_CODIGO_CURSIVA
+
             self.texto.tag_configure('t_' + tipo, foreground=color, font=fuente)
 
         self.texto.tag_configure('t_ERROR', background=ROJO_FONDO,
-                                 foreground=ROJO,
-                                 font=(FUENTE_CODIGO[0], FUENTE_CODIGO[1], 'bold'))
+                                 foreground=ROJO, font=FUENTE_CODIGO_NEGRITA)
         self.texto.tag_configure('t_FOCO', background='#fff3bf')
 
     def _construir_pestanas(self, padre):
@@ -265,22 +262,39 @@ class InterfazHorarioScript:
         self.pestanas = ttk.Notebook(marco)
         self.pestanas.pack(fill='both', expand=True)
 
-        self.tabla_tokens = self._crear_tabla(
-            [('No.', 55), ('Lexema', 330), ('Tipo de token', 190),
-             ('Linea', 70), ('Columna', 80)], 'Tokens')
+        # Cada columna se describe con su titulo y su ancho en pixeles
+        self.tabla_tokens = self._crear_tabla([
+            {'titulo': 'No.', 'ancho': 55},
+            {'titulo': 'Lexema', 'ancho': 330},
+            {'titulo': 'Tipo de token', 'ancho': 190},
+            {'titulo': 'Linea', 'ancho': 70},
+            {'titulo': 'Columna', 'ancho': 80},
+        ], 'Tokens')
 
-        self.tabla_errores = self._crear_tabla(
-            [('No.', 55), ('Lexema', 200), ('Tipo de error', 200),
-             ('Descripcion', 430), ('Linea', 70), ('Columna', 80)],
-            'Errores lexicos')
+        self.tabla_errores = self._crear_tabla([
+            {'titulo': 'No.', 'ancho': 55},
+            {'titulo': 'Lexema', 'ancho': 200},
+            {'titulo': 'Tipo de error', 'ancho': 200},
+            {'titulo': 'Descripcion', 'ancho': 430},
+            {'titulo': 'Linea', 'ancho': 70},
+            {'titulo': 'Columna', 'ancho': 80},
+        ], 'Errores lexicos')
 
-        self.tabla_avisos = self._crear_tabla(
-            [('No.', 55), ('Tipo', 210), ('Descripcion', 620), ('Linea', 70)],
-            'Avisos estructurales')
+        self.tabla_avisos = self._crear_tabla([
+            {'titulo': 'No.', 'ancho': 55},
+            {'titulo': 'Tipo', 'ancho': 210},
+            {'titulo': 'Descripcion', 'ancho': 620},
+            {'titulo': 'Linea', 'ancho': 70},
+        ], 'Avisos estructurales')
 
-        self.tabla_choques = self._crear_tabla(
-            [('No.', 55), ('Dia', 110), ('Traslape', 130), ('Motivo', 300),
-             ('Clase A', 170), ('Clase B', 170)], 'Choques de horario')
+        self.tabla_choques = self._crear_tabla([
+            {'titulo': 'No.', 'ancho': 55},
+            {'titulo': 'Dia', 'ancho': 110},
+            {'titulo': 'Traslape', 'ancho': 130},
+            {'titulo': 'Motivo', 'ancho': 300},
+            {'titulo': 'Clase A', 'ancho': 170},
+            {'titulo': 'Clase B', 'ancho': 170},
+        ], 'Choques de horario')
 
         self._construir_resumen()
         return marco
@@ -300,12 +314,26 @@ class InterfazHorarioScript:
 
         i = 0
         while i < len(columnas):
-            tabla.heading(nombres[i], text=columnas[i][0])
+            titulo_columna = columnas[i]['titulo']
+            ancho = columnas[i]['ancho']
+
+            # Las columnas numericas se alinean a la derecha ('e' = este)
             ancla = 'w'
-            if columnas[i][0] in ('No.', 'Linea', 'Columna'):
+            if titulo_columna == 'No.':
                 ancla = 'e'
-            tabla.column(nombres[i], width=columnas[i][1], anchor=ancla,
-                         stretch=(columnas[i][1] > 250))
+            if titulo_columna == 'Linea':
+                ancla = 'e'
+            if titulo_columna == 'Columna':
+                ancla = 'e'
+
+            # Solo las columnas anchas se estiran al agrandar la ventana
+            se_estira = False
+            if ancho > 250:
+                se_estira = True
+
+            tabla.heading(nombres[i], text=titulo_columna)
+            tabla.column(nombres[i], width=ancho, anchor=ancla,
+                         stretch=se_estira)
             i = i + 1
 
         barra_v = ttk.Scrollbar(marco, orient='vertical', command=tabla.yview)
@@ -348,17 +376,90 @@ class InterfazHorarioScript:
         self.etiqueta_estado.pack(fill='x')
 
     def _atajos(self):
-        self.raiz.bind('<Control-o>', lambda e: self.abrir_archivo())
-        self.raiz.bind('<Control-s>', lambda e: self.guardar_archivo())
-        self.raiz.bind('<Control-r>', lambda e: self.analizar())
-        self.raiz.bind('<F5>', lambda e: self.analizar())
+        self.raiz.bind('<Control-o>', self._atajo_abrir)
+        self.raiz.bind('<Control-s>', self._atajo_guardar)
+        self.raiz.bind('<Control-r>', self._atajo_analizar)
+        self.raiz.bind('<F5>', self._atajo_analizar)
+
+    # Tkinter llama a estos metodos al presionar el atajo y les pasa un objeto
+    # 'evento' con datos de la tecla. No se usa, pero hay que recibirlo.
+
+    def _atajo_abrir(self, evento):
+        self.abrir_archivo()
+
+    def _atajo_guardar(self, evento):
+        self.guardar_archivo()
+
+    def _atajo_analizar(self, evento):
+        self.analizar()
+
+    # ==================================================================
+    # Desplazamiento vertical sincronizado
+    # ==================================================================
+
+    def _desplazar_vertical(self, accion, cantidad, unidad=None):
+        """
+        La barra de desplazamiento llama a este metodo cuando el usuario la
+        mueve. Tkinter le manda dos o tres datos segun como se movio:
+            al arrastrar la barra:     accion='moveto', cantidad='0.35'
+            al usar las flechas:       accion='scroll', cantidad='1',
+                                       unidad='units'
+        Se aplica el mismo movimiento al editor y a los numeros de linea.
+        """
+        if unidad is None:
+            self.texto.yview(accion, cantidad)
+            self.gutter.yview(accion, cantidad)
+        else:
+            self.texto.yview(accion, cantidad, unidad)
+            self.gutter.yview(accion, cantidad, unidad)
+
+    def _sincronizar_barra(self, inicio, fin):
+        """
+        Tkinter llama a este metodo cuando el editor se desplaza por otra via
+        (por ejemplo, la rueda del mouse). Mueve la barra y los numeros de
+        linea a la misma posicion que el editor.
+        """
+        self.barra_v.set(inicio, fin)
+        self.gutter.yview('moveto', inicio)
+
+    def _inicio_visible(self):
+        """
+        yview() devuelve dos numeros entre 0 y 1: donde empieza y donde
+        termina la parte visible del texto. Aqui interesa donde empieza.
+        """
+        visible = self.texto.yview()
+        return visible[0]
+
+    def _separar_indice(self, indice):
+        """
+        Tkinter describe una posicion del texto como 'linea.columna', por
+        ejemplo '12.5'. Separa las dos partes recorriendo la cadena caracter
+        por caracter y devuelve un diccionario:
+            {'linea': 12, 'columna': 5}
+        """
+        linea = ''
+        columna = ''
+        despues_del_punto = False
+        i = 0
+        while i < len(indice):
+            c = indice[i]
+            if c == '.':
+                despues_del_punto = True
+            elif despues_del_punto:
+                columna = columna + c
+            else:
+                linea = linea + c
+            i = i + 1
+        return {'linea': alf.valor_entero(linea),
+                'columna': alf.valor_entero(columna)}
 
     # ==================================================================
     # Editor: numeracion, posicion, resaltado
     # ==================================================================
 
     def _numerar_lineas(self):
-        total = int(self.texto.index('end-1c').split('.')[0])
+        final = self._separar_indice(self.texto.index('end-1c'))
+        total = final['linea']
         numeros = ''
         i = 1
         while i <= total:
@@ -370,16 +471,17 @@ class InterfazHorarioScript:
         self.gutter.tag_configure('der', justify='right')
         self.gutter.tag_add('der', '1.0', 'end')
         self.gutter.configure(state='disabled')
-        self.gutter.yview('moveto', self.texto.yview()[0])
+        self.gutter.yview('moveto', self._inicio_visible())
 
     def _rueda(self, evento):
-        self.gutter.yview('moveto', self.texto.yview()[0])
+        self.gutter.yview('moveto', self._inicio_visible())
 
     def _actualizar_posicion(self, evento=None):
-        posicion = self.texto.index('insert')
-        partes = posicion.split('.')
+        posicion = self._separar_indice(self.texto.index('insert'))
+        # Tkinter cuenta las columnas desde 0; se muestra desde 1
         self.etiqueta_posicion.configure(
-            text='linea ' + partes[0] + ', columna ' + str(int(partes[1]) + 1))
+            text='linea ' + str(posicion['linea']) +
+                 ', columna ' + str(posicion['columna'] + 1))
 
     def _al_escribir(self, evento=None):
         self._numerar_lineas()
@@ -585,8 +687,25 @@ class InterfazHorarioScript:
             self.pestanas.select(0)
 
     def _ms(self, valor):
+        """
+        Formatea milisegundos con dos decimales: 3.5 -> '3.50'.
+        Se multiplica por 100 y se redondea, luego se separa la parte entera
+        de los dos decimales.
+        """
         entero = int(valor * 100 + 0.5)
-        return str(entero // 100) + '.' + str(entero % 100).rjust(2, '0')
+        parte_entera = entero // 100
+        decimales = entero % 100
+        texto_decimales = str(decimales)
+        if decimales < 10:
+            texto_decimales = '0' + texto_decimales
+        return str(parte_entera) + '.' + texto_decimales
+
+    def _rellenar(self, texto, ancho):
+        """Agrega espacios a la derecha hasta que el texto mida 'ancho'."""
+        resultado = texto
+        while len(resultado) < ancho:
+            resultado = resultado + ' '
+        return resultado
 
     def _limpiar_tabla(self, tabla):
         for fila in tabla.get_children():
@@ -600,7 +719,14 @@ class InterfazHorarioScript:
         self.analizado = False
 
     def _etiqueta_fila(self, indice):
-        return ('par',) if indice % 2 == 1 else ()
+        """
+        Las filas impares llevan la etiqueta 'par' para pintarse con fondo
+        alterno (la fila 1 es la segunda, porque se cuenta desde 0).
+        Tkinter espera una tupla de etiquetas, aunque sea de un solo elemento.
+        """
+        if indice % 2 == 1:
+            return ('par',)
+        return ()
 
     def _llenar_tokens(self):
         self._limpiar_tabla(self.tabla_tokens)
@@ -672,8 +798,12 @@ class InterfazHorarioScript:
         lineas.append('')
         lineas.append('FRECUENCIA POR TIPO DE TOKEN')
         lineas.append('')
-        for tipo in sorted(conteo.keys()):
-            lineas.append('  ' + tipo.ljust(26) + str(conteo[tipo]))
+        tipos = alf.claves_ordenadas(conteo)
+        i = 0
+        while i < len(tipos):
+            tipo = tipos[i]
+            lineas.append('  ' + self._rellenar(tipo, 26) + str(conteo[tipo]))
+            i = i + 1
 
         if self.detector.hay_choques():
             lineas.append('')
@@ -743,26 +873,35 @@ class InterfazHorarioScript:
         self._estado('Reportes generados en ' + carpeta)
 
     def _mostrar_enlaces(self):
+        """Muestra un boton por cada reporte generado."""
         for hijo in self.marco_enlaces.winfo_children():
             hijo.destroy()
 
         ttk.Label(self.marco_enlaces, text='Abrir en el navegador:',
                   font=FUENTE_UI_FUERTE).pack(side='left', padx=(0, 10))
 
-        etiquetas = [('horario', 'Horario semanal'),
-                     ('carga', 'Carga de catedraticos'),
-                     ('estadistico', 'Estadistico general'),
-                     ('errores', 'Errores y avisos')]
+        ttk.Button(self.marco_enlaces, text='Horario semanal',
+                   command=self._abrir_horario).pack(side='left', padx=3)
+        ttk.Button(self.marco_enlaces, text='Carga de catedraticos',
+                   command=self._abrir_carga).pack(side='left', padx=3)
+        ttk.Button(self.marco_enlaces, text='Estadistico general',
+                   command=self._abrir_estadistico).pack(side='left', padx=3)
+        ttk.Button(self.marco_enlaces, text='Errores y avisos',
+                   command=self._abrir_errores).pack(side='left', padx=3)
 
-        i = 0
-        while i < len(etiquetas):
-            clave = etiquetas[i][0]
-            if clave in self.rutas_reportes:
-                ruta = self.rutas_reportes[clave]
-                ttk.Button(self.marco_enlaces, text=etiquetas[i][1],
-                           command=lambda r=ruta: self._abrir_en_navegador(r)
-                           ).pack(side='left', padx=3)
-            i = i + 1
+    # Un metodo por boton: cada uno abre su reporte en el navegador
+
+    def _abrir_horario(self):
+        self._abrir_en_navegador(self.rutas_reportes['horario'])
+
+    def _abrir_carga(self):
+        self._abrir_en_navegador(self.rutas_reportes['carga'])
+
+    def _abrir_estadistico(self):
+        self._abrir_en_navegador(self.rutas_reportes['estadistico'])
+
+    def _abrir_errores(self):
+        self._abrir_en_navegador(self.rutas_reportes['errores'])
 
     def _abrir_en_navegador(self, ruta):
         try:

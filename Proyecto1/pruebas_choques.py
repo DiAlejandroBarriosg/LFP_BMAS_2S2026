@@ -19,6 +19,39 @@ from logica.detector_choques import DetectorChoques
 from modelos.elementos import minutos_a_hora
 
 
+# --------------------------------------------------------------------------
+# Ayudas para alinear columnas en consola, escritas a mano
+# --------------------------------------------------------------------------
+
+def rellenar(texto, ancho):
+    """Agrega espacios a la DERECHA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = resultado + ' '
+    return resultado
+
+
+def alinear_derecha(texto, ancho):
+    """Agrega espacios a la IZQUIERDA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = ' ' + resultado
+    return resultado
+
+
+def recortar(texto, maximo):
+    """Si el texto pasa del maximo, lo corta y agrega tres puntos."""
+    if len(texto) <= maximo:
+        return texto
+    resultado = ''
+    i = 0
+    while i < maximo - 3:
+        resultado = resultado + texto[i]
+        i = i + 1
+    return resultado + '...'
+
+
+
 def leer_archivo(ruta):
     archivo = open(ruta, 'r', encoding='utf-8', newline='')
     contenido = archivo.read()
@@ -57,11 +90,14 @@ def procesar(ruta):
     print('ESTADO DE CADA CLASE')
     print('-' * 96)
     for clase in estructura.clases:
-        estado = 'CHOQUE   ' if clase.en_choque else 'CONFIRMADA'
-        print('  ' + estado + '  L' + str(clase.linea).rjust(3) + '  ' +
-              clase.dia.ljust(10) + ' ' + clase.inicio_texto + '-' +
-              clase.fin_texto + '  ' + clase.codigo_curso.ljust(10) +
-              ' cat=' + clase.codigo_catedratico.ljust(8) +
+        if clase.en_choque:
+            estado = 'CHOQUE    '
+        else:
+            estado = 'CONFIRMADA'
+        print('  ' + estado + '  L' + alinear_derecha(clase.linea, 3) + '  ' +
+              rellenar(clase.dia, 10) + ' ' + clase.inicio_texto + '-' +
+              clase.fin_texto + '  ' + rellenar(clase.codigo_curso, 10) +
+              ' cat=' + rellenar(clase.codigo_catedratico, 8) +
               ' aula=' + clase.codigo_aula)
 
     print('')

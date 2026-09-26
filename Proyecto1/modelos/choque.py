@@ -23,7 +23,9 @@ class Choque:
         self.numero = numero
         self.clase_a = clase_a
         self.clase_b = clase_b
-        # lista de tuplas (motivo, recurso_compartido)
+        # lista de diccionarios, uno por motivo:
+        #   {'tipo': 'CATEDRATICO', 'recurso': 'DOC-001'}
+        #   {'tipo': 'AULA',        'recurso': 'A-101'}
         self.motivos = motivos
         self.dia = clase_a.dia
         self.traslape_inicio = traslape_inicio    # minutos desde medianoche
@@ -32,10 +34,10 @@ class Choque:
     def duracion_traslape(self):
         return self.traslape_fin - self.traslape_inicio
 
-    def tiene_motivo(self, motivo):
+    def tiene_motivo(self, tipo):
         i = 0
         while i < len(self.motivos):
-            if self.motivos[i][0] == motivo:
+            if self.motivos[i]['tipo'] == tipo:
                 return True
             i = i + 1
         return False
@@ -45,7 +47,7 @@ class Choque:
         recursos = []
         i = 0
         while i < len(self.motivos):
-            recursos.append(self.motivos[i][1])
+            recursos.append(self.motivos[i]['recurso'])
             i = i + 1
         return recursos
 
@@ -55,10 +57,12 @@ class Choque:
         while i < len(self.motivos):
             if i > 0:
                 texto = texto + ' y '
-            if self.motivos[i][0] == MOTIVO_CATEDRATICO:
-                texto = texto + 'mismo catedratico (' + self.motivos[i][1] + ')'
+            tipo = self.motivos[i]['tipo']
+            recurso = self.motivos[i]['recurso']
+            if tipo == MOTIVO_CATEDRATICO:
+                texto = texto + 'mismo catedratico (' + recurso + ')'
             else:
-                texto = texto + 'misma aula (' + self.motivos[i][1] + ')'
+                texto = texto + 'misma aula (' + recurso + ')'
             i = i + 1
         return texto
 

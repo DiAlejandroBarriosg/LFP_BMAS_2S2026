@@ -14,6 +14,40 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from analizador.analizador_lexico import AnalizadorLexico
+from analizador import alfabeto as alf
+
+
+# --------------------------------------------------------------------------
+# Ayudas para alinear columnas en consola, escritas a mano
+# --------------------------------------------------------------------------
+
+def rellenar(texto, ancho):
+    """Agrega espacios a la DERECHA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = resultado + ' '
+    return resultado
+
+
+def alinear_derecha(texto, ancho):
+    """Agrega espacios a la IZQUIERDA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = ' ' + resultado
+    return resultado
+
+
+def recortar(texto, maximo):
+    """Si el texto pasa del maximo, lo corta y agrega tres puntos."""
+    if len(texto) <= maximo:
+        return texto
+    resultado = ''
+    i = 0
+    while i < maximo - 3:
+        resultado = resultado + texto[i]
+        i = i + 1
+    return resultado + '...'
+
 
 
 def leer_archivo(ruta):
@@ -27,15 +61,13 @@ def imprimir_tokens(tokens):
     print('')
     print('TABLA DE TOKENS  (' + str(len(tokens)) + ')')
     print('-' * 92)
-    print('{:<5} {:<42} {:<22} {:>6} {:>8}'.format(
-        'No.', 'Lexema', 'Tipo', 'Linea', 'Columna'))
+    print(rellenar('No.', 6) + rellenar('Lexema', 43) + rellenar('Tipo', 23) +
+          alinear_derecha('Linea', 6) + alinear_derecha('Columna', 9))
     print('-' * 92)
     for t in tokens:
-        lexema = t.lexema
-        if len(lexema) > 40:
-            lexema = lexema[0:37] + '...'
-        print('{:<5} {:<42} {:<22} {:>6} {:>8}'.format(
-            t.numero, lexema, t.tipo, t.linea, t.columna))
+        print(rellenar(t.numero, 6) + rellenar(recortar(t.lexema, 40), 43) +
+              rellenar(t.tipo, 23) + alinear_derecha(t.linea, 6) +
+              alinear_derecha(t.columna, 9))
 
 
 def imprimir_errores(gestor):
@@ -45,15 +77,13 @@ def imprimir_errores(gestor):
     if not gestor.hay_errores():
         print('Sin errores.')
         return
-    print('{:<5} {:<24} {:<24} {:>6} {:>8}'.format(
-        'No.', 'Lexema', 'Tipo', 'Linea', 'Columna'))
+    print(rellenar('No.', 6) + rellenar('Lexema', 25) + rellenar('Tipo', 25) +
+          alinear_derecha('Linea', 6) + alinear_derecha('Columna', 9))
     print('-' * 92)
     for e in gestor.errores:
-        lexema = e.lexema
-        if len(lexema) > 22:
-            lexema = lexema[0:19] + '...'
-        print('{:<5} {:<24} {:<24} {:>6} {:>8}'.format(
-            e.numero, lexema, e.tipo, e.linea, e.columna))
+        print(rellenar(e.numero, 6) + rellenar(recortar(e.lexema, 22), 25) +
+              rellenar(e.tipo, 25) + alinear_derecha(e.linea, 6) +
+              alinear_derecha(e.columna, 9))
     print('')
     for e in gestor.errores:
         print('  E' + str(e.numero) + ': ' + e.descripcion)
@@ -64,8 +94,12 @@ def imprimir_resumen(analizador):
     print('FRECUENCIA POR TIPO DE TOKEN')
     print('-' * 92)
     conteo = analizador.contar_por_tipo()
-    for tipo in sorted(conteo.keys()):
-        print('  {:<24} {:>4}'.format(tipo, conteo[tipo]))
+    tipos = alf.claves_ordenadas(conteo)
+    i = 0
+    while i < len(tipos):
+        tipo = tipos[i]
+        print('  ' + rellenar(tipo, 25) + alinear_derecha(conteo[tipo], 4))
+        i = i + 1
 
 
 def procesar(ruta):

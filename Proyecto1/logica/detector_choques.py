@@ -87,12 +87,23 @@ class DetectorChoques:
 
         motivos = []
 
-        if a.codigo_catedratico != '' and \
-                a.codigo_catedratico == b.codigo_catedratico:
-            motivos.append((MOTIVO_CATEDRATICO, a.codigo_catedratico))
+        mismo_catedratico = False
+        if a.codigo_catedratico != '':
+            if a.codigo_catedratico == b.codigo_catedratico:
+                mismo_catedratico = True
 
-        if a.codigo_aula != '' and a.codigo_aula == b.codigo_aula:
-            motivos.append((MOTIVO_AULA, a.codigo_aula))
+        misma_aula = False
+        if a.codigo_aula != '':
+            if a.codigo_aula == b.codigo_aula:
+                misma_aula = True
+
+        if mismo_catedratico:
+            motivos.append({'tipo': MOTIVO_CATEDRATICO,
+                            'recurso': a.codigo_catedratico})
+
+        if misma_aula:
+            motivos.append({'tipo': MOTIVO_AULA,
+                            'recurso': a.codigo_aula})
 
         # Se traslapan pero no comparten recurso: dos clases distintas a la
         # misma hora en aulas distintas con catedraticos distintos es normal.
@@ -204,9 +215,9 @@ class DetectorChoques:
             motivos = self.choques[i].motivos
             j = 0
             while j < len(motivos):
-                motivo = motivos[j][0]
-                recurso = motivos[j][1]
-                if motivo == MOTIVO_CATEDRATICO:
+                tipo = motivos[j]['tipo']
+                recurso = motivos[j]['recurso']
+                if tipo == MOTIVO_CATEDRATICO:
                     if recurso not in catedraticos:
                         catedraticos.append(recurso)
                 else:
@@ -276,10 +287,15 @@ class DetectorChoques:
             if not self._es_evaluable(otra):
                 continue
 
-            mismo_catedratico = (clase.codigo_catedratico != '' and
-                                 otra.codigo_catedratico == clase.codigo_catedratico)
-            misma_aula = (clase.codigo_aula != '' and
-                          otra.codigo_aula == clase.codigo_aula)
+            mismo_catedratico = False
+            if clase.codigo_catedratico != '':
+                if otra.codigo_catedratico == clase.codigo_catedratico:
+                    mismo_catedratico = True
+
+            misma_aula = False
+            if clase.codigo_aula != '':
+                if otra.codigo_aula == clase.codigo_aula:
+                    misma_aula = True
 
             if mismo_catedratico or misma_aula:
                 bloqueantes.append(otra)

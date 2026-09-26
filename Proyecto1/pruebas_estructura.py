@@ -17,6 +17,39 @@ from analizador.analizador_lexico import AnalizadorLexico
 from logica.estructurador import Estructurador
 
 
+# --------------------------------------------------------------------------
+# Ayudas para alinear columnas en consola, escritas a mano
+# --------------------------------------------------------------------------
+
+def rellenar(texto, ancho):
+    """Agrega espacios a la DERECHA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = resultado + ' '
+    return resultado
+
+
+def alinear_derecha(texto, ancho):
+    """Agrega espacios a la IZQUIERDA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = ' ' + resultado
+    return resultado
+
+
+def recortar(texto, maximo):
+    """Si el texto pasa del maximo, lo corta y agrega tres puntos."""
+    if len(texto) <= maximo:
+        return texto
+    resultado = ''
+    i = 0
+    while i < maximo - 3:
+        resultado = resultado + texto[i]
+        i = i + 1
+    return resultado + '...'
+
+
+
 def leer_archivo(ruta):
     archivo = open(ruta, 'r', encoding='utf-8', newline='')
     contenido = archivo.read()
@@ -32,7 +65,7 @@ def imprimir_lista(titulo, elementos):
         print('  (vacio)')
         return
     for e in elementos:
-        print('  L' + str(e.linea).rjust(3) + '  ' + e.descripcion())
+        print('  L' + alinear_derecha(e.linea, 3) + '  ' + e.descripcion())
 
 
 def procesar(ruta):
@@ -68,7 +101,7 @@ def procesar(ruta):
     print('-' * 88)
     grupos = estructura.clases_por_dia()
     for dia in grupos:
-        print('  ' + dia.ljust(12) + str(len(grupos[dia])) + ' clase(s)')
+        print('  ' + rellenar(dia, 12) + str(len(grupos[dia])) + ' clase(s)')
 
     print('')
     print('RESUMEN: ' + str(estructura.resumen()))

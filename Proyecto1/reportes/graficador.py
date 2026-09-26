@@ -11,8 +11,12 @@ Estructura del grafo:
       +-- CLASES                        (los nodos de clase)
 
 Cada nodo de clase se conecta con su curso, su catedratico y su aula. Las
-aristas que participan en un choque se dibujan en rojo y punteadas, de modo
-que el conflicto se ve en el grafo y no solo en la tabla.
+clases en choque se marcan con BORDE DOBLE, la etiqueta CHOQUE y aristas
+punteadas, de modo que el conflicto se ve en el grafo y no solo en la tabla.
+
+El grafo no usa relleno de color en los nodos: todos van en blanco con borde
+negro fino, al estilo de un diagrama hecho en draw.io. Asi se imprime bien en
+blanco y negro y se distingue por forma, no por color.
 
 El metodo devuelve TEXTO. Renderizarlo a PNG requiere Graphviz instalado y es
 responsabilidad del usuario:
@@ -68,9 +72,20 @@ class Graficador:
         return salida
 
     def _recorte(self, texto, maximo):
+        """
+        Acorta un texto largo para que quepa en un nodo del grafo.
+        Si pasa del maximo, copia los primeros (maximo - 3) caracteres y
+        agrega tres puntos: 'Lenguajes Formales y de P...'
+        """
         if len(texto) <= maximo:
             return texto
-        return texto[0:maximo - 3] + '...'
+
+        resultado = ''
+        i = 0
+        while i < maximo - 3:
+            resultado = resultado + texto[i]
+            i = i + 1
+        return resultado + '...'
 
     # ------------------------------------------------------------------
 
@@ -88,12 +103,15 @@ class Graficador:
         lineas.append('    bgcolor = "white";')
         lineas.append('    nodesep = 0.22;')
         lineas.append('    ranksep = 1.1;')
-        lineas.append('    node [fontname = "Helvetica", fontsize = 10];')
-        lineas.append('    edge [fontname = "Helvetica", fontsize = 8, color = "#4a5b6c"];')
+        lineas.append('    node [fontname = "Helvetica", fontsize = 10, '
+                      'shape = box, style = filled, fillcolor = "white", '
+                      'color = "#000000", penwidth = 1.0];')
+        lineas.append('    edge [fontname = "Helvetica", fontsize = 8, '
+                      'color = "#000000", penwidth = 1.0, arrowsize = 0.7];')
         lineas.append('')
 
-        lineas.append('    HORARIO [label = "HORARIO", shape = box, style = "filled,bold", '
-                      'fillcolor = "#16202a", fontcolor = "white", fontsize = 13];')
+        lineas.append('    HORARIO [label = "HORARIO", shape = box, '
+                      'penwidth = 2.5, fontsize = 13];')
         lineas.append('')
 
         self._bloques(lineas)
@@ -114,8 +132,7 @@ class Graficador:
 
     def _bloques(self, lineas):
         bloques = ('CURSOS', 'CATEDRATICOS', 'AULAS', 'CLASES')
-        lineas.append('    node [shape = box, style = filled, '
-                      'fillcolor = "#eef1f4", color = "#4a5b6c"];')
+        lineas.append('    node [shape = box, penwidth = 1.8];')
         i = 0
         while i < len(bloques):
             lineas.append('    ' + bloques[i] + ' [label = "' + bloques[i] +
@@ -130,7 +147,7 @@ class Graficador:
     def _cursos(self, lineas):
         lineas.append('    // --- cursos ---')
         lineas.append('    node [shape = box, style = "filled,rounded", '
-                      'fillcolor = "#e6eff8", color = "#1f5f9e"];')
+                      'penwidth = 1.0];')
         i = 0
         while i < len(self.estructura.cursos):
             curso = self.estructura.cursos[i]
@@ -145,8 +162,8 @@ class Graficador:
 
     def _catedraticos(self, lineas):
         lineas.append('    // --- catedraticos ---')
-        lineas.append('    node [shape = box, style = "filled,rounded", '
-                      'fillcolor = "#e3f4e8", color = "#1f7a3f"];')
+        lineas.append('    node [shape = ellipse, style = filled, '
+                      'penwidth = 1.0];')
         i = 0
         while i < len(self.estructura.catedraticos):
             catedratico = self.estructura.catedraticos[i]
@@ -161,8 +178,8 @@ class Graficador:
 
     def _aulas(self, lineas):
         lineas.append('    // --- aulas ---')
-        lineas.append('    node [shape = box, style = "filled,rounded", '
-                      'fillcolor = "#fdeedd", color = "#b5651d"];')
+        lineas.append('    node [shape = house, style = filled, '
+                      'penwidth = 1.0];')
         i = 0
         while i < len(self.estructura.aulas):
             aula = self.estructura.aulas[i]
@@ -189,33 +206,31 @@ class Graficador:
                         self._texto(clase.fin_texto) + '\\nseccion ' +
                         self._texto(clase.seccion))
 
+            # Las clases en choque se distinguen por BORDE DOBLE y por la
+            # etiqueta CHOQUE, no por color: el grafo se imprime igual de
+            # legible en blanco y negro.
             if clase.en_choque:
                 lineas.append('    ' + identificador + ' [label = "' + etiqueta +
-                              '\\nCHOQUE", shape = box, style = "filled,bold", '
-                              'fillcolor = "#fbe6e6", color = "#a32626"];')
-                estilo = ' [style = dashed, color = "#a32626"]'
+                              '\\nCHOQUE", shape = box, peripheries = 2, '
+                              'penwidth = 1.6];')
             else:
                 lineas.append('    ' + identificador + ' [label = "' + etiqueta +
-                              '", shape = box, style = filled, '
-                              'fillcolor = "#f7f9fb", color = "#4a5b6c"];')
-                estilo = ''
+                              '", shape = box, penwidth = 1.0];')
 
             lineas.append('    CLASES -> ' + identificador + ';')
+            if clase.en_choque:
+                marca = ', style = dashed'
+            else:
+                marca = ''
             lineas.append('    ' + identificador + ' -> ' +
                           self._id('CUR', clase.codigo_curso) +
-                          ' [label = "imparte"' +
-                          (', style = dashed, color = "#a32626"' if clase.en_choque else '') +
-                          '];')
+                          ' [label = "imparte"' + marca + '];')
             lineas.append('    ' + identificador + ' -> ' +
                           self._id('CAT', clase.codigo_catedratico) +
-                          ' [label = "con"' +
-                          (', style = dashed, color = "#a32626"' if clase.en_choque else '') +
-                          '];')
+                          ' [label = "con"' + marca + '];')
             lineas.append('    ' + identificador + ' -> ' +
                           self._id('AUL', clase.codigo_aula) +
-                          ' [label = "en"' +
-                          (', style = dashed, color = "#a32626"' if clase.en_choque else '') +
-                          '];')
+                          ' [label = "en"' + marca + '];')
             i = i + 1
         lineas.append('')
 
@@ -226,14 +241,15 @@ class Graficador:
         lineas.append('        label = "Leyenda";')
         lineas.append('        fontname = "Helvetica";')
         lineas.append('        fontsize = 10;')
-        lineas.append('        color = "#d3dae1";')
-        lineas.append('        style = rounded;')
+        lineas.append('        color = "#808080";')
+        lineas.append('        style = dashed;')
         lineas.append('        LEYENDA [shape = plaintext, style = "", '
                       'label = <<table border="0" cellborder="0" cellspacing="2">'
-                      '<tr><td align="left">Azul: cursos</td></tr>'
-                      '<tr><td align="left">Verde: catedraticos</td></tr>'
-                      '<tr><td align="left">Naranja: aulas</td></tr>'
-                      '<tr><td align="left">Rojo punteado: clase en choque</td></tr>'
+                      '<tr><td align="left">Rectangulo redondeado: curso</td></tr>'
+                      '<tr><td align="left">Elipse: catedratico</td></tr>'
+                      '<tr><td align="left">Pentagono: aula</td></tr>'
+                      '<tr><td align="left">Rectangulo: clase</td></tr>'
+                      '<tr><td align="left">Borde doble y arista punteada: clase en choque</td></tr>'
                       '<tr><td align="left">Choques detectados: ' + str(total) +
                       '</td></tr></table>>];')
         lineas.append('    }')

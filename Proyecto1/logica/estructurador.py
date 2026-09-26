@@ -272,8 +272,14 @@ class Estructurador:
                     self._aviso(A_ATRIBUTO_FALTANTE,
                                 "'" + nombre + "' quedo sin valor", token.linea)
                     continue
-                if self._es_delimitador(self._actual()) or \
-                        self._actual().tipo == pr.T_RESERVADA_ATRIBUTO:
+                siguiente = self._actual()
+                valor_perdido = False
+                if self._es_delimitador(siguiente):
+                    valor_perdido = True
+                if siguiente.tipo == pr.T_RESERVADA_ATRIBUTO:
+                    valor_perdido = True
+
+                if valor_perdido:
                     self._aviso(A_VALOR_PERDIDO,
                                 "el valor de '" + nombre + "' no llego como " +
                                 "token; revise la tabla de errores lexicos",
@@ -296,9 +302,23 @@ class Estructurador:
     # ------------------------------------------------------------------
 
     def _sin_comillas(self, lexema):
-        if len(lexema) >= 2 and lexema[0] == '"' and lexema[len(lexema) - 1] == '"':
-            return lexema[1:len(lexema) - 1]
-        return lexema
+        """
+        Quita la comilla de apertura y la de cierre: '"LFP-0796"' -> 'LFP-0796'.
+        Copia caracter por caracter desde el segundo hasta el penultimo.
+        """
+        if len(lexema) < 2:
+            return lexema
+
+        ultimo = len(lexema) - 1
+        if lexema[0] != '"' or lexema[ultimo] != '"':
+            return lexema
+
+        resultado = ''
+        i = 1
+        while i < ultimo:
+            resultado = resultado + lexema[i]
+            i = i + 1
+        return resultado
 
     def _texto(self, atributos, nombre, tipos_validos, contexto, linea,
                por_defecto=''):
@@ -490,25 +510,27 @@ class Estructurador:
         return codigos
 
     def _validar_duplicados(self):
-        grupos = (('curso', self.cursos), ('catedratico', self.catedraticos),
-                  ('aula', self.aulas))
-        g = 0
-        while g < len(grupos):
-            etiqueta = grupos[g][0]
-            lista = grupos[g][1]
-            vistos = {}
-            i = 0
-            while i < len(lista):
-                codigo = lista[i].codigo
-                if codigo in vistos:
-                    self._aviso(A_CODIGO_DUPLICADO,
-                                'el codigo ' + codigo + ' del ' + etiqueta +
-                                ' ya se habia declarado en la linea ' +
-                                str(vistos[codigo]), lista[i].linea)
-                else:
-                    vistos[codigo] = lista[i].linea
-                i = i + 1
-            g = g + 1
+        self._buscar_duplicados('curso', self.cursos)
+        self._buscar_duplicados('catedratico', self.catedraticos)
+        self._buscar_duplicados('aula', self.aulas)
+
+    def _buscar_duplicados(self, etiqueta, lista):
+        """
+        Recorre una lista de elementos y avisa si un codigo se repite.
+        'vistos' guarda cada codigo junto con la linea donde aparecio primero.
+        """
+        vistos = {}
+        i = 0
+        while i < len(lista):
+            codigo = lista[i].codigo
+            if codigo in vistos:
+                self._aviso(A_CODIGO_DUPLICADO,
+                            'el codigo ' + codigo + ' del ' + etiqueta +
+                            ' ya se habia declarado en la linea ' +
+                            str(vistos[codigo]), lista[i].linea)
+            else:
+                vistos[codigo] = lista[i].linea
+            i = i + 1
 
     def _validar_referencias(self):
         codigos_curso = self._codigos(self.cursos)

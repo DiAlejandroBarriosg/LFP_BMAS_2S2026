@@ -20,6 +20,40 @@ from logica.estructurador import Estructurador
 from logica.detector_choques import DetectorChoques
 from reportes.generador import GeneradorReportes
 from reportes.graficador import Graficador
+from analizador import alfabeto as alf
+
+
+# --------------------------------------------------------------------------
+# Ayudas para alinear columnas en consola, escritas a mano
+# --------------------------------------------------------------------------
+
+def rellenar(texto, ancho):
+    """Agrega espacios a la DERECHA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = resultado + ' '
+    return resultado
+
+
+def alinear_derecha(texto, ancho):
+    """Agrega espacios a la IZQUIERDA hasta que el texto mida 'ancho'."""
+    resultado = str(texto)
+    while len(resultado) < ancho:
+        resultado = ' ' + resultado
+    return resultado
+
+
+def recortar(texto, maximo):
+    """Si el texto pasa del maximo, lo corta y agrega tres puntos."""
+    if len(texto) <= maximo:
+        return texto
+    resultado = ''
+    i = 0
+    while i < maximo - 3:
+        resultado = resultado + texto[i]
+        i = i + 1
+    return resultado + '...'
+
 
 
 def leer_archivo(ruta):
@@ -54,9 +88,13 @@ def procesar(ruta, carpeta_salida):
           '   avisos: ' + str(len(estructura.avisos)) +
           '   choques: ' + str(detector.total()))
     print('  reportes generados:')
-    for clave in sorted(rutas.keys()):
+    claves = alf.claves_ordenadas(rutas)
+    i = 0
+    while i < len(claves):
+        clave = claves[i]
+        i = i + 1
         tamano = os.path.getsize(rutas[clave])
-        print('    ' + clave.ljust(13) + rutas[clave] +
+        print('    ' + rellenar(clave, 13) + rutas[clave] +
               '  (' + str(tamano) + ' bytes)')
 
 

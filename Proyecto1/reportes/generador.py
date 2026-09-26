@@ -31,6 +31,17 @@ import os
 from reportes import estilos
 from modelos.elementos import minutos_a_hora
 from analizador import palabras_reservadas as pr
+from analizador import alfabeto as alf
+
+# Como se muestra cada dia en el encabezado de la rejilla
+NOMBRE_DIA = {
+    'LUNES': 'Lunes',
+    'MARTES': 'Martes',
+    'MIERCOLES': 'Miercoles',
+    'JUEVES': 'Jueves',
+    'VIERNES': 'Viernes',
+    'SABADO': 'Sabado',
+}
 
 
 class GeneradorReportes:
@@ -188,30 +199,56 @@ class GeneradorReportes:
 
     def _bloques_horarios(self, clases):
         """
-        Bloques (inicio, fin) distintos presentes en las clases dadas,
-        ordenados por hora de inicio con insercion.
+        Devuelve los bloques de horario distintos que aparecen en las clases,
+        ordenados por hora de inicio. Cada bloque es un diccionario:
+            {'inicio': 420, 'fin': 520}     (minutos desde medianoche)
+        Cada bloque distinto se convierte en una fila de la rejilla.
         """
         bloques = []
         i = 0
         while i < len(clases):
-            par = (clases[i].inicio, clases[i].fin)
-            if par not in bloques:
-                bloques.append(par)
+            inicio = clases[i].inicio
+            fin = clases[i].fin
+            if not self._bloque_existe(bloques, inicio, fin):
+                bloques.append({'inicio': inicio, 'fin': fin})
             i = i + 1
 
+        # Ordenamiento por insercion
         i = 1
         while i < len(bloques):
             actual = bloques[i]
             j = i - 1
-            while j >= 0 and (bloques[j][0] > actual[0] or
-                              (bloques[j][0] == actual[0] and
-                               bloques[j][1] > actual[1])):
+            while j >= 0 and self._va_despues(bloques[j], actual):
                 bloques[j + 1] = bloques[j]
                 j = j - 1
             bloques[j + 1] = actual
             i = i + 1
 
         return bloques
+
+    def _bloque_existe(self, bloques, inicio, fin):
+        """True si ya hay un bloque con ese mismo inicio y ese mismo fin."""
+        i = 0
+        while i < len(bloques):
+            if bloques[i]['inicio'] == inicio and bloques[i]['fin'] == fin:
+                return True
+            i = i + 1
+        return False
+
+    def _va_despues(self, a, b):
+        """
+        True si el bloque 'a' debe ir despues del bloque 'b' en la rejilla.
+        Primero se compara la hora de inicio; si empiezan a la misma hora,
+        va primero el que termina antes.
+        """
+        if a['inicio'] > b['inicio']:
+            return True
+        if a['inicio'] < b['inicio']:
+            return False
+        # empiezan a la misma hora: decide la hora de fin
+        if a['fin'] > b['fin']:
+            return True
+        return False
 
     def _rejilla_seccion(self, seccion):
         clases = self._clases_de_seccion(seccion)
@@ -225,15 +262,15 @@ class GeneradorReportes:
         d = 0
         while d < len(pr.DIAS):
             dia = pr.DIAS[d]
-            html = html + '<th>' + dia[0:1] + dia[1:len(dia)].lower() + '</th>\n'
+            html = html + '<th>' + NOMBRE_DIA[dia] + '</th>\n'
             d = d + 1
 
         html = html + '</tr>\n</thead>\n<tbody>\n'
 
         b = 0
         while b < len(bloques):
-            inicio = bloques[b][0]
-            fin = bloques[b][1]
+            inicio = bloques[b]['inicio']
+            fin = bloques[b]['fin']
             html = html + '<tr>\n<td class="hora">'
             html = html + minutos_a_hora(inicio) + '<br>' + minutos_a_hora(fin)
             html = html + '</td>\n'
@@ -534,7 +571,7 @@ class GeneradorReportes:
                 mejor_horas = horas
                 mejor = catedratico
             i = i + 1
-        return (mejor, mejor_horas)
+        return {'catedratico': mejor, 'horas': mejor_horas}
 
     def reporte_estadistico(self):
         html = self._cabecera(
@@ -544,7 +581,7 @@ class GeneradorReportes:
         resumen = self.estructura.resumen()
         total_choques = self.detector.total()
         filas = self._ocupacion_aulas()
-        catedratico, horas_max = self._mayor_carga()
+        mayor = self._mayor_carga()
 
         promedio = 0.0
         if len(self.estructura.catedraticos) > 0:
@@ -582,9 +619,10 @@ class GeneradorReportes:
         html = html + '<table>\n<tbody>\n'
 
         nombre_top = 'sin datos'
-        if catedratico is not None:
+        if mayor['catedratico'] is not None:
+            catedratico = mayor['catedratico']
             nombre_top = (catedratico.nombre + ' (' + catedratico.codigo +
-                          '), ' + self._decimales(horas_max) + ' horas')
+                          '), ' + self._decimales(mayor['horas']) + ' horas')
         html = html + ('<tr><th>Catedratico con mayor carga</th><td>' +
                        self._escapar(nombre_top) + '</td></tr>\n')
 
@@ -631,7 +669,10 @@ class GeneradorReportes:
             if ancho > 100.0:
                 ancho = 100.0
 
-            clase_barra = 'barra saturada' if saturada else 'barra'
+            if saturada:
+                clase_barra = 'barra saturada'
+            else:
+                clase_barra = 'barra'
 
             html = html + '<tr>'
             html = html + '<td>' + self._escapar(fila['aula'].codigo) + '</td>'
@@ -653,7 +694,10 @@ class GeneradorReportes:
         return html + self._pie()
 
     def _indicador(self, valor, rotulo, alerta):
-        clase = 'indicador alerta' if alerta else 'indicador'
+        if alerta:
+            clase = 'indicador alerta'
+        else:
+            clase = 'indicador'
         return ('<div class="' + clase + '">'
                 '<span class="valor">' + valor + '</span>'
                 '<span class="rotulo">' + self._escapar(rotulo) + '</span>'
@@ -701,7 +745,7 @@ class GeneradorReportes:
 
             html = html + '<h3>Errores por tipo</h3>\n<ul class="lista">\n'
             conteo = gestor.contar_por_tipo()
-            for tipo in sorted(conteo.keys()):
+            for tipo in alf.claves_ordenadas(conteo):
                 html = html + ('<li>' + self._escapar(tipo) + ': ' +
                                str(conteo[tipo]) + '</li>\n')
             html = html + '</ul>\n'
@@ -738,7 +782,7 @@ class GeneradorReportes:
         conteo = self.analizador.contar_por_tipo()
         html = html + ('<table>\n<thead>\n<tr><th>Tipo de token</th>'
                        '<th>Cantidad</th></tr>\n</thead>\n<tbody>\n')
-        for tipo in sorted(conteo.keys()):
+        for tipo in alf.claves_ordenadas(conteo):
             html = html + ('<tr><td>' + self._escapar(tipo) +
                            '</td><td class="numero">' + str(conteo[tipo]) +
                            '</td></tr>\n')
