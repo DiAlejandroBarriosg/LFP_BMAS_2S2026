@@ -359,21 +359,51 @@ class AnalizadorLexico:
 
     def _clasificar_literal(self, contenido, linea_ini, col_ini):
         """
-        Decision D-01: un literal sin espacios y con exactamente un guion es
-        un candidato a CODIGO; cualquier otro literal es una CADENA.
+        Decision D-01: al cerrar el literal se decide si es CODIGO o CADENA.
+
+        Un literal SIN ESPACIOS es candidato a codigo cuando:
+          - tiene exactamente un guion  -> se valida L (L|D)* '-' D+
+          - no tiene guion pero MEZCLA letras y digitos -> falta el separador,
+            asi que es un codigo mal formado ("LFP0796")
+
+        Un literal con espacios, o sin guion y con solo letras ("N", "MAGNA"),
+        o con solo digitos, es una CADENA.
         """
         lexema = '"' + contenido + '"'
         espacios = 0
         guiones = 0
+        letras = 0
+        digitos = 0
         i = 0
         while i < len(contenido):
-            if contenido[i] == ' ':
+            c = contenido[i]
+            if c == ' ':
                 espacios = espacios + 1
-            elif contenido[i] == '-':
+            elif c == '-':
                 guiones = guiones + 1
+            elif alf.es_letra(c):
+                letras = letras + 1
+            elif alf.es_digito(c):
+                digitos = digitos + 1
             i = i + 1
 
-        if espacios > 0 or guiones != 1:
+        # Con espacios nunca es un codigo: es texto libre
+        if espacios > 0:
+            return self._crear(lexema, pr.T_CADENA, linea_ini, col_ini)
+
+        # Sin guion: solo se considera codigo mal formado si mezcla letras y
+        # digitos, que es un codigo al que le falta el separador. Un literal
+        # de solo letras ("N", "MAGNA") sigue siendo una cadena valida.
+        if guiones == 0:
+            if letras > 0 and digitos > 0:
+                return self._error(lexema, pr.E_CODIGO,
+                                   "Codigo mal formado, falta el guion "
+                                   "separador: '" + lexema + "'",
+                                   linea_ini, col_ini)
+            return self._crear(lexema, pr.T_CADENA, linea_ini, col_ini)
+
+        # Mas de un guion: es texto, no un codigo
+        if guiones > 1:
             return self._crear(lexema, pr.T_CADENA, linea_ini, col_ini)
 
         if self._es_codigo_valido(contenido):
