@@ -25,20 +25,32 @@ UMBRAL_OCUPACION_ALTA = 80.0
 
 CSS = """
 :root {
-    --tinta:    #16202a;
-    --pizarra:  #4a5b6c;
-    --papel:    #ffffff;
-    --fondo:    #eef1f4;
-    --regla:    #d3dae1;
+    /* --- tema oscuro --- */
+    --tinta:    #e6ebf0;   /* texto principal */
+    --pizarra:  #9aa8b6;   /* texto secundario */
+    --papel:    #161d25;   /* fondo de la hoja */
+    --fondo:    #0d1217;   /* fondo de la pagina */
+    --regla:    #2b3642;   /* bordes */
 
-    --ok-texto: #1f7a3f;
-    --ok-fondo: #e3f4e8;
-    --mal-texto: #a32626;
-    --mal-fondo: #fbe6e6;
-    --baja-texto: #1f5f9e;
-    --baja-fondo: #e6eff8;
-    --alta-texto: #b5651d;
-    --alta-fondo: #fdeedd;
+    --superficie:      #1c252f;   /* columna de horas, encabezados de fila */
+    --cebra:           #1a222b;   /* filas pares */
+    --vacia:           #131a21;   /* celdas sin clase */
+    --barra-fondo:     #232d38;   /* fondo de la barra de ocupacion */
+    --cabecera-fondo:  #0a0e13;   /* encabezado de tabla */
+    --cabecera-texto:  #e6ebf0;
+
+    /* Colores exigidos por la rubrica. Se aclaran respecto del tema claro
+       para mantener el contraste sobre fondo oscuro, sin cambiar su
+       significado: verde confirmado, rojo choque, azul carga baja,
+       naranja carga alta. */
+    --ok-texto: #5fd18a;
+    --ok-fondo: #15301f;
+    --mal-texto: #ff8080;
+    --mal-fondo: #3b1a1d;
+    --baja-texto: #7fb4ec;
+    --baja-fondo: #15263a;
+    --alta-texto: #f2a65a;
+    --alta-fondo: #3a2715;
 }
 
 * { box-sizing: border-box; }
@@ -116,12 +128,12 @@ table {
 }
 
 thead th {
-    background: var(--tinta);
-    color: var(--papel);
+    background: var(--cabecera-fondo);
+    color: var(--cabecera-texto);
     text-align: left;
     font-weight: 600;
     padding: 9px 11px;
-    border-right: 1px solid rgba(255,255,255,0.14);
+    border-right: 1px solid var(--regla);
 }
 
 thead th:last-child { border-right: none; }
@@ -135,9 +147,9 @@ tbody td, tbody th {
 
 tbody td:last-child, tbody th:last-child { border-right: none; }
 
-tbody th { text-align: left; font-weight: 600; background: #f2f5f8; }
+tbody th { text-align: left; font-weight: 600; background: var(--superficie); }
 
-tbody tr:nth-child(even) td { background: #f7f9fb; }
+tbody tr:nth-child(even) td { background: var(--cebra); }
 
 .numero {
     font-variant-numeric: tabular-nums;
@@ -153,7 +165,7 @@ tbody tr:nth-child(even) td { background: #f7f9fb; }
 
 .rejilla .hora {
     width: 104px;
-    background: #f2f5f8;
+    background: var(--superficie);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     text-align: center;
@@ -194,7 +206,7 @@ tbody tr:nth-child(even) td { background: #f7f9fb; }
 .revisar .bloque { border-left-color: var(--alta-texto); }
 .revisar .marca { color: var(--alta-texto); }
 
-.vacia { background: #fbfcfd !important; }
+.vacia { background: var(--vacia) !important; }
 
 /* ---------- etiquetas de estado ---------- */
 
@@ -259,7 +271,7 @@ tbody tr:nth-child(even) td { background: #f7f9fb; }
 .barra {
     position: relative;
     height: 19px;
-    background: #e8edf2;
+    background: var(--barra-fondo);
     border: 1px solid var(--regla);
     min-width: 150px;
 }
@@ -305,9 +317,20 @@ ul.lista li { margin-bottom: 5px; }
 }
 
 @media print {
+    :root {
+        --tinta: #16202a; --pizarra: #4a5b6c; --papel: #ffffff;
+        --fondo: #ffffff; --regla: #d3dae1;
+        --superficie: #f2f5f8; --cebra: #f7f9fb; --vacia: #fbfcfd;
+        --barra-fondo: #e8edf2;
+        --cabecera-fondo: #16202a; --cabecera-texto: #ffffff;
+        --ok-texto: #1f7a3f; --ok-fondo: #e3f4e8;
+        --mal-texto: #a32626; --mal-fondo: #fbe6e6;
+        --baja-texto: #1f5f9e; --baja-fondo: #e6eff8;
+        --alta-texto: #b5651d; --alta-fondo: #fdeedd;
+    }
     body { background: var(--papel); padding: 0; }
     .hoja { border: none; max-width: none; padding: 0; }
-    thead th { background: #333333 !important; -webkit-print-color-adjust: exact; }
+    thead th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .confirmado, .choque, .etiqueta, .barra span {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
