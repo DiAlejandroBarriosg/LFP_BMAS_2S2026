@@ -1,0 +1,130 @@
+// AFD lexico de MarkdownCheck - Proyecto 2 LFP 2S2026
+// Doble circulo = estado de aceptacion. "(sc)" = sin consumir el caracter.
+digraph AFD_MarkdownCheck {
+    rankdir=LR;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=11, shape=circle, style=filled, fillcolor="#D6EAF8"];
+    edge [fontname="Arial", fontsize=9];
+
+    inicio [shape=point, width=0.15, fillcolor=black];
+    inicio -> q0;
+
+    subgraph cluster_linea {
+        label="Inicio de linea (modo normal)";
+        style=rounded; color="#2E75B6"; fontcolor="#2E75B6";
+
+        q0  [label="q0\ninicio"];
+        q1  [label="q1\n#..."];
+        q2  [label="q2\nNUMERAL", shape=doublecircle, fillcolor="#F9E79F"];
+        q3  [label="q3\n-"];
+        q4  [label="q4\n--"];
+        q5  [label="q5\nREGLA_\nHORIZONTAL", shape=doublecircle, fillcolor="#F9E79F"];
+        q6  [label="q6\nVIÑETA", shape=doublecircle, fillcolor="#F9E79F"];
+        q7  [label="q7\n* o +"];
+        q8  [label="q8\nCITA", shape=doublecircle, fillcolor="#F9E79F"];
+        q9  [label="q9\nCITA", shape=doublecircle, fillcolor="#F9E79F"];
+        q10 [label="q10\n`"];
+        q11 [label="q11\n``"];
+        q12 [label="q12\nCERCA_\nCODIGO", shape=doublecircle, fillcolor="#F9E79F"];
+        q13 [label="q13\nLENGUAJE_\nCODIGO", shape=doublecircle, fillcolor="#F9E79F"];
+        q21 [label="q21\nSALTO_\nPARRAFO", shape=doublecircle, fillcolor="#F9E79F"];
+    }
+
+    subgraph cluster_enlinea {
+        label="Elementos en linea";
+        style=rounded; color="#7D3C98"; fontcolor="#7D3C98";
+
+        q14 [label="q14\nen linea"];
+        q15 [label="q15\nTEXTO", shape=doublecircle, fillcolor="#F9E79F"];
+        q16 [label="q16\nCURSIVA", shape=doublecircle, fillcolor="#F9E79F"];
+        q17 [label="q17\nNEGRITA", shape=doublecircle, fillcolor="#F9E79F"];
+        q18 [label="q18\nCODIGO_\nINLINE", shape=doublecircle, fillcolor="#F9E79F"];
+        q19 [label="q19\nTEXTO_\nLITERAL", shape=doublecircle, fillcolor="#F9E79F"];
+        q20 [label="q20\nSALTO_\nLINEA", shape=doublecircle, fillcolor="#F9E79F"];
+    }
+
+    subgraph cluster_literal {
+        label="Modo literal (dentro de ```)";
+        style=rounded; color="#B9770E"; fontcolor="#B9770E";
+
+        b0 [label="b0\ninicio"];
+        b1 [label="b1\n`"];
+        b2 [label="b2\n``"];
+        b3 [label="b3\nCERCA_\nCODIGO", shape=doublecircle, fillcolor="#F9E79F"];
+        b4 [label="b4\nTEXTO_\nLITERAL", shape=doublecircle, fillcolor="#F9E79F"];
+    }
+
+    // ---- inicio de linea ----
+    q0 -> q0  [label="espacio, tab"];
+    q0 -> q21 [label="\\n (linea vacia)"];
+    q0 -> q1  [label="#"];
+    q0 -> q3  [label="-"];
+    q0 -> q7  [label="*, +"];
+    q0 -> q8  [label=">"];
+    q0 -> q10 [label="`"];
+    q0 -> q14 [label="otro (sc)"];
+
+    q1 -> q1  [label="#"];
+    q1 -> q2  [label="espacio\n(1 a 6 #)"];
+    q1 -> q15 [label="otro"];
+
+    q3 -> q6  [label="espacio"];
+    q3 -> q4  [label="-"];
+    q3 -> q15 [label="otro"];
+    q4 -> q5  [label="-"];
+    q4 -> q15 [label="otro"];
+    q5 -> q5  [label="-, espacio"];
+    q5 -> q15 [label="otro"];
+
+    q7 -> q6  [label="espacio"];
+    q7 -> q14 [label="otro (sc)"];
+
+    q8 -> q8  [label=">"];
+    q8 -> q9  [label="espacio"];
+    q9 -> q8  [label=">"];
+    q9 -> q9  [label="espacio\n(si viene >)"];
+
+    q10 -> q11 [label="`"];
+    q10 -> q14 [label="otro (sc)"];
+    q11 -> q12 [label="`"];
+    q11 -> q14 [label="otro (sc)"];
+    q12 -> q13 [label="otro"];
+    q13 -> q13 [label="otro"];
+
+    // ---- tras un marcador de bloque el resto de la linea es contenido ----
+    q2 -> q14 [label="(sc)", style=dashed];
+    q6 -> q14 [label="(sc)", style=dashed];
+    q9 -> q14 [label="(sc)", style=dashed];
+
+    // ---- en linea ----
+    q14 -> q16 [label="*"];
+    q14 -> q18 [label="`"];
+    q14 -> q20 [label="\\n, fin"];
+    q14 -> q15 [label="otro"];
+    q15 -> q15 [label="otro"];
+    q16 -> q17 [label="*"];
+    q18 -> q19 [label="otro\n(hay ` de cierre)"];
+    q19 -> q19 [label="otro"];
+    q15 -> q14 [label="*, `, \\n (sc)", style=dashed];
+    q16 -> q14 [label="otro (sc)", style=dashed];
+    q17 -> q14 [label="(sc)", style=dashed];
+    q19 -> q18 [label="`", style=dashed];
+
+    // ---- cambio de modo ----
+    q13 -> b0 [label="\\n", color="#B9770E", fontcolor="#B9770E"];
+    q12 -> b0 [label="\\n", color="#B9770E", fontcolor="#B9770E"];
+    b3  -> q0 [label="\\n", color="#B9770E", fontcolor="#B9770E"];
+
+    // ---- modo literal ----
+    b0 -> b0 [label="espacio"];
+    b0 -> b1 [label="`"];
+    b1 -> b2 [label="`"];
+    b2 -> b3 [label="`"];
+    b0 -> b4 [label="otro"];
+    b1 -> b4 [label="otro"];
+    b2 -> b4 [label="otro"];
+    b3 -> b4 [label="otro != espacio"];
+    b4 -> b4 [label="otro"];
+    b0 -> b4 [label="\\n (sc)\nlinea vacia"];
+    b4 -> b0 [label="\\n", style=dashed];
+}
