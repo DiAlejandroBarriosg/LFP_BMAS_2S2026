@@ -1,0 +1,119 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "name": "MarkdownCheck (ventana)",
+            "program": "${workspaceFolder}/src/main.py"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "name": "MarkdownCheck (ejemplo valido)",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "examples/ejemplo_valido.md"
+            ]
+        },
+        {
+            "name": "Pruebas: lexico",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/prueba_lexico.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Pruebas: sintactico",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/prueba_sintactico.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Pruebas: reportes",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/prueba_reportes.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "name": "Pruebas: interfaz",
+            "program": "${workspaceFolder}/tests/prueba_interfaz.py"
+        },
+        {
+            "name": "Pruebas: casos documentados",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/prueba_casos.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Ver tokens: ejemplo valido",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/ver_tokens.py",
+            "args": [
+                "examples/ejemplo_valido.md"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Ver tokens: errores lexicos",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/ver_tokens.py",
+            "args": [
+                "examples/errores_lexicos.md"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Ver tokens: casos borde",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/ver_tokens.py",
+            "args": [
+                "examples/casos_borde.md"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Ver arbol: ejemplo valido",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/ver_arbol.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "examples/ejemplo_valido.md"
+            ]
+        },
+        {
+            "name": "Ver arbol: errores sintacticos",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/ver_arbol.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "examples/errores_sintacticos.md"
+            ]
+        }
+    ]
+}
