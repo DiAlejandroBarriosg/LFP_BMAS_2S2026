@@ -1,0 +1,35 @@
+digraph Arquitectura {
+    rankdir=LR;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=11, shape=box, style="rounded,filled", fillcolor="#D6EAF8", color="#2E75B6"];
+    edge [fontname="Arial", fontsize=9, color="#555555"];
+
+    archivo [label="archivo .md", shape=note, fillcolor="#FFFFFF"];
+    gui [label="VentanaPrincipal\n(gui)", fillcolor="#E8DAEF", color="#7D3C98"];
+    lexico [label="AnalizadorLexico\n(AFD + capas)"];
+    parser [label="AnalizadorSintactico\n(descendente recursivo)"];
+    gestor [label="GestorErrores", fillcolor="#FADBD8", color="#B03A2E"];
+    arbol [label="AST\n(NodoAST)", shape=folder, fillcolor="#F9E79F", color="#B9770E"];
+    coord [label="generar_todos()\n(generador_reportes)", fillcolor="#D5F5E3", color="#1E8449"];
+    r1 [label="GeneradorHTML\nReporte 1", fillcolor="#D5F5E3", color="#1E8449"];
+    r2 [label="GeneradorEstadisticas\nReporte 2", fillcolor="#D5F5E3", color="#1E8449"];
+    r3 [label="GeneradorIndice\nReporte 3", fillcolor="#D5F5E3", color="#1E8449"];
+    re [label="GeneradorErrores\nreporte_errores", fillcolor="#D5F5E3", color="#1E8449"];
+    dot [label="GeneradorDOT\narbol.dot", fillcolor="#D5F5E3", color="#1E8449"];
+    vista [label="VistaPrevia\n(vista previa en vivo)", fillcolor="#E8DAEF", color="#7D3C98"];
+
+    archivo -> gui [label="Abrir"];
+    gui -> lexico [label="texto"];
+    lexico -> parser [label="siguiente_token()"];
+    parser -> arbol [label="construye"];
+    lexico -> gestor [label="errores léxicos", style=dashed];
+    parser -> gestor [label="errores sintácticos", style=dashed];
+    gui -> coord [label="raíz + gestor"];
+    arbol -> coord [style=dotted, arrowhead=none];
+    coord -> r1 [label="sin errores"];
+    coord -> r2 [label="sin errores"];
+    coord -> r3 [label="sin errores"];
+    coord -> re [label="con errores"];
+    coord -> dot [label="siempre"];
+    arbol -> vista [label="al escribir"];
+}

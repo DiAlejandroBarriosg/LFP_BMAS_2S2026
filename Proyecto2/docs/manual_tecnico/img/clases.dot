@@ -1,0 +1,41 @@
+digraph Clases {
+    rankdir=TB;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=9, shape=record, style=filled, fillcolor="#FFFFFF", color="#2E75B6"];
+    edge [fontname="Arial", fontsize=8, color="#555555"];
+
+    VentanaPrincipal [fillcolor="#F4ECF7", color="#7D3C98", label="{VentanaPrincipal|ventana\lcarpeta_salida\lruta_archivo\lnombre_archivo\ltokens\lgestor\lrutas\l|cargar_archivo(ruta)\lguardar_archivo()\lanalizar()\llimpiar()\labrir_reporte1..3()\labrir_arbol()\l}"];
+    AnalizadorLexico [label="{AnalizadorLexico|texto, pos, linea, columna\ltokens, cola, contador_token\lmodo (NORMAL / LITERAL)\lnivel_lista\lpila_delimitadores\llinea_de_parrafo, dentro_de_codigo\lgestor\l|siguiente_token() : Token\lanalizar_todo() : lista\l_analizar_linea_normal()  q0\l_estado_numeral()  q1-q2\l_estado_cita()  q8-q9\l_estado_en_linea()  q14\l_estado_asterisco()  q16-q17\l_analizar_linea_literal()  b0-b4\l_ajustar_nivel_lista()\l_registrar_delimitador()\l_es_linea_de_parrafo(k)\l_es_fin_de_bloque(k)\l}"];
+    Token [label="{Token|numero\llexema\ltipo\llinea\lcolumna\l|es(tipo)\les_virtual()\llexema_visible()\l}"];
+    AnalizadorSintactico [label="{AnalizadorSintactico|lexico\lgestor\lactual  (lookahead)\lraiz\l|analizar() : NodoAST\lparsear_documento()\lparsear_bloque()\lparsear_lista(nivel)\lparsear_sublista(nivel)\lparsear_cita(n)\lparsear_en_linea()\lparsear_negrita() / parsear_cursiva()\l... 24 funciones parsear_*\l_coincidir(tipo, padre)\l_sincronizar()\l}"];
+    NodoAST [fillcolor="#FEF9E7", color="#B9770E", label="{NodoAST|simbolo\ltoken (solo hojas)\lhijos\lnivel, numerada, alineaciones\l|agregar(hijo)\les_terminal()\ldescripcion()\l}"];
+    GestorErrores [fillcolor="#FDEDEC", color="#B03A2E", label="{GestorErrores|errores\l|agregar(...)  insercion ordenada\lexiste(tipo, linea, fase)\lhay_errores()\lcantidad()\l}"];
+    ErrorAnalisis [fillcolor="#FDEDEC", color="#B03A2E", label="{ErrorAnalisis|numero, lexema, tipo\ldescripcion, linea, columna\lfase\l|esta_despues_de(otro)\lcomo_texto()\l}"];
+    GeneradorHTML [fillcolor="#E9F7EF", color="#1E8449", label="{GeneradorHTML|raiz\lnombre_archivo\llista_encabezados\l|generar() / guardar(carpeta)\ltraducir_documento()\l_lista() _item() _cita()\l_en_linea()\l}"];
+    GeneradorEstadisticas [fillcolor="#E9F7EF", color="#1E8449", label="{GeneradorEstadisticas|raiz, palabras, parrafos\lencabezados, por_nivel\litems, profundidad_listas ...\l|calcular()\lgenerar() / guardar(carpeta)\l}"];
+    GeneradorIndice [fillcolor="#E9F7EF", color="#1E8449", label="{GeneradorIndice|raiz\lencabezados\l|generar() / guardar(carpeta)\l}"];
+    GeneradorErrores [fillcolor="#E9F7EF", color="#1E8449", label="{GeneradorErrores|gestor\l|generar() / guardar(carpeta)\l}"];
+    GeneradorDOT [fillcolor="#E9F7EF", color="#1E8449", label="{GeneradorDOT|raiz, contador\l|generar() / guardar(carpeta)\l_visitar(nodo, padre)\l}"];
+    VistaPrevia [fillcolor="#F4ECF7", color="#7D3C98", label="{VistaPrevia|texto (tk.Text)\lurls\l|mostrar(raiz)\l_bloque() _lista() _tabla()\l_en_linea(nodo, estilo)\l}"];
+
+    VentanaPrincipal -> AnalizadorLexico [label="crea"];
+    VentanaPrincipal -> AnalizadorSintactico [label="crea"];
+    VentanaPrincipal -> GestorErrores [label="crea"];
+    VentanaPrincipal -> VistaPrevia [label="crea"];
+    VistaPrevia -> NodoAST [label="recorre", style=dashed];
+    AnalizadorSintactico -> AnalizadorLexico [label="pide tokens"];
+    AnalizadorLexico -> Token [label="produce *"];
+    AnalizadorSintactico -> NodoAST [label="construye *"];
+    NodoAST -> NodoAST [label="hijos *"];
+    NodoAST -> Token [label="hoja: 0..1", style=dashed];
+    AnalizadorLexico -> GestorErrores [label="reporta", style=dashed];
+    AnalizadorSintactico -> GestorErrores [label="reporta", style=dashed];
+    GestorErrores -> ErrorAnalisis [label="contiene *", dir=both, arrowtail=diamond, arrowhead=none];
+    VentanaPrincipal -> GeneradorHTML [label="generar_todos()", style=dotted];
+    VentanaPrincipal -> GeneradorEstadisticas [style=dotted];
+    VentanaPrincipal -> GeneradorIndice [style=dotted];
+    VentanaPrincipal -> GeneradorErrores [style=dotted];
+    VentanaPrincipal -> GeneradorDOT [style=dotted];
+    GeneradorHTML -> NodoAST [label="recorre", style=dashed];
+    GeneradorDOT -> NodoAST [label="recorre", style=dashed];
+}
