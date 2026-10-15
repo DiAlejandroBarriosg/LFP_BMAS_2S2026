@@ -1,0 +1,118 @@
+// AFD lexico de MarkdownCheck: estados del alcance opcional (D-29 a D-33).
+// Se suma al AFD de afd_markdowncheck.dot: q0, q6, q14 y q15 son los mismos
+// estados de ese diagrama (en gris). Doble circulo = estado de aceptacion.
+// "(sc)" = sin consumir el caracter; "(la)" = decision con lookahead.
+digraph AFD_Alcance_Opcional {
+    rankdir=TB;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=11, shape=circle, style=filled, fillcolor="#D6EAF8"];
+    edge [fontname="Arial", fontsize=9];
+
+    q0  [label="q0\ninicio", fillcolor="#E5E7E9"];
+    q6  [label="q6\nVIÑETA", shape=doublecircle, fillcolor="#E5E7E9"];
+    q14 [label="q14\nen linea", fillcolor="#E5E7E9"];
+    q15 [label="q15\nTEXTO", shape=doublecircle, fillcolor="#E5E7E9"];
+
+    subgraph cluster_listas {
+        label="Listas numeradas y de tareas (inicio de linea)";
+        style=rounded; color="#2E75B6"; fontcolor="#2E75B6";
+        q22 [label="q22\ndigitos"];
+        q23 [label="q23\nNUMERO_\nLISTA", shape=doublecircle, fillcolor="#F9E79F"];
+        q24 [label="q24\n["];
+        q25 [label="q25\n[ o [x"];
+        q26 [label="q26\nCASILLA", shape=doublecircle, fillcolor="#F9E79F"];
+    }
+
+    subgraph cluster_tachado {
+        label="Tachado";
+        style=rounded; color="#7D3C98"; fontcolor="#7D3C98";
+        q27 [label="q27\n~"];
+        q28 [label="q28\nTACHADO", shape=doublecircle, fillcolor="#F9E79F"];
+    }
+
+    subgraph cluster_enlaces {
+        label="Enlaces e imagenes";
+        style=rounded; color="#1E8449"; fontcolor="#1E8449";
+        q29 [label="q29\nCORCHETE_\nABRE", shape=doublecircle, fillcolor="#F9E79F"];
+        q30 [label="q30\nCORCHETE_\nCIERRA", shape=doublecircle, fillcolor="#F9E79F"];
+        q31 [label="q31\nPARENTESIS_\nABRE", shape=doublecircle, fillcolor="#F9E79F"];
+        q32 [label="q32\nURL", shape=doublecircle, fillcolor="#F9E79F"];
+        q33 [label="q33\nPARENTESIS_\nCIERRA", shape=doublecircle, fillcolor="#F9E79F"];
+        q34 [label="q34\n!"];
+        q35 [label="q35\nIMAGEN_\nABRE", shape=doublecircle, fillcolor="#F9E79F"];
+        q36 [label="q36\nTEXTO_\nLITERAL", shape=doublecircle, fillcolor="#F9E79F"];
+    }
+
+    subgraph cluster_tablas {
+        label="Tablas (linea que empieza con |)";
+        style=rounded; color="#B9770E"; fontcolor="#B9770E";
+        q37 [label="q37\n|"];
+        q38 [label="q38\nBARRA", shape=doublecircle, fillcolor="#F9E79F"];
+        s0 [label="s0\ncelda"];
+        s1 [label="s1\n:"];
+        s2 [label="s2\n---"];
+        s3 [label="s3\n---:"];
+        q39 [label="q39\nSEPARADOR_\nTABLA", shape=doublecircle, fillcolor="#F9E79F"];
+    }
+
+    // ---- listas numeradas ----
+    q0  -> q22 [label="digito"];
+    q22 -> q22 [label="digito"];
+    q22 -> q23 [label=". (la: sigue\nun espacio)"];
+    q22 -> q15 [label="otro"];
+
+    // ---- casilla de tarea, justo despues del marcador ----
+    q6  -> q24 [label="["];
+    q23 -> q24 [label="["];
+    q24 -> q25 [label="espacio, x, X"];
+    q25 -> q26 [label="] (la: sigue\nun espacio)"];
+    q24 -> q14 [label="otro (sc)", style=dashed];
+    q26 -> q14 [label="(sc)", style=dashed];
+    q23 -> q14 [label="(sc)", style=dashed];
+
+    // ---- tachado ----
+    q14 -> q27 [label="~"];
+    q27 -> q28 [label="~"];
+    q27 -> q15 [label="otro"];
+    q28 -> q14 [label="(sc)", style=dashed];
+
+    // ---- enlaces ----
+    q14 -> q29 [label="[ (la: hay\n](url) en la linea)"];
+    q14 -> q15 [label="[ sin enlace\ncompleto"];
+    q29 -> q14 [label="(sc) texto\ndel enlace", style=dashed];
+    q14 -> q30 [label="] (dentro\nde un enlace)"];
+    q30 -> q31 [label="("];
+    q31 -> q32 [label="otro != )"];
+    q32 -> q32 [label="otro != )"];
+    q31 -> q33 [label=")"];
+    q32 -> q33 [label=")"];
+    q33 -> q14 [label="(sc)", style=dashed];
+
+    // ---- imagenes ----
+    q14 -> q34 [label="!"];
+    q34 -> q35 [label="[ (la: hay\n](url))"];
+    q34 -> q15 [label="otro"];
+    q35 -> q36 [label="otro != ]"];
+    q36 -> q36 [label="otro != ]"];
+    q35 -> q30 [label="]"];
+    q36 -> q30 [label="]"];
+
+    // ---- tablas ----
+    q0  -> q37 [label="|"];
+    q37 -> s0  [label="(la: fila\nseparadora)"];
+    q37 -> q38 [label="(sc) fila\nde celdas"];
+    q14 -> q38 [label="| (en fila\nde tabla)"];
+    q38 -> q14 [label="(sc) celda", style=dashed];
+    s0 -> s0 [label="espacio"];
+    s0 -> s1 [label=":"];
+    s0 -> s2 [label="-"];
+    s1 -> s2 [label="-"];
+    s2 -> s2 [label="-"];
+    s2 -> s3 [label=":, espacio"];
+    s3 -> s3 [label="espacio"];
+    s2 -> s0 [label="|"];
+    s3 -> s0 [label="|"];
+    s2 -> q39 [label="\\n"];
+    s3 -> q39 [label="\\n"];
+    s0 -> q39 [label="\\n (tras |)"];
+}
