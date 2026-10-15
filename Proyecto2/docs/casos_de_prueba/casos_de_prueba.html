@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Casos de Prueba - MarkdownCheck</title>
+<style>
+:root {
+  --fondo: #f6f7f9;
+  --hoja: #ffffff;
+  --texto: #1f2328;
+  --suave: #57606a;
+  --borde: #d8dee4;
+  --acento: #2e75b6;
+  --codigo-fondo: #eff1f3;
+  --bloque-fondo: #0f1419;
+  --bloque-texto: #e6edf3;
+  --ok-fondo: #e6f4ea;
+  --ok-texto: #1a7f37;
+  --error-fondo: #fdecea;
+  --error-texto: #b3261e;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.6;
+}
+.hoja {
+  max-width: 820px;
+  margin: 32px auto;
+  padding: 40px 48px;
+  background: var(--hoja);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+}
+.estado {
+  display: inline-block;
+  margin-bottom: 24px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: var(--ok-fondo);
+  color: var(--ok-texto);
+}
+.estado.con-errores {
+  background: var(--error-fondo);
+  color: var(--error-texto);
+}
+.subtitulo { color: var(--suave); font-size: 14px; margin-top: -8px; }
+h1, h2, h3, h4, h5, h6 { line-height: 1.25; margin: 28px 0 12px; }
+h1 {
+  font-size: 2em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--borde);
+}
+h2 {
+  font-size: 1.5em;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--borde);
+}
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+h5 { font-size: 1em; }
+h6 { font-size: 0.9em; color: var(--suave); }
+p { margin: 0 0 14px; }
+ul, ol { margin: 0 0 14px; padding-left: 28px; }
+li > ul, li > ol { margin: 4px 0; }
+li.tarea { list-style: none; margin-left: -22px; }
+li.tarea input { margin: 0 6px 0 0; vertical-align: middle; }
+del { color: var(--suave); }
+a { color: var(--acento); }
+img { max-width: 100%; }
+blockquote {
+  margin: 0 0 14px;
+  padding: 2px 16px;
+  color: var(--suave);
+  border-left: 4px solid var(--borde);
+}
+blockquote blockquote { margin-top: 8px; }
+code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+  padding: 2px 6px;
+  background: var(--codigo-fondo);
+  border-radius: 4px;
+}
+pre {
+  margin: 0 0 16px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  background: var(--bloque-fondo);
+  color: var(--bloque-texto);
+  border-radius: 8px;
+}
+pre code { padding: 0; background: none; color: inherit; font-size: 0.9em; }
+hr { border: 0; border-top: 1px solid var(--borde); margin: 28px 0; }
+table { width: 100%; border-collapse: collapse; margin: 0 0 20px; }
+th, td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--borde);
+}
+th { color: var(--suave); font-weight: 600; font-size: 13px; }
+/* Reporte 1: tablas del documento (alcance opcional) */
+.tabla-md { width: auto; min-width: 50%; }
+.tabla-md th, .tabla-md td { border: 1px solid var(--borde); }
+.tabla-md th {
+  color: var(--texto);
+  font-size: 1em;
+  background: var(--fondo);
+}
+.pie { margin-top: 36px; color: var(--suave); font-size: 12px; }
+
+/* Reporte 2: tarjetas, barras y pares de valores */
+.seccion {
+  margin: 32px 0 12px;
+  padding-bottom: 6px;
+  font-size: 1.05em;
+  border-bottom: 1px solid var(--borde);
+}
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.tarjeta {
+  padding: 14px 16px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+.tarjeta .numero { font-size: 26px; font-weight: 700; color: var(--acento); }
+.tarjeta .rotulo { font-size: 12px; color: var(--suave); }
+.barra-fila {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  gap: 10px;
+  align-items: center;
+  margin: 6px 0;
+  font-size: 13px;
+}
+.barra-fondo {
+  height: 10px;
+  background: var(--codigo-fondo);
+  border-radius: 5px;
+}
+.barra { height: 10px; background: var(--acento); border-radius: 5px; }
+.par {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+.pares { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.par .valor { font-size: 20px; font-weight: 700; }
+
+/* Reporte 3: indice */
+.indice {
+  padding: 16px 20px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+.entrada { padding: 6px 0; border-bottom: 1px dashed var(--borde); }
+.entrada:last-child { border-bottom: 0; }
+.entrada a { color: var(--acento); text-decoration: none; }
+.entrada a:hover { text-decoration: underline; }
+.nivel {
+  display: inline-block;
+  min-width: 26px;
+  margin-right: 8px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+  background: var(--acento);
+  border-radius: 4px;
+}
+.nota { color: var(--suave); font-size: 13px; font-style: italic; }
+
+/* Tabla de errores */
+.tabla-errores { font-size: 13px; }
+.tabla-errores td.descripcion { min-width: 300px; }
+.tabla-errores td.tipo { white-space: nowrap; }
+/* La pagina de errores es mas ancha para que la tabla quepa. */
+.hoja:has(.tabla-errores) { max-width: 1120px; }
+@media (max-width: 600px) {
+  .pares { grid-template-columns: 1fr; }
+  .hoja { margin: 0; padding: 24px 16px; border-radius: 0; border: 0; }
+}
+
+body { background: #ffffff; }
+.hoja { max-width: 900px; border: 0; margin: 0 auto; padding: 24px 32px; }
+.portada { padding: 40px 0 24px; border-bottom: 3px solid var(--acento); }
+.portada h1 { border: 0; margin: 0 0 8px; font-size: 2.2em; }
+.portada p { margin: 2px 0; color: var(--suave); }
+.caso { page-break-before: always; }
+.caso h2 { margin-top: 0; }
+.etiqueta {
+  display: inline-block; padding: 1px 10px; border-radius: 999px;
+  font-size: 12px; background: var(--codigo-fondo); color: var(--suave);
+}
+.ok { color: var(--ok-texto); font-weight: 700; }
+.fallo { color: var(--error-texto); font-weight: 700; }
+td pre, td code { white-space: pre-wrap; word-break: break-word; }
+td pre {
+  margin: 0; padding: 6px 8px; background: var(--codigo-fondo);
+  color: var(--texto); border-radius: 4px; font-size: 11.5px;
+}
+.entrada { counter-reset: linea; white-space: pre-wrap; }
+.entrada span { display: block; }
+.entrada span::before {
+  counter-increment: linea; content: counter(linea);
+  display: inline-block; width: 2.2em; margin-right: 10px;
+  color: #7d8590; text-align: right;
+}
+table { font-size: 13px; }
+th { white-space: nowrap; }
+tr { page-break-inside: avoid; }
+h3 { page-break-after: avoid; }
+@media print { .caso { page-break-before: always; } }
+</style>
+</head>
+<body>
+<main class="hoja">
+<div class="portada">
+<h1>Casos de Prueba</h1>
+<p><strong>MarkdownCheck</strong> &mdash; analizador léxico-sintáctico de Markdown a HTML</p>
+<p>Proyecto 2 &middot; Lenguajes Formales y de Programación &middot; Sección B+ &middot; Segundo semestre 2026</p>
+<p>Diego Alejandro Barrios &middot; Facultad de Ingeniería, Universidad de San Carlos de Guatemala</p>
+</div>
+<h2>Cómo se ejecutaron</h2>
+<p>Cada caso es un archivo de <code>examples/casos/</code>. El script <code>tests/prueba_casos.py</code> lo analiza con el programa completo (analizador léxico, parser y generación de reportes) y compara cada <em>resultado esperado</em>, escrito a mano antes de ejecutar, con el <em>resultado obtenido</em>. Este documento lo genera ese mismo script, así que lo obtenido es siempre la salida real del programa.</p>
+<p>Notación: <code>TIPO línea:columna</code> para errores; <code>TIPO "lexema" línea:columna</code> para tokens. Las posiciones empiezan en 1.</p>
+<h2>Resumen</h2>
+<p>15 casos, 82 verificaciones: 82 cumplen, 0 no cumplen.</p>
+<table><tr><th>No.</th><th>Caso</th><th>Categoría</th><th>Verificaciones</th><th>Veredicto</th></tr>
+<tr><td>1</td><td>Documento válido con todos los elementos obligatorios</td><td>Válido</td><td>8</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>2</td><td>Lista con 4 niveles de anidamiento</td><td>Anidamiento</td><td>5</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>3</td><td>Citas anidadas en 3 niveles</td><td>Anidamiento</td><td>5</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>4</td><td>Negrita, cursiva y código combinados</td><td>Válido</td><td>8</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>5</td><td>Negrita, cursiva y código en línea sin cerrar</td><td>Error léxico</td><td>4</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>6</td><td>Encabezado inválido (más de 6 &quot;#&quot;)</td><td>Error léxico</td><td>4</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>7</td><td>Bloque de código sin cerrar</td><td>Error léxico</td><td>4</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>8</td><td>Indentación inconsistente</td><td>Error sintáctico</td><td>3</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>9</td><td>Citas mal formadas</td><td>Error sintáctico</td><td>3</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>10</td><td>Casos borde: reglas de prioridad del AFD</td><td>Caso borde</td><td>8</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>11</td><td>Documento sin encabezados</td><td>Caso borde</td><td>4</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>12</td><td>Archivo de Windows: BOM, \r\n y sin salto final</td><td>Caso borde</td><td>4</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>13</td><td>Todas las categorías de error en una sola pasada</td><td>Recuperación</td><td>5</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>14</td><td>Alcance opcional: listas numeradas, tareas, tachado, enlaces, imágenes, tablas y resaltado</td><td>Alcance opcional</td><td>10</td><td><span class="ok">Aprobado</span></td></tr>
+<tr><td>15</td><td>Errores del alcance opcional</td><td>Alcance opcional</td><td>7</td><td><span class="ok">Aprobado</span></td></tr>
+</table>
+<section class="caso">
+<h2>Caso 1: Documento válido con todos los elementos obligatorios</h2>
+<p><span class="etiqueta">Válido</span> &nbsp; Archivo: <code>examples/casos/caso01_documento_valido.md</code></p>
+<p><strong>Objetivo.</strong> Archivo de la sección 4.7 del enunciado. Contiene encabezados, párrafo con negrita, cursiva y código en línea, lista de 3 niveles, cita de 2 niveles, bloque de código y regla horizontal. Debe analizarse sin errores y producir los tres reportes.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span># Proyecto de Lenguajes Formales</span><span></span><span>Este curso combina **teoría sólida** y *práctica de código*, con ejemplos en `Python` .</span><span></span><span>## Contenido del curso</span><span></span><span>- Análisis léxico</span><span>  - Autómatas finitos</span><span>  - Expresiones regulares</span><span>- Análisis sintáctico</span><span>  - Gramáticas libres de contexto</span><span>    - Recursión por la izquierda</span><span>    - Recursión por la derecha</span><span>- Generación de código</span><span></span><span>&gt; El análisis sintáctico es donde la teoría se encuentra con la práctica.</span><span>&gt;&gt; Y donde más se aprende, según los estudiantes.</span><span></span><span>```python</span><span>def hola():</span><span>    print(&quot;Hola LFP&quot;)</span><span>```</span><span></span><span>---</span><span></span><span>Fin del documento.</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Cantidad de tokens</td><td>77</td><td>77</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Bloques reconocidos, en orden</td><td><pre>&lt;encabezado&gt;
+&lt;parrafo&gt;
+&lt;encabezado&gt;
+&lt;lista&gt;
+&lt;cita&gt;
+&lt;bloque_codigo&gt;
+&lt;regla_horizontal&gt;
+&lt;parrafo&gt;
+</pre></td><td><pre>&lt;encabezado&gt;
+&lt;parrafo&gt;
+&lt;encabezado&gt;
+&lt;lista&gt;
+&lt;cita&gt;
+&lt;bloque_codigo&gt;
+&lt;regla_horizontal&gt;
+&lt;parrafo&gt;
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Profundidad máxima de lista</td><td>3</td><td>3</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Profundidad máxima de cita</td><td>2</td><td>2</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Palabras (Reporte 2 del enunciado)</td><td>67</td><td>67</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Archivos generados</td><td><pre>documento
+estadisticas
+indice
+arbol
+</pre></td><td><pre>documento
+estadisticas
+indice
+arbol
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>La frontera del árbol son todos los tokens</td><td>Sí</td><td>Sí</td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 2: Lista con 4 niveles de anidamiento</h2>
+<p><span class="etiqueta">Anidamiento</span> &nbsp; Archivo: <code>examples/casos/caso02_lista_profunda.md</code></p>
+<p><strong>Objetivo.</strong> Una lista que baja hasta el nivel 4, sube un nivel, vuelve dos niveles de golpe y tiene formato dentro de un ítem. La jerarquía del HTML debe ser exactamente la del archivo.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span># Temario por niveles</span><span></span><span>- Nivel 1: Lenguajes formales</span><span>  - Nivel 2: Gramáticas</span><span>    - Nivel 3: Libres de contexto</span><span>      - Nivel 4: Recursivas por la derecha</span><span>    - Nivel 3: Regulares</span><span>- Nivel 1 otra vez, con **negrita** (vuelve dos niveles de golpe)</span><span>  - Nivel 2</span><span>- Último ítem</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Ítems de lista</td><td>8</td><td>8</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Profundidad máxima de lista</td><td>4</td><td>4</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML de la lista (Reporte 1)</td><td><pre>&lt;ul&gt;&lt;li&gt;Nivel 1: Lenguajes formales&lt;ul&gt;&lt;li&gt;Nivel 2: Gramáticas&lt;ul&gt;&lt;li&gt;Nivel 3: Libres de contexto&lt;ul&gt;&lt;li&gt;Nivel 4: Recursivas por la derecha&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Nivel 3: Regulares&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Nivel 1 otra vez, con &lt;strong&gt;negrita&lt;/strong&gt; (vuelve dos niveles de golpe)&lt;ul&gt;&lt;li&gt;Nivel 2&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Último ítem&lt;/li&gt;&lt;/ul&gt;</pre></td><td><pre>&lt;ul&gt;&lt;li&gt;Nivel 1: Lenguajes formales&lt;ul&gt;&lt;li&gt;Nivel 2: Gramáticas&lt;ul&gt;&lt;li&gt;Nivel 3: Libres de contexto&lt;ul&gt;&lt;li&gt;Nivel 4: Recursivas por la derecha&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Nivel 3: Regulares&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Nivel 1 otra vez, con &lt;strong&gt;negrita&lt;/strong&gt; (vuelve dos niveles de golpe)&lt;ul&gt;&lt;li&gt;Nivel 2&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Último ítem&lt;/li&gt;&lt;/ul&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Tokens de la línea 8 (bajan 2 niveles)</td><td><pre>DEDENT
+DEDENT
+VIÑETA
+TEXTO
+NEGRITA
+TEXTO
+NEGRITA
+TEXTO
+SALTO_LINEA
+</pre></td><td><pre>DEDENT
+DEDENT
+VIÑETA
+TEXTO
+NEGRITA
+TEXTO
+NEGRITA
+TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 3: Citas anidadas en 3 niveles</h2>
+<p><span class="etiqueta">Anidamiento</span> &nbsp; Archivo: <code>examples/casos/caso03_citas_anidadas.md</code></p>
+<p><strong>Objetivo.</strong> Citas de nivel 1, 2 y 3, con las dos notaciones (&quot;&gt;&gt;&quot; y &quot;&gt; &gt;&quot;), un encabezado dentro de la cita y el regreso al primer nivel.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>&gt; # Cita con encabezado</span><span>&gt; Primer nivel de la cita.</span><span>&gt;&gt; Segundo nivel.</span><span>&gt; &gt; Segundo nivel escrito con espacio.</span><span>&gt;&gt;&gt; Tercer nivel, con *cursiva*.</span><span>&gt; De vuelta al primer nivel.</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Profundidad máxima de cita</td><td>3</td><td>3</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Líneas de cita</td><td>6</td><td>6</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML de la cita (Reporte 1)</td><td><pre>&lt;blockquote&gt;&lt;h1 id=&quot;seccion-1&quot;&gt;Cita con encabezado&lt;/h1&gt;&lt;p&gt;Primer nivel de la cita.&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;Segundo nivel.&lt;/p&gt;&lt;p&gt;Segundo nivel escrito con espacio.&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;Tercer nivel, con &lt;em&gt;cursiva&lt;/em&gt;.&lt;/p&gt;&lt;/blockquote&gt;&lt;/blockquote&gt;&lt;p&gt;De vuelta al primer nivel.&lt;/p&gt;&lt;/blockquote&gt;</pre></td><td><pre>&lt;blockquote&gt;&lt;h1 id=&quot;seccion-1&quot;&gt;Cita con encabezado&lt;/h1&gt;&lt;p&gt;Primer nivel de la cita.&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;Segundo nivel.&lt;/p&gt;&lt;p&gt;Segundo nivel escrito con espacio.&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;Tercer nivel, con &lt;em&gt;cursiva&lt;/em&gt;.&lt;/p&gt;&lt;/blockquote&gt;&lt;/blockquote&gt;&lt;p&gt;De vuelta al primer nivel.&lt;/p&gt;&lt;/blockquote&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Lexema de la línea 4 (&quot;&gt; &gt;&quot; es nivel 2)</td><td><pre>CITA &quot;&gt; &gt;&quot; 4:1
+TEXTO &quot;Segundo nivel escrito con espacio.&quot; 4:5
+SALTO_LINEA &quot;\n&quot; 4:39
+</pre></td><td><pre>CITA &quot;&gt; &gt;&quot; 4:1
+TEXTO &quot;Segundo nivel escrito con espacio.&quot; 4:5
+SALTO_LINEA &quot;\n&quot; 4:39
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 4: Negrita, cursiva y código combinados</h2>
+<p><span class="etiqueta">Válido</span> &nbsp; Archivo: <code>examples/casos/caso04_formato_combinado.md</code></p>
+<p><strong>Objetivo.</strong> Cursiva dentro de negrita, negrita dentro de cursiva, &quot;***&quot;, código en línea cuyo contenido no se interpreta, y una negrita que empieza en una línea de un párrafo y se cierra en la siguiente.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>Texto con **negrita**, *cursiva* y `código`.</span><span></span><span>**Negrita con *cursiva* adentro** y *cursiva con **negrita** adentro*.</span><span></span><span>***Negrita y cursiva a la vez***</span><span></span><span>`**esto es código, no negrita**`</span><span></span><span>Una negrita **seguida** de otra **negrita**.</span><span></span><span>Esta negrita **empieza en una línea</span><span>y se cierra en la siguiente** del mismo párrafo.</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML del párrafo 2</td><td><pre>&lt;p&gt;&lt;strong&gt;Negrita con &lt;em&gt;cursiva&lt;/em&gt; adentro&lt;/strong&gt; y &lt;em&gt;cursiva con &lt;strong&gt;negrita&lt;/strong&gt; adentro&lt;/em&gt;.&lt;/p&gt;</pre></td><td><pre>&lt;p&gt;&lt;strong&gt;Negrita con &lt;em&gt;cursiva&lt;/em&gt; adentro&lt;/strong&gt; y &lt;em&gt;cursiva con &lt;strong&gt;negrita&lt;/strong&gt; adentro&lt;/em&gt;.&lt;/p&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML del párrafo 3 (&quot;***&quot;)</td><td><pre>&lt;p&gt;&lt;strong&gt;&lt;em&gt;Negrita y cursiva a la vez&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;</pre></td><td><pre>&lt;p&gt;&lt;strong&gt;&lt;em&gt;Negrita y cursiva a la vez&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML del párrafo 4 (código)</td><td><pre>&lt;p&gt;&lt;code&gt;**esto es código, no negrita**&lt;/code&gt;&lt;/p&gt;</pre></td><td><pre>&lt;p&gt;&lt;code&gt;**esto es código, no negrita**&lt;/code&gt;&lt;/p&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML del párrafo 6 (negrita en dos líneas)</td><td><pre>&lt;p&gt;Esta negrita &lt;strong&gt;empieza en una línea
+y se cierra en la siguiente&lt;/strong&gt; del mismo párrafo.&lt;/p&gt;</pre></td><td><pre>&lt;p&gt;Esta negrita &lt;strong&gt;empieza en una línea
+y se cierra en la siguiente&lt;/strong&gt; del mismo párrafo.&lt;/p&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Tramos de negrita</td><td>7</td><td>7</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Tramos de cursiva</td><td>4</td><td>4</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Tramos de código en línea</td><td>2</td><td>2</td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 5: Negrita, cursiva y código en línea sin cerrar</h2>
+<p><span class="etiqueta">Error léxico</span> &nbsp; Archivo: <code>examples/casos/caso05_delimitadores_sin_cerrar.md</code></p>
+<p><strong>Objetivo.</strong> Un párrafo de tres líneas que abren un delimitador y nunca lo cierran. Al terminar el párrafo, cada error se reporta en su posición de apertura, y el análisis continúa: el párrafo siguiente se reconoce bien.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span># Delimitadores sin cerrar</span><span></span><span>Esta línea abre **negrita y nunca la cierra.</span><span>Esta abre *cursiva sin cierre.</span><span>Y esta abre `código en línea sin cierre.</span><span></span><span>Esta línea está **bien cerrada**, y el análisis sigue.</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores (tipo línea:columna)</td><td><pre>NEGRITA_SIN_CERRAR 3:17
+CURSIVA_SIN_CERRAR 4:11
+CODIGO_INLINE_SIN_CERRAR 5:13
+</pre></td><td><pre>NEGRITA_SIN_CERRAR 3:17
+CURSIVA_SIN_CERRAR 4:11
+CODIGO_INLINE_SIN_CERRAR 5:13
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Fase de los errores</td><td><pre>Léxico
+Léxico
+Léxico
+</pre></td><td><pre>Léxico
+Léxico
+Léxico
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>La línea 7 se sigue reconociendo</td><td><pre>TEXTO
+NEGRITA
+TEXTO
+NEGRITA
+TEXTO
+SALTO_LINEA
+</pre></td><td><pre>TEXTO
+NEGRITA
+TEXTO
+NEGRITA
+TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Archivos generados</td><td><pre>errores
+arbol
+</pre></td><td><pre>errores
+arbol
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<h3>Tabla de errores obtenida</h3>
+<table><tr><th>No.</th><th>Lexema</th><th>Tipo</th><th>Fase</th><th>Descripción</th></tr>
+<tr><td>1</td><td><code>**</code></td><td>NEGRITA_SIN_CERRAR</td><td>Léxico</td><td>Negrita sin cerrar iniciada en línea 3, columna 17</td></tr>
+<tr><td>2</td><td><code>*</code></td><td>CURSIVA_SIN_CERRAR</td><td>Léxico</td><td>Cursiva sin cerrar iniciada en línea 4, columna 11</td></tr>
+<tr><td>3</td><td><code>`</code></td><td>CODIGO_INLINE_SIN_CERRAR</td><td>Léxico</td><td>Código en línea sin cerrar iniciado en línea 5, columna 13</td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 6: Encabezado inválido (más de 6 &quot;#&quot;)</h2>
+<p><span class="etiqueta">Error léxico</span> &nbsp; Archivo: <code>examples/casos/caso06_encabezados.md</code></p>
+<p><strong>Objetivo.</strong> H1 y H6 válidos, un encabezado con 7 &quot;#&quot; (error) y &quot;#sinespacio&quot;, que no es error sino texto.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span># Nivel 1</span><span>###### Nivel 6, el máximo permitido</span><span>####### Siete numerales: encabezado inválido</span><span>#sinespacio no es encabezado, es texto</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><pre>ENCABEZADO_INVALIDO 3:1
+</pre></td><td><pre>ENCABEZADO_INVALIDO 3:1
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Línea 2: H6 válido</td><td><pre>NUMERAL
+TEXTO
+SALTO_LINEA
+</pre></td><td><pre>NUMERAL
+TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Línea 4: &quot;#sinespacio&quot; es texto</td><td><pre>TEXTO
+SALTO_LINEA
+</pre></td><td><pre>TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Mensaje del error</td><td>Encabezado inválido en línea 3: máximo 6 niveles</td><td>Encabezado inválido en línea 3: máximo 6 niveles</td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<h3>Tabla de errores obtenida</h3>
+<table><tr><th>No.</th><th>Lexema</th><th>Tipo</th><th>Fase</th><th>Descripción</th></tr>
+<tr><td>1</td><td><code>#######</code></td><td>ENCABEZADO_INVALIDO</td><td>Léxico</td><td>Encabezado inválido en línea 3: máximo 6 niveles</td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 7: Bloque de código sin cerrar</h2>
+<p><span class="etiqueta">Error léxico</span> &nbsp; Archivo: <code>examples/casos/caso07_codigo_sin_cerrar.md</code></p>
+<p><strong>Objetivo.</strong> Un bloque abierto con &quot;```python&quot; que llega al final del archivo. Su contenido tiene &quot;#&quot; y &quot;**&quot;, que no deben producir otros errores porque el bloque se analiza en modo literal.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>Texto antes del bloque.</span><span></span><span>```python</span><span># este comentario no es un encabezado</span><span>x = 2 ** 3   # ni esto es negrita</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><pre>BLOQUE_CODIGO_SIN_CERRAR 3:1
+</pre></td><td><pre>BLOQUE_CODIGO_SIN_CERRAR 3:1
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Líneas literales del bloque</td><td>2</td><td>2</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Mensaje del error</td><td>Bloque de código sin cerrar iniciado en línea 3</td><td>Bloque de código sin cerrar iniciado en línea 3</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>El análisis llega a FIN</td><td>FIN</td><td>FIN</td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<h3>Tabla de errores obtenida</h3>
+<table><tr><th>No.</th><th>Lexema</th><th>Tipo</th><th>Fase</th><th>Descripción</th></tr>
+<tr><td>1</td><td><code>```</code></td><td>BLOQUE_CODIGO_SIN_CERRAR</td><td>Léxico</td><td>Bloque de código sin cerrar iniciado en línea 3</td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 8: Indentación inconsistente</h2>
+<p><span class="etiqueta">Error sintáctico</span> &nbsp; Archivo: <code>examples/casos/caso08_indentacion.md</code></p>
+<p><strong>Objetivo.</strong> Un salto de 0 a 4 espacios (sintáctico), una sangría impar de 3 espacios (léxico) y una sublista sin ítem padre después de una línea vacía (sintáctico).</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>- Nivel 1</span><span>    - Salta de 0 a 4 espacios sin pasar por 2</span><span>- Nivel 1</span><span>   - Sangría de 3 espacios (impar)</span><span></span><span>  - Sublista sin ítem padre después de una línea vacía</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><pre>INDENTACION_INVALIDA 2:3
+INDENTACION_INVALIDA 4:4
+INDENTACION_INVALIDA 6:1
+</pre></td><td><pre>INDENTACION_INVALIDA 2:3
+INDENTACION_INVALIDA 4:4
+INDENTACION_INVALIDA 6:1
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Fase de cada error</td><td><pre>Sintáctico
+Léxico
+Sintáctico
+</pre></td><td><pre>Sintáctico
+Léxico
+Sintáctico
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>El árbol conserva todos los tokens (INDENT y DEDENT balanceados)</td><td>Sí</td><td>Sí</td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<h3>Tabla de errores obtenida</h3>
+<table><tr><th>No.</th><th>Lexema</th><th>Tipo</th><th>Fase</th><th>Descripción</th></tr>
+<tr><td>1</td><td><code>(sangría)</code></td><td>INDENTACION_INVALIDA</td><td>Sintáctico</td><td>Indentación inválida en línea 2, columna 3: la sangría sube más de un nivel de una vez</td></tr>
+<tr><td>2</td><td><code>(3 espacios)</code></td><td>INDENTACION_INVALIDA</td><td>Léxico</td><td>Indentación inválida en línea 4, columna 4: la sangría debe ser múltiplo de 2 espacios</td></tr>
+<tr><td>3</td><td><code>(sangría)</code></td><td>INDENTACION_INVALIDA</td><td>Sintáctico</td><td>Indentación inválida en línea 6, columna 1: sublista sin ítem padre</td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 9: Citas mal formadas</h2>
+<p><span class="etiqueta">Error sintáctico</span> &nbsp; Archivo: <code>examples/casos/caso09_citas_mal_formadas.md</code></p>
+<p><strong>Objetivo.</strong> Un &quot;&gt;&quot; sin espacio en los niveles 1 y 2, con las dos notaciones, intercalado con líneas bien formadas.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>&gt;Sin espacio después del símbolo</span><span>&gt; Bien formada</span><span>&gt;&gt;Nivel 2 sin espacio</span><span>&gt;&gt; Nivel 2 bien formada</span><span>&gt; &gt;También mal: falta el espacio al final</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><pre>CITA_MAL_FORMADA 1:1
+CITA_MAL_FORMADA 3:2
+CITA_MAL_FORMADA 5:3
+</pre></td><td><pre>CITA_MAL_FORMADA 1:1
+CITA_MAL_FORMADA 3:2
+CITA_MAL_FORMADA 5:3
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Fase de los errores</td><td><pre>Sintáctico
+Sintáctico
+Sintáctico
+</pre></td><td><pre>Sintáctico
+Sintáctico
+Sintáctico
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Mensaje del primer error</td><td>Cita mal formada en línea 1, columna 1</td><td>Cita mal formada en línea 1, columna 1</td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<h3>Tabla de errores obtenida</h3>
+<table><tr><th>No.</th><th>Lexema</th><th>Tipo</th><th>Fase</th><th>Descripción</th></tr>
+<tr><td>1</td><td><code>&gt;</code></td><td>CITA_MAL_FORMADA</td><td>Sintáctico</td><td>Cita mal formada en línea 1, columna 1</td></tr>
+<tr><td>2</td><td><code>&gt;&gt;</code></td><td>CITA_MAL_FORMADA</td><td>Sintáctico</td><td>Cita mal formada en línea 3, columna 2</td></tr>
+<tr><td>3</td><td><code>&gt; &gt;</code></td><td>CITA_MAL_FORMADA</td><td>Sintáctico</td><td>Cita mal formada en línea 5, columna 3</td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 10: Casos borde: reglas de prioridad del AFD</h2>
+<p><span class="etiqueta">Caso borde</span> &nbsp; Archivo: <code>examples/casos/caso10_ambiguedades.md</code></p>
+<p><strong>Objetivo.</strong> Viñeta contra cursiva, viñeta contra regla horizontal, &quot;#&quot; sin espacio, maximal munch de &quot;**&quot; y &quot;*&quot; dentro de código en línea.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>* Viñeta con asterisco</span><span>*cursiva al inicio de línea*</span><span>- - -</span><span>---</span><span>#sinespacio</span><span>**negrita** antes que *cursiva*</span><span>`2 * 3` dentro de código</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>&quot;* Viñeta&quot; es VIÑETA</td><td><pre>VIÑETA
+TEXTO
+SALTO_LINEA
+</pre></td><td><pre>VIÑETA
+TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>&quot;*cursiva*&quot; es CURSIVA</td><td><pre>CURSIVA
+TEXTO
+CURSIVA
+SALTO_LINEA
+</pre></td><td><pre>CURSIVA
+TEXTO
+CURSIVA
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>&quot;- - -&quot; es VIÑETA</td><td><pre>VIÑETA
+TEXTO
+SALTO_LINEA
+</pre></td><td><pre>VIÑETA
+TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>&quot;---&quot; es REGLA_HORIZONTAL</td><td><pre>REGLA_HORIZONTAL
+SALTO_LINEA
+</pre></td><td><pre>REGLA_HORIZONTAL
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>&quot;#sinespacio&quot; es TEXTO</td><td><pre>TEXTO
+SALTO_LINEA
+</pre></td><td><pre>TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>&quot;**&quot; es NEGRITA antes que dos CURSIVA</td><td><pre>NEGRITA
+TEXTO
+NEGRITA
+TEXTO
+CURSIVA
+TEXTO
+CURSIVA
+SALTO_LINEA
+</pre></td><td><pre>NEGRITA
+TEXTO
+NEGRITA
+TEXTO
+CURSIVA
+TEXTO
+CURSIVA
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>&quot;*&quot; dentro de código no es cursiva</td><td><pre>CODIGO_INLINE
+TEXTO_LITERAL
+CODIGO_INLINE
+TEXTO
+SALTO_LINEA
+</pre></td><td><pre>CODIGO_INLINE
+TEXTO_LITERAL
+CODIGO_INLINE
+TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 11: Documento sin encabezados</h2>
+<p><span class="etiqueta">Caso borde</span> &nbsp; Archivo: <code>examples/casos/caso11_sin_encabezados.md</code></p>
+<p><strong>Objetivo.</strong> El Reporte 3 debe indicar explícitamente que no hay encabezados, en vez de mostrarse vacío.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>Un documento sin ningún encabezado.</span><span></span><span>- Solo una lista</span><span>- y un párrafo.</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Encabezados</td><td>0</td><td>0</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>El Reporte 3 lo dice explícitamente</td><td>Sí</td><td>Sí</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Palabras</td><td>11</td><td>11</td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 12: Archivo de Windows: BOM, \r\n y sin salto final</h2>
+<p><span class="etiqueta">Caso borde</span> &nbsp; Archivo: <code>examples/casos/caso12_windows_bom_sin_salto.md</code></p>
+<p><strong>Objetivo.</strong> Archivo guardado con marca BOM, fines de línea &quot;\r\n&quot; y sin salto de línea al final. Las posiciones deben ser las mismas que con un archivo normal.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span>[BOM]# Título\r</span><span>\r</span><span>Texto final sin salto de línea</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Línea 1 (la BOM no ocupa columna)</td><td><pre>NUMERAL &quot;#&quot; 1:1
+TEXTO &quot;Título&quot; 1:3
+SALTO_LINEA &quot;\n&quot; 1:9
+</pre></td><td><pre>NUMERAL &quot;#&quot; 1:1
+TEXTO &quot;Título&quot; 1:3
+SALTO_LINEA &quot;\n&quot; 1:9
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Línea 3 (SALTO_LINEA virtual al final)</td><td><pre>TEXTO &quot;Texto final sin salto de línea&quot; 3:1
+SALTO_LINEA &quot;(virtual)&quot; 3:31
+FIN &quot;(virtual)&quot; 3:31
+</pre></td><td><pre>TEXTO &quot;Texto final sin salto de línea&quot; 3:1
+SALTO_LINEA &quot;(virtual)&quot; 3:31
+FIN &quot;(virtual)&quot; 3:31
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML (Reporte 1)</td><td><pre>&lt;h1 id=&quot;seccion-1&quot;&gt;Título&lt;/h1&gt;
+&lt;p&gt;Texto final sin salto de línea&lt;/p&gt;
+</pre></td><td><pre>&lt;h1 id=&quot;seccion-1&quot;&gt;Título&lt;/h1&gt;
+&lt;p&gt;Texto final sin salto de línea&lt;/p&gt;
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 13: Todas las categorías de error en una sola pasada</h2>
+<p><span class="etiqueta">Recuperación</span> &nbsp; Archivo: <code>examples/casos/caso13_errores_multiples.md</code></p>
+<p><strong>Objetivo.</strong> Un archivo con las 7 categorías de error de la sección 4.9. El análisis no se detiene en el primero (modo pánico): los reporta todos, ordenados por posición.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span># Todos los errores en una sola pasada</span><span></span><span>Texto con **negrita sin cerrar.</span><span>Texto con *cursiva sin cerrar.</span><span>Texto con `código sin cerrar.</span><span>######## Ocho numerales</span><span>- Ítem</span><span>    - Salto de nivel</span><span>&gt;Cita mal formada</span><span>Este párrafo final sí está bien.</span><span></span><span>```</span><span>sin cerrar</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><pre>NEGRITA_SIN_CERRAR 3:11
+CURSIVA_SIN_CERRAR 4:11
+CODIGO_INLINE_SIN_CERRAR 5:11
+ENCABEZADO_INVALIDO 6:1
+INDENTACION_INVALIDA 8:3
+CITA_MAL_FORMADA 9:1
+BLOQUE_CODIGO_SIN_CERRAR 12:1
+</pre></td><td><pre>NEGRITA_SIN_CERRAR 3:11
+CURSIVA_SIN_CERRAR 4:11
+CODIGO_INLINE_SIN_CERRAR 5:11
+ENCABEZADO_INVALIDO 6:1
+INDENTACION_INVALIDA 8:3
+CITA_MAL_FORMADA 9:1
+BLOQUE_CODIGO_SIN_CERRAR 12:1
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Fase de cada error</td><td><pre>Léxico
+Léxico
+Léxico
+Léxico
+Sintáctico
+Sintáctico
+Léxico
+</pre></td><td><pre>Léxico
+Léxico
+Léxico
+Léxico
+Sintáctico
+Sintáctico
+Léxico
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>El análisis llega a FIN</td><td>FIN</td><td>FIN</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>La frontera del árbol son todos los tokens</td><td>Sí</td><td>Sí</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Archivos generados</td><td><pre>errores
+arbol
+</pre></td><td><pre>errores
+arbol
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<h3>Tabla de errores obtenida</h3>
+<table><tr><th>No.</th><th>Lexema</th><th>Tipo</th><th>Fase</th><th>Descripción</th></tr>
+<tr><td>1</td><td><code>**</code></td><td>NEGRITA_SIN_CERRAR</td><td>Léxico</td><td>Negrita sin cerrar iniciada en línea 3, columna 11</td></tr>
+<tr><td>2</td><td><code>*</code></td><td>CURSIVA_SIN_CERRAR</td><td>Léxico</td><td>Cursiva sin cerrar iniciada en línea 4, columna 11</td></tr>
+<tr><td>3</td><td><code>`</code></td><td>CODIGO_INLINE_SIN_CERRAR</td><td>Léxico</td><td>Código en línea sin cerrar iniciado en línea 5, columna 11</td></tr>
+<tr><td>4</td><td><code>########</code></td><td>ENCABEZADO_INVALIDO</td><td>Léxico</td><td>Encabezado inválido en línea 6: máximo 6 niveles</td></tr>
+<tr><td>5</td><td><code>(sangría)</code></td><td>INDENTACION_INVALIDA</td><td>Sintáctico</td><td>Indentación inválida en línea 8, columna 3: la sangría sube más de un nivel de una vez</td></tr>
+<tr><td>6</td><td><code>&gt;</code></td><td>CITA_MAL_FORMADA</td><td>Sintáctico</td><td>Cita mal formada en línea 9, columna 1</td></tr>
+<tr><td>7</td><td><code>```</code></td><td>BLOQUE_CODIGO_SIN_CERRAR</td><td>Léxico</td><td>Bloque de código sin cerrar iniciado en línea 12</td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 14: Alcance opcional: listas numeradas, tareas, tachado, enlaces, imágenes, tablas y resaltado</h2>
+<p><span class="etiqueta">Alcance opcional</span> &nbsp; Archivo: <code>examples/casos/caso14_alcance_opcional.md</code></p>
+<p><strong>Objetivo.</strong> Un documento válido que usa todo el alcance opcional de la sección 4.2: lista numerada con tareas, tachado, un enlace con cursiva adentro, una tabla con las tres alineaciones, una imagen y un bloque de código que el Reporte 1 colorea con highlight.js.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span># Alcance opcional</span><span></span><span>Este archivo usa todo lo opcional: ~~nada obligatorio~~ y un enlace a la</span><span>[documentación de *Python*](https://docs.python.org/3/).</span><span></span><span>## Plan de trabajo</span><span></span><span>1. Diseñar la gramática</span><span>2. Programar el **parser**</span><span>  - [x] Funciones de bloques</span><span>  - [ ] Funciones en línea</span><span>3. Probar los casos</span><span></span><span>## Tokens nuevos</span><span></span><span>| Token | Ejemplo | Fase |</span><span>|:------|:-------:|-----:|</span><span>| TACHADO | `~~` | Léxico |</span><span>| NUMERO_LISTA | `1.` | Léxico |</span><span>| TABLA_MAL_FORMADA | — | Sintáctico |</span><span></span><span>![Diagrama del AFD](../../docs/diseno/afd_markdowncheck.png)</span><span></span><span>```python</span><span>def saludar(nombre):</span><span>    return &quot;Hola, &quot; + nombre</span><span>```</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><em>(ninguno)</em></td><td><em>(ninguno)</em></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML del párrafo (tachado y enlace)</td><td><pre>&lt;p&gt;Este archivo usa todo lo opcional: &lt;del&gt;nada obligatorio&lt;/del&gt; y un enlace a la
+&lt;a href=&quot;https://docs.python.org/3/&quot;&gt;documentación de &lt;em&gt;Python&lt;/em&gt;&lt;/a&gt;.&lt;/p&gt;</pre></td><td><pre>&lt;p&gt;Este archivo usa todo lo opcional: &lt;del&gt;nada obligatorio&lt;/del&gt; y un enlace a la
+&lt;a href=&quot;https://docs.python.org/3/&quot;&gt;documentación de &lt;em&gt;Python&lt;/em&gt;&lt;/a&gt;.&lt;/p&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML de la lista numerada con tareas</td><td><pre>&lt;ol&gt;&lt;li&gt;Diseñar la gramática&lt;/li&gt;&lt;li&gt;Programar el &lt;strong&gt;parser&lt;/strong&gt;&lt;ul&gt;&lt;li class=&quot;tarea&quot;&gt;&lt;input type=&quot;checkbox&quot; disabled checked&gt; Funciones de bloques&lt;/li&gt;&lt;li class=&quot;tarea&quot;&gt;&lt;input type=&quot;checkbox&quot; disabled&gt; Funciones en línea&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Probar los casos&lt;/li&gt;&lt;/ol&gt;</pre></td><td><pre>&lt;ol&gt;&lt;li&gt;Diseñar la gramática&lt;/li&gt;&lt;li&gt;Programar el &lt;strong&gt;parser&lt;/strong&gt;&lt;ul&gt;&lt;li class=&quot;tarea&quot;&gt;&lt;input type=&quot;checkbox&quot; disabled checked&gt; Funciones de bloques&lt;/li&gt;&lt;li class=&quot;tarea&quot;&gt;&lt;input type=&quot;checkbox&quot; disabled&gt; Funciones en línea&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Probar los casos&lt;/li&gt;&lt;/ol&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Encabezado de la tabla y su alineación</td><td>Sí</td><td>Sí</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>HTML de la imagen</td><td><pre>&lt;p&gt;&lt;img src=&quot;../../docs/diseno/afd_markdowncheck.png&quot; alt=&quot;Diagrama del AFD&quot;&gt;&lt;/p&gt;</pre></td><td><pre>&lt;p&gt;&lt;img src=&quot;../../docs/diseno/afd_markdowncheck.png&quot; alt=&quot;Diagrama del AFD&quot;&gt;&lt;/p&gt;</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Listas numeradas, tareas y tareas hechas</td><td><pre>1
+2
+1
+</pre></td><td><pre>1
+2
+1
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Tachados, enlaces, imágenes y tablas</td><td><pre>1
+1
+1
+1
+</pre></td><td><pre>1
+1
+1
+1
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Palabras (la imagen no cuenta)</td><td>50</td><td>50</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>El Reporte 1 trae highlight.js para el bloque python</td><td>Sí</td><td>Sí</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Archivos generados</td><td><pre>documento
+estadisticas
+indice
+arbol
+</pre></td><td><pre>documento
+estadisticas
+indice
+arbol
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+<section class="caso">
+<h2>Caso 15: Errores del alcance opcional</h2>
+<p><span class="etiqueta">Alcance opcional</span> &nbsp; Archivo: <code>examples/casos/caso15_errores_alcance_opcional.md</code></p>
+<p><strong>Objetivo.</strong> Un tachado sin cerrar (léxico) y tres tablas mal formadas (sintáctico): sin fila separadora, una fila con una celda de más y una fila que no termina con &quot;|&quot;. Un corchete que no forma un enlace completo es texto, no un error.</p>
+<h3>Entrada</h3>
+<pre class="entrada"><span># Errores del alcance opcional</span><span></span><span>Este ~~tachado no se cierra.</span><span></span><span>| Columna A | Columna B |</span><span>| falta | la separadora |</span><span></span><span>| A | B |</span><span>|---|---|</span><span>| 1 | 2 | 3 |</span><span>| 4 | 5</span><span></span><span>Un [corchete suelto](sin cerrar no es un error, es texto.</span></pre><h3>Resultado esperado y obtenido</h3>
+<table><tr><th>Verificación</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Estado</th></tr>
+<tr><td>Errores</td><td><pre>TACHADO_SIN_CERRAR 3:6
+TABLA_MAL_FORMADA 5:1
+TABLA_MAL_FORMADA 10:1
+TABLA_MAL_FORMADA 11:1
+</pre></td><td><pre>TACHADO_SIN_CERRAR 3:6
+TABLA_MAL_FORMADA 5:1
+TABLA_MAL_FORMADA 10:1
+TABLA_MAL_FORMADA 11:1
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Fase de cada error</td><td><pre>Léxico
+Sintáctico
+Sintáctico
+Sintáctico
+</pre></td><td><pre>Léxico
+Sintáctico
+Sintáctico
+Sintáctico
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Mensaje del tachado</td><td>Tachado sin cerrar iniciado en línea 3, columna 6</td><td>Tachado sin cerrar iniciado en línea 3, columna 6</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Mensaje de la fila con una celda de más</td><td>Tabla mal formada en línea 10, columna 1: la fila tiene 3 celdas y la tabla 2 columnas</td><td>Tabla mal formada en línea 10, columna 1: la fila tiene 3 celdas y la tabla 2 columnas</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>La última línea es solo texto</td><td><pre>TEXTO
+TEXTO
+SALTO_LINEA
+</pre></td><td><pre>TEXTO
+TEXTO
+SALTO_LINEA
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>La frontera del árbol son todos los tokens</td><td>Sí</td><td>Sí</td><td><span class="ok">Cumple</span></td></tr>
+<tr><td>Archivos generados</td><td><pre>errores
+arbol
+</pre></td><td><pre>errores
+arbol
+</pre></td><td><span class="ok">Cumple</span></td></tr>
+</table>
+<h3>Tabla de errores obtenida</h3>
+<table><tr><th>No.</th><th>Lexema</th><th>Tipo</th><th>Fase</th><th>Descripción</th></tr>
+<tr><td>1</td><td><code>~~</code></td><td>TACHADO_SIN_CERRAR</td><td>Léxico</td><td>Tachado sin cerrar iniciado en línea 3, columna 6</td></tr>
+<tr><td>2</td><td><code>|</code></td><td>TABLA_MAL_FORMADA</td><td>Sintáctico</td><td>Tabla mal formada en línea 5, columna 1: falta la fila separadora (|---|) después del encabezado</td></tr>
+<tr><td>3</td><td><code>|</code></td><td>TABLA_MAL_FORMADA</td><td>Sintáctico</td><td>Tabla mal formada en línea 10, columna 1: la fila tiene 3 celdas y la tabla 2 columnas</td></tr>
+<tr><td>4</td><td><code>|</code></td><td>TABLA_MAL_FORMADA</td><td>Sintáctico</td><td>Tabla mal formada en línea 11, columna 1: la fila no termina con '|'</td></tr>
+</table>
+<p>Veredicto: <span class="ok">Aprobado</span></p>
+</section>
+</main>
+</body>
+</html>
