@@ -20,6 +20,9 @@ SEPARADORES = [' ', '\t']
 # de la sangria) y les sigue un separador.
 MARCADORES_LISTA = ['-', '*', '+']
 
+# Digitos de un NUMERO_LISTA ('1.', '2.', '10.'), del alcance opcional.
+DIGITOS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
 # Caracteres que cortan un TEXTO dentro de una linea (estado q15): a partir
 # de ellos puede empezar NEGRITA, CURSIVA o CODIGO_INLINE.
 DELIMITADORES_EN_LINEA = ['*', '`']
@@ -49,6 +52,11 @@ def es_separador(c):
 def es_marcador_lista(c):
     """True si c es '-', '*' o '+'."""
     return indice_en(c, MARCADORES_LISTA) != -1
+
+
+def es_digito(c):
+    """True si c es un digito del 0 al 9."""
+    return indice_en(c, DIGITOS) != -1
 
 
 def es_delimitador_en_linea(c):

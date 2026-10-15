@@ -24,6 +24,10 @@ CITA_MAL_FORMADA = 'CITA_MAL_FORMADA'
 # Tipo agregado (seccion 5 del documento de diseno)
 TOKEN_INESPERADO = 'TOKEN_INESPERADO'
 
+# Tipos del alcance opcional (D-31 y D-33)
+TACHADO_SIN_CERRAR = 'TACHADO_SIN_CERRAR'
+TABLA_MAL_FORMADA = 'TABLA_MAL_FORMADA'
+
 
 class ErrorAnalisis:
     """

@@ -33,6 +33,21 @@ TEXTO_LITERAL = 'TEXTO_LITERAL'
 LENGUAJE_CODIGO = 'LENGUAJE_CODIGO'
 FIN = 'FIN'
 
+# ----------------------------------------------------------------------
+# Tipos del alcance opcional (seccion 2.4 del documento de diseno)
+# ----------------------------------------------------------------------
+NUMERO_LISTA = 'NUMERO_LISTA'          # '1.' al inicio de un item numerado
+CASILLA = 'CASILLA'                    # '[ ]' o '[x]' de una lista de tareas
+TACHADO = 'TACHADO'                    # '~~'
+CORCHETE_ABRE = 'CORCHETE_ABRE'        # '[' de un enlace
+IMAGEN_ABRE = 'IMAGEN_ABRE'            # '![' de una imagen
+CORCHETE_CIERRA = 'CORCHETE_CIERRA'    # ']' de un enlace o una imagen
+PARENTESIS_ABRE = 'PARENTESIS_ABRE'    # '(' del destino
+URL = 'URL'                            # lo que hay entre los parentesis
+PARENTESIS_CIERRA = 'PARENTESIS_CIERRA'  # ')' del destino
+BARRA = 'BARRA'                        # '|' de una fila de tabla
+SEPARADOR_TABLA = 'SEPARADOR_TABLA'    # la fila '|---|:---:|' completa
+
 
 class Token:
     """
