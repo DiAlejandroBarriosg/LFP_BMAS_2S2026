@@ -210,6 +210,12 @@ td code { white-space: nowrap; }
 pre { font-size: 12px; }
 li > img { margin-top: 10px; }
 @page { size: Letter; margin: 16mm 14mm; }
+
+.nombre { font-weight: 700; }
+.literal { white-space: pre-wrap; }
+td .nombre, td .literal, th .nombre, th .literal { white-space: nowrap; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #000; }
 </style>
 </head>
 <body>
@@ -238,13 +244,13 @@ li > img { margin-top: 10px; }
 <div class="salto"></div>
 
 <h2>1. ¿Qué es MarkdownCheck?</h2>
-<p>MarkdownCheck lee un documento escrito en Markdown (un archivo <code>.md</code>),
+<p>MarkdownCheck lee un documento escrito en Markdown (un archivo <strong class="nombre">.md</strong>),
 revisa que esté bien escrito y lo convierte en una página HTML que se puede
 abrir en cualquier navegador.</p>
 <p>El análisis tiene dos etapas:</p>
 <ol>
 <li><strong>Análisis léxico.</strong> El programa separa el texto en piezas llamadas
-   <em>tokens</em>: un <code>#</code> de encabezado, un <code>**</code> de negrita, un texto, un salto de
+   <em>tokens</em>: un <span class="literal">"#"</span> de encabezado, un <span class="literal">"**"</span> de negrita, un texto, un salto de
    línea…</li>
 <li><strong>Análisis sintáctico.</strong> Revisa que esas piezas estén en un orden válido
    (por ejemplo, que una negrita que se abre también se cierre) y arma con
@@ -281,34 +287,34 @@ demasiado anidada y colorea el código en el Reporte 1.</p>
 <tr>
 <td>Graphviz</td>
 <td>No</td>
-<td>Convertir el árbol de derivación (<code>arbol.dot</code>) en una imagen. Sin Graphviz, todo lo demás funciona igual.</td>
+<td>Convertir el árbol de derivación (<strong class="nombre">arbol.dot</strong>) en una imagen. Sin Graphviz, todo lo demás funciona igual.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Verificar Python.</strong> En una terminal (PowerShell o Símbolo del sistema):</p>
 <pre><code>python --version
 </code></pre>
-<p>Debe mostrar <code>Python 3.10</code> o un número mayor. Si dice que el comando no
+<p>Debe mostrar <span class="literal">"Python 3.10"</span> o un número mayor. Si dice que el comando no
 existe, instale Python desde python.org y marque la casilla
 <strong>Add Python to PATH</strong> durante la instalación.</p>
 <p><strong>Instalar Graphviz (opcional).</strong> En Windows:</p>
 <pre><code>winget install graphviz
 </code></pre>
 <p>o descárguelo desde graphviz.org. Después de instalarlo, cierre y vuelva a
-abrir la terminal, y verifique con <code>dot -V</code>.</p>
+abrir la terminal, y verifique con <span class="literal">"dot -V"</span>.</p>
 <h2>3. Cómo ejecutar la aplicación</h2>
-<p>Abra una terminal en la carpeta <code>Proyecto2</code> y ejecute:</p>
+<p>Abra una terminal en la carpeta <strong class="nombre">Proyecto2</strong> y ejecute:</p>
 <pre><code>python src/main.py
 </code></pre>
 <p>Para abrir la ventana con un archivo ya cargado, escriba la ruta después:</p>
 <pre><code>python src/main.py examples/ejemplo_valido.md
 </code></pre>
-<p><strong>Desde Visual Studio Code.</strong> Abra la carpeta <code>Proyecto2</code>, vaya a la vista
+<p><strong>Desde Visual Studio Code.</strong> Abra la carpeta <strong class="nombre">Proyecto2</strong>, vaya a la vista
 <strong>Ejecutar y depurar</strong> (Ctrl+Shift+D), elija <strong>MarkdownCheck (ventana)</strong> o
 <strong>MarkdownCheck (ejemplo valido)</strong> y presione F5.</p>
 <p>Al iniciar se abre la ventana vacía:</p>
 <p><img alt="Ventana al iniciar" src="capturas/01_ventana_inicial.png" /></p>
-<p>La carpeta <code>examples</code> trae archivos listos para probar:</p>
+<p>La carpeta <strong class="nombre">examples</strong> trae archivos listos para probar:</p>
 <table>
 <thead>
 <tr>
@@ -318,23 +324,23 @@ abrir la terminal, y verifique con <code>dot -V</code>.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>ejemplo_valido.md</code></td>
+<td><strong class="nombre">ejemplo_valido.md</strong></td>
 <td>El ejemplo del enunciado: todos los elementos, sin errores.</td>
 </tr>
 <tr>
-<td><code>casos_borde.md</code></td>
+<td><strong class="nombre">casos_borde.md</strong></td>
 <td>Casos especiales que el programa debe aceptar.</td>
 </tr>
 <tr>
-<td><code>errores_lexicos.md</code></td>
+<td><strong class="nombre">errores_lexicos.md</strong></td>
 <td>Un error léxico de cada tipo.</td>
 </tr>
 <tr>
-<td><code>errores_sintacticos.md</code></td>
+<td><strong class="nombre">errores_sintacticos.md</strong></td>
 <td>Errores de indentación y de citas.</td>
 </tr>
 <tr>
-<td><code>casos/</code></td>
+<td><strong class="nombre">casos/</strong></td>
 <td>Los 15 casos del documento <em>Casos de Prueba</em>. El caso 14 usa todo el alcance opcional (listas numeradas, tareas, tachado, enlaces, imágenes y tablas).</td>
 </tr>
 </tbody>
@@ -421,7 +427,7 @@ abrir la terminal, y verifique con <code>dot -V</code>.</p>
 <tbody>
 <tr>
 <td>Encabezado</td>
-<td>De 1 a 6 <code>#</code>, un espacio y el título: <code>## Título</code></td>
+<td>De 1 a 6 <span class="literal">"#"</span>, un espacio y el título: <span class="literal">"## Título"</span></td>
 <td>Un título de nivel 1 a 6.</td>
 </tr>
 <tr>
@@ -431,52 +437,52 @@ abrir la terminal, y verifique con <code>dot -V</code>.</p>
 </tr>
 <tr>
 <td>Negrita</td>
-<td><code>**texto**</code></td>
+<td><span class="literal">"**texto**"</span></td>
 <td><strong>texto</strong></td>
 </tr>
 <tr>
 <td>Cursiva</td>
-<td><code>*texto*</code></td>
+<td><span class="literal">"*texto*"</span></td>
 <td><em>texto</em></td>
 </tr>
 <tr>
 <td>Negrita y cursiva</td>
-<td><code>***texto***</code>, o una dentro de la otra: <code>**muy *importante***</code></td>
+<td><span class="literal">"***texto***"</span>, o una dentro de la otra: <span class="literal">"**muy *importante***"</span></td>
 <td>Las dos combinadas.</td>
 </tr>
 <tr>
 <td>Código en línea</td>
-<td><code>`variable`</code></td>
-<td><code>variable</code>, sin interpretar lo que hay adentro.</td>
+<td><span class="literal">"`variable`"</span></td>
+<td><strong class="nombre">variable</strong>, sin interpretar lo que hay adentro.</td>
 </tr>
 <tr>
 <td>Lista</td>
-<td><code>-</code>, <code>*</code> o <code>+</code>, un espacio y el texto: <code>- Elemento</code></td>
+<td><span class="literal">"-"</span>, <span class="literal">"*"</span> o <span class="literal">"+"</span>, un espacio y el texto: <span class="literal">"- Elemento"</span></td>
 <td>Una lista con viñetas.</td>
 </tr>
 <tr>
 <td>Sublista</td>
-<td>Dos espacios más de sangría por cada nivel: <code>- Subelemento</code></td>
+<td>Dos espacios más de sangría por cada nivel: <span class="literal">"- Subelemento"</span></td>
 <td>Una lista dentro de otra, sin límite de niveles.</td>
 </tr>
 <tr>
 <td>Cita</td>
-<td><code>&gt;</code>, un espacio y el texto: <code>&gt; Cita</code></td>
+<td><span class="literal">"&gt;"</span>, un espacio y el texto: <span class="literal">"&gt; Cita"</span></td>
 <td>Un bloque de cita.</td>
 </tr>
 <tr>
 <td>Cita anidada</td>
-<td><code>&gt;&gt;</code> o <code>&gt; &gt;</code> y el texto: <code>&gt;&gt; Cita interna</code></td>
+<td><span class="literal">"&gt;&gt;"</span> o <span class="literal">"&gt; &gt;"</span> y el texto: <span class="literal">"&gt;&gt; Cita interna"</span></td>
 <td>Una cita dentro de otra.</td>
 </tr>
 <tr>
 <td>Bloque de código</td>
-<td>Una línea con <code>```</code> (opcionalmente con el lenguaje: <code>```python</code>), el código, y otra línea con <code>```</code></td>
+<td>Una línea con <span class="literal">"```"</span> (opcionalmente con el lenguaje: <span class="literal">"```python"</span>), el código, y otra línea con <span class="literal">"```"</span></td>
 <td>El código tal como está escrito.</td>
 </tr>
 <tr>
 <td>Regla horizontal</td>
-<td>Tres o más guiones solos en una línea: <code>---</code></td>
+<td>Tres o más guiones solos en una línea: <span class="literal">"---"</span></td>
 <td>Una línea separadora.</td>
 </tr>
 </tbody>
@@ -493,33 +499,33 @@ abrir la terminal, y verifique con <code>dot -V</code>.</p>
 <tbody>
 <tr>
 <td>Lista numerada</td>
-<td>Un número, un punto, un espacio y el texto: <code>1. Primero</code></td>
+<td>Un número, un punto, un espacio y el texto: <span class="literal">"1. Primero"</span></td>
 <td>Una lista numerada. Empieza en el número del primer ítem.</td>
 </tr>
 <tr>
 <td>Lista de tareas</td>
-<td>Después de la viñeta (o del número), <code>[ ]</code> o <code>[x]</code> y un espacio: <code>- [x] Hecho</code></td>
+<td>Después de la viñeta (o del número), <span class="literal">"[ ]"</span> o <span class="literal">"[x]"</span> y un espacio: <span class="literal">"- [x] Hecho"</span></td>
 <td>Una casilla vacía o marcada.</td>
 </tr>
 <tr>
 <td>Tachado</td>
-<td><code>~~texto~~</code></td>
+<td><span class="literal">"~~texto~~"</span></td>
 <td><del>texto</del></td>
 </tr>
 <tr>
 <td>Enlace</td>
-<td><code>[texto](https://direccion)</code></td>
+<td><span class="literal">"[texto](https://direccion)"</span></td>
 <td>Un enlace; el texto puede tener negrita, cursiva o código.</td>
 </tr>
 <tr>
 <td>Imagen</td>
-<td><code>![descripción](ruta/imagen.png)</code></td>
+<td><span class="literal">"![descripción](ruta/imagen.png)"</span></td>
 <td>La imagen; si no se encuentra, se ve la descripción.</td>
 </tr>
 <tr>
 <td>Tabla</td>
 <td>Una fila de títulos, una fila separadora y las filas de datos, cada una entre barras verticales (ejemplo abajo).</td>
-<td>Una tabla. En la fila separadora, <code>:--</code> alinea a la izquierda, <code>:-:</code> al centro y <code>--:</code> a la derecha.</td>
+<td>Una tabla. En la fila separadora, <span class="literal">":--"</span> alinea a la izquierda, <span class="literal">":-:"</span> al centro y <span class="literal">"--:"</span> a la derecha.</td>
 </tr>
 </tbody>
 </table>
@@ -539,21 +545,20 @@ abrir la terminal, y verifique con <code>dot -V</code>.</p>
 <li><strong>La negrita, la cursiva y el código en línea se cierran en el mismo
   bloque.</strong> En un párrafo pueden cerrarse en una línea siguiente; en un
   encabezado, un ítem de lista o una línea de cita, en la misma línea.</li>
-<li><strong>Después de <code>#</code>, de la viñeta y de <code>&gt;</code> va un espacio.</strong> <code>#Título</code> no es un
-  encabezado sino texto, y <code>&gt;Cita</code> es una cita mal formada.</li>
-<li><strong>Un asterisco suelto abre una cursiva.</strong> En <code>5 * 3</code> el <code>*</code> se toma como el
+<li><strong>Después de <span class="literal">"#"</span>, de la viñeta y de <span class="literal">"&gt;"</span> va un espacio.</strong> <span class="literal">"#Título"</span> no es un
+  encabezado sino texto, y <span class="literal">"&gt;Cita"</span> es una cita mal formada.</li>
+<li><strong>Un asterisco suelto abre una cursiva.</strong> En <span class="literal">"5 * 3"</span> el <span class="literal">"*"</span> se toma como el
   inicio de una cursiva que nunca se cierra. Para escribir un asterisco como
-  texto, póngalo en código en línea: <code>`5 * 3`</code>.</li>
-<li><strong>Dentro de un bloque de código no se interpreta nada.</strong> <code>**</code>, <code>#</code> o <code>-</code>
+  texto, póngalo en código en línea: <span class="literal">"`5 * 3`"</span>.</li>
+<li><strong>Dentro de un bloque de código no se interpreta nada.</strong> <span class="literal">"**"</span>, <span class="literal">"#"</span> o <span class="literal">"-"</span>
   ahí adentro son parte del código.</li>
-<li><strong>Un enlace va completo en una línea.</strong> <code>[texto](direccion)</code> sin espacios
+<li><strong>Un enlace va completo en una línea.</strong> <span class="literal">"[texto](direccion)"</span> sin espacios
   en la dirección. Si falta algo, los corchetes se quedan como texto normal
   (no es un error).</li>
-<li><strong>Cada fila de una tabla empieza y termina con <code>|</code></strong>, y todas tienen tantas
+<li><strong>Cada fila de una tabla empieza y termina con <span class="literal">"|"</span></strong>, y todas tienen tantas
   celdas como la fila de títulos. Una negrita o un tachado se cierran dentro
   de su celda.</li>
-<li><strong>Las imágenes se buscan desde la carpeta del reporte</strong> (<code>salida/&lt;nombre
-  del archivo&gt;/</code>). Una dirección de internet (<code>https://…</code>) funciona desde
+<li><strong>Las imágenes se buscan desde la carpeta del reporte</strong> (<span class="literal">"salida/&lt;nombre del archivo&gt;/"</span>). Una dirección de internet (<span class="literal">"https://…"</span>) funciona desde
   cualquier lugar si hay conexión.</li>
 <li><strong>Los archivos deben estar en UTF-8</strong>, la codificación normal de VS Code y
   del Bloc de notas actual.</li>
@@ -599,7 +604,7 @@ en el orden del archivo.</p>
 </tr>
 <tr>
 <td>Lexema</td>
-<td>El texto exacto que forma el token. <code>\n</code> es un salto de línea; <em>(virtual)</em> indica un token que no tiene texto en el archivo.</td>
+<td>El texto exacto que forma el token. <span class="literal">"\n"</span> es un salto de línea; <em>(virtual)</em> indica un token que no tiene texto en el archivo.</td>
 </tr>
 <tr>
 <td>Tipo</td>
@@ -612,7 +617,7 @@ en el orden del archivo.</p>
 </tbody>
 </table>
 <p><strong>Haga clic en una fila</strong> y el editor salta a ese token y lo resalta en
-amarillo. En la imagen se eligió el token 6, el <code>**</code> que abre la negrita de
+amarillo. En la imagen se eligió el token 6, el <span class="literal">"**"</span> que abre la negrita de
 la línea 3.</p>
 <table>
 <thead>
@@ -623,75 +628,75 @@ la línea 3.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>NUMERAL</code></td>
-<td>Los <code>#</code> de un encabezado.</td>
+<td><strong class="nombre">NUMERAL</strong></td>
+<td>Los <span class="literal">"#"</span> de un encabezado.</td>
 </tr>
 <tr>
-<td><code>TEXTO</code></td>
+<td><strong class="nombre">TEXTO</strong></td>
 <td>Texto normal.</td>
 </tr>
 <tr>
-<td><code>NEGRITA</code>, <code>CURSIVA</code></td>
-<td>Los <code>**</code> y <code>*</code> que abren o cierran el énfasis.</td>
+<td><strong class="nombre">NEGRITA</strong>, <strong class="nombre">CURSIVA</strong></td>
+<td>Los <span class="literal">"**"</span> y <span class="literal">"*"</span> que abren o cierran el énfasis.</td>
 </tr>
 <tr>
-<td><code>CODIGO_INLINE</code></td>
+<td><strong class="nombre">CODIGO_INLINE</strong></td>
 <td>Los acentos graves de un código en línea.</td>
 </tr>
 <tr>
-<td><code>TEXTO_LITERAL</code></td>
+<td><strong class="nombre">TEXTO_LITERAL</strong></td>
 <td>Texto que no se interpreta: el interior de un código en línea, cada línea de un bloque de código o la descripción de una imagen.</td>
 </tr>
 <tr>
-<td><code>VIÑETA</code></td>
-<td>El <code>-</code>, <code>*</code> o <code>+</code> de un elemento de lista.</td>
+<td><strong class="nombre">VIÑETA</strong></td>
+<td>El <span class="literal">"-"</span>, <span class="literal">"*"</span> o <span class="literal">"+"</span> de un elemento de lista.</td>
 </tr>
 <tr>
-<td><code>INDENT</code>, <code>DEDENT</code></td>
+<td><strong class="nombre">INDENT</strong>, <strong class="nombre">DEDENT</strong></td>
 <td>Tokens virtuales: la lista sube o baja un nivel.</td>
 </tr>
 <tr>
-<td><code>CITA</code></td>
-<td>Los <code>&gt;</code> de una cita. Su cantidad es el nivel.</td>
+<td><strong class="nombre">CITA</strong></td>
+<td>Los <span class="literal">"&gt;"</span> de una cita. Su cantidad es el nivel.</td>
 </tr>
 <tr>
-<td><code>CERCA_CODIGO</code>, <code>LENGUAJE_CODIGO</code></td>
-<td>Los <code>```</code> de un bloque de código y el lenguaje que lo acompaña.</td>
+<td><strong class="nombre">CERCA_CODIGO</strong>, <strong class="nombre">LENGUAJE_CODIGO</strong></td>
+<td>Los <span class="literal">"```"</span> de un bloque de código y el lenguaje que lo acompaña.</td>
 </tr>
 <tr>
-<td><code>REGLA_HORIZONTAL</code></td>
-<td>Los <code>---</code> de una regla.</td>
+<td><strong class="nombre">REGLA_HORIZONTAL</strong></td>
+<td>Los <span class="literal">"---"</span> de una regla.</td>
 </tr>
 <tr>
-<td><code>SALTO_LINEA</code></td>
+<td><strong class="nombre">SALTO_LINEA</strong></td>
 <td>El final de una línea con contenido.</td>
 </tr>
 <tr>
-<td><code>SALTO_PARRAFO</code></td>
+<td><strong class="nombre">SALTO_PARRAFO</strong></td>
 <td>Una línea en blanco.</td>
 </tr>
 <tr>
-<td><code>FIN</code></td>
+<td><strong class="nombre">FIN</strong></td>
 <td>El final del archivo.</td>
 </tr>
 <tr>
-<td><code>NUMERO_LISTA</code>, <code>CASILLA</code></td>
-<td>El <code>1.</code> de una lista numerada y el <code>[ ]</code> o <code>[x]</code> de una tarea.</td>
+<td><strong class="nombre">NUMERO_LISTA</strong>, <strong class="nombre">CASILLA</strong></td>
+<td>El <span class="literal">"1."</span> de una lista numerada y el <span class="literal">"[ ]"</span> o <span class="literal">"[x]"</span> de una tarea.</td>
 </tr>
 <tr>
-<td><code>TACHADO</code></td>
-<td>Los <code>~~</code> que abren o cierran un tachado.</td>
+<td><strong class="nombre">TACHADO</strong></td>
+<td>Los <span class="literal">"~~"</span> que abren o cierran un tachado.</td>
 </tr>
 <tr>
-<td><code>CORCHETE_ABRE</code>, <code>IMAGEN_ABRE</code>, <code>CORCHETE_CIERRA</code></td>
-<td>El <code>[</code> de un enlace, el <code>![</code> de una imagen y el <code>]</code> que los cierra.</td>
+<td><strong class="nombre">CORCHETE_ABRE</strong>, <strong class="nombre">IMAGEN_ABRE</strong>, <strong class="nombre">CORCHETE_CIERRA</strong></td>
+<td>El <span class="literal">"["</span> de un enlace, el <span class="literal">"!["</span> de una imagen y el <span class="literal">"]"</span> que los cierra.</td>
 </tr>
 <tr>
-<td><code>PARENTESIS_ABRE</code>, <code>URL</code>, <code>PARENTESIS_CIERRA</code></td>
+<td><strong class="nombre">PARENTESIS_ABRE</strong>, <strong class="nombre">URL</strong>, <strong class="nombre">PARENTESIS_CIERRA</strong></td>
 <td>La dirección de un enlace o una imagen, con sus paréntesis.</td>
 </tr>
 <tr>
-<td><code>BARRA</code>, <code>SEPARADOR_TABLA</code></td>
+<td><strong class="nombre">BARRA</strong>, <strong class="nombre">SEPARADOR_TABLA</strong></td>
 <td>Cada barra vertical de una fila de tabla, y la fila separadora completa.</td>
 </tr>
 </tbody>
@@ -701,12 +706,12 @@ la línea 3.</p>
 organizó los tokens según la gramática del lenguaje.</p>
 <p><img alt="Árbol de derivación" src="capturas/05_arbol.png" /></p>
 <ul>
-<li>Los nombres entre <code>&lt; &gt;</code>, como <code>&lt;lista&gt;</code> o <code>&lt;encabezado&gt;</code>, son las partes de
+<li>Los nombres entre <span class="literal">"&lt; &gt;"</span>, como <strong class="nombre">&lt;lista&gt;</strong> o <strong class="nombre">&lt;encabezado&gt;</strong>, son las partes de
   la gramática. Los demás son tokens, con su lexema entre comillas.</li>
 <li>Haga clic en el triángulo de un nodo para abrirlo o cerrarlo. Al analizar,
   los primeros niveles quedan abiertos.</li>
 <li>Las listas y las citas indican su <strong>nivel</strong>: en la imagen, la lista
-  <code>nivel 2</code> está dentro de un elemento de la lista <code>nivel 1</code>.</li>
+  <span class="literal">"nivel 2"</span> está dentro de un elemento de la lista <span class="literal">"nivel 1"</span>.</li>
 </ul>
 <p>El mismo árbol también se guarda como imagen (sección 10.5).</p>
 <div class="salto"></div>
@@ -765,61 +770,61 @@ reportes 1, 2 y 3 no se generan: corrija los errores y vuelva a presionar
 </thead>
 <tbody>
 <tr>
-<td><code>NEGRITA_SIN_CERRAR</code></td>
+<td><strong class="nombre">NEGRITA_SIN_CERRAR</strong></td>
 <td>Léxico</td>
-<td>Se abrió <code>**</code> y el bloque (el párrafo, el ítem, el encabezado o la línea de cita) terminó sin cerrarlo.</td>
-<td>Agregue el <code>**</code> de cierre antes de que termine el bloque.</td>
+<td>Se abrió <span class="literal">"**"</span> y el bloque (el párrafo, el ítem, el encabezado o la línea de cita) terminó sin cerrarlo.</td>
+<td>Agregue el <span class="literal">"**"</span> de cierre antes de que termine el bloque.</td>
 </tr>
 <tr>
-<td><code>CURSIVA_SIN_CERRAR</code></td>
+<td><strong class="nombre">CURSIVA_SIN_CERRAR</strong></td>
 <td>Léxico</td>
-<td>Se abrió <code>*</code> y el bloque terminó sin cerrarlo.</td>
-<td>Agregue el <code>*</code> de cierre, o ponga el asterisco dentro de código en línea si era un asterisco literal.</td>
+<td>Se abrió <span class="literal">"*"</span> y el bloque terminó sin cerrarlo.</td>
+<td>Agregue el <span class="literal">"*"</span> de cierre, o ponga el asterisco dentro de código en línea si era un asterisco literal.</td>
 </tr>
 <tr>
-<td><code>CODIGO_INLINE_SIN_CERRAR</code></td>
+<td><strong class="nombre">CODIGO_INLINE_SIN_CERRAR</strong></td>
 <td>Léxico</td>
 <td>Un acento grave sin su pareja en el mismo bloque.</td>
 <td>Agregue el acento grave de cierre.</td>
 </tr>
 <tr>
-<td><code>BLOQUE_CODIGO_SIN_CERRAR</code></td>
+<td><strong class="nombre">BLOQUE_CODIGO_SIN_CERRAR</strong></td>
 <td>Léxico</td>
 <td>El archivo terminó dentro de un bloque de código.</td>
-<td>Agregue una línea con <code>```</code> al final del código.</td>
+<td>Agregue una línea con <span class="literal">"```"</span> al final del código.</td>
 </tr>
 <tr>
-<td><code>ENCABEZADO_INVALIDO</code></td>
+<td><strong class="nombre">ENCABEZADO_INVALIDO</strong></td>
 <td>Léxico</td>
-<td>Más de 6 <code>#</code> en un encabezado.</td>
-<td>Use de 1 a 6 <code>#</code>.</td>
+<td>Más de 6 <span class="literal">"#"</span> en un encabezado.</td>
+<td>Use de 1 a 6 <span class="literal">"#"</span>.</td>
 </tr>
 <tr>
-<td><code>INDENTACION_INVALIDA</code></td>
+<td><strong class="nombre">INDENTACION_INVALIDA</strong></td>
 <td>Léxico</td>
 <td>La sangría de un elemento de lista no es múltiplo de 2 (por ejemplo, 3 espacios).</td>
 <td>Use 2, 4, 6… espacios.</td>
 </tr>
 <tr>
-<td><code>INDENTACION_INVALIDA</code></td>
+<td><strong class="nombre">INDENTACION_INVALIDA</strong></td>
 <td>Sintáctico</td>
 <td>La sangría sube más de un nivel de una vez (de 0 a 4 espacios), o una sublista no tiene elemento padre (por ejemplo, después de una línea en blanco).</td>
 <td>Suba de 2 en 2 espacios, y no deje líneas en blanco dentro de una lista.</td>
 </tr>
 <tr>
-<td><code>CITA_MAL_FORMADA</code></td>
+<td><strong class="nombre">CITA_MAL_FORMADA</strong></td>
 <td>Sintáctico</td>
-<td>Falta el espacio después del último <code>&gt;</code>.</td>
-<td>Escriba <code>&gt; texto</code> o <code>&gt;&gt; texto</code>.</td>
+<td>Falta el espacio después del último <span class="literal">"&gt;"</span>.</td>
+<td>Escriba <span class="literal">"&gt; texto"</span> o <span class="literal">"&gt;&gt; texto"</span>.</td>
 </tr>
 <tr>
-<td><code>TACHADO_SIN_CERRAR</code></td>
+<td><strong class="nombre">TACHADO_SIN_CERRAR</strong></td>
 <td>Léxico</td>
-<td>Se abrió <code>~~</code> y el bloque terminó sin cerrarlo.</td>
-<td>Agregue el <code>~~</code> de cierre.</td>
+<td>Se abrió <span class="literal">"~~"</span> y el bloque terminó sin cerrarlo.</td>
+<td>Agregue el <span class="literal">"~~"</span> de cierre.</td>
 </tr>
 <tr>
-<td><code>TABLA_MAL_FORMADA</code></td>
+<td><strong class="nombre">TABLA_MAL_FORMADA</strong></td>
 <td>Sintáctico</td>
 <td>A la tabla le falta la fila de títulos o la fila separadora (la de guiones), la separadora se repite, o una fila no termina con barra vertical o no tiene tantas celdas como la de títulos.</td>
 <td>Revise la fila que indica el mensaje.</td>
@@ -831,9 +836,9 @@ reportes 1, 2 y 3 no se generan: corrija los errores y vuelva a presionar
 imprimirla o compartirla.</p>
 <p><img alt="Reporte de errores" src="capturas/11_reporte_errores.png" /></p>
 <h2>10. Los reportes HTML</h2>
-<p>Cada análisis guarda sus archivos en la carpeta <code>salida</code>, en una subcarpeta
+<p>Cada análisis guarda sus archivos en la carpeta <strong class="nombre">salida</strong>, en una subcarpeta
 con el nombre del archivo analizado. Por ejemplo, al analizar
-<code>ejemplo_valido.md</code> se crea <code>salida/ejemplo_valido/</code>. El botón
+<strong class="nombre">ejemplo_valido.md</strong> se crea <strong class="nombre">salida/ejemplo_valido/</strong>. El botón
 <strong>Carpeta de salida</strong> abre esa carpeta. Cada análisis borra primero los
 reportes del análisis anterior del mismo archivo, así la carpeta solo tiene
 los del último.</p>
@@ -847,28 +852,28 @@ los del último.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>reporte1_documento.html</code></td>
+<td><strong class="nombre">reporte1_documento.html</strong></td>
 <td>Sin errores</td>
 <td>1. Documento</td>
 </tr>
 <tr>
-<td><code>reporte2_estadisticas.html</code></td>
+<td><strong class="nombre">reporte2_estadisticas.html</strong></td>
 <td>Sin errores</td>
 <td>2. Estadísticas</td>
 </tr>
 <tr>
-<td><code>reporte3_indice.html</code></td>
+<td><strong class="nombre">reporte3_indice.html</strong></td>
 <td>Sin errores</td>
 <td>3. Índice</td>
 </tr>
 <tr>
-<td><code>reporte_errores.html</code></td>
+<td><strong class="nombre">reporte_errores.html</strong></td>
 <td>Con errores</td>
 <td>Errores</td>
 </tr>
 <tr>
-<td><code>arbol.dot</code> y <code>arbol.png</code></td>
-<td>Siempre (<code>arbol.png</code> solo si Graphviz está instalado)</td>
+<td><strong class="nombre">arbol.dot</strong> y <strong class="nombre">arbol.png</strong></td>
+<td>Siempre (<strong class="nombre">arbol.png</strong> solo si Graphviz está instalado)</td>
 <td>Árbol</td>
 </tr>
 </tbody>
@@ -878,7 +883,7 @@ computadora y abrir con doble clic, sin MarkdownCheck.</p>
 <h3>10.1 Reporte 1: Documento</h3>
 <p>Es el documento convertido a HTML: los encabezados son títulos, las listas y
 las citas conservan su anidamiento, y el código se muestra tal como está
-escrito. Si el bloque de código dice su lenguaje (<code>```python</code>), sus
+escrito. Si el bloque de código dice su lenguaje (<span class="literal">"```python"</span>), sus
 palabras clave, textos y comentarios se colorean; el reporte trae lo
 necesario para hacerlo, así que funciona sin internet. La etiqueta verde de
 arriba confirma que el análisis no tuvo errores.</p>
@@ -918,10 +923,10 @@ el reporte lo indica en lugar de mostrarse vacío.</p>
 <h3>10.4 Reporte de errores</h3>
 <p>Se describe en la sección 9.</p>
 <h3>10.5 Árbol de derivación como imagen</h3>
-<p>El botón <strong>Árbol</strong> abre <code>arbol.png</code>, el árbol de derivación completo:
-la raíz <code>&lt;documento&gt;</code> en azul oscuro, las partes de la gramática en azul
+<p>El botón <strong>Árbol</strong> abre <strong class="nombre">arbol.png</strong>, el árbol de derivación completo:
+la raíz <strong class="nombre">&lt;documento&gt;</strong> en azul oscuro, las partes de la gramática en azul
 claro y los tokens en amarillo. Si Graphviz no está instalado, el botón
-avisa y abre la carpeta donde quedó <code>arbol.dot</code>, que se puede convertir en
+avisa y abre la carpeta donde quedó <strong class="nombre">arbol.dot</strong>, que se puede convertir en
 imagen después con:</p>
 <pre><code>dot -Tpng arbol.dot -o arbol.png
 </code></pre>
@@ -967,19 +972,19 @@ actualiza al momento; también cambia mientras escribe en el editor.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>python</code> no se reconoce como comando</td>
+<td><strong class="nombre">python</strong> no se reconoce como comando</td>
 <td>Python no está instalado o no está en el PATH.</td>
-<td>Instale Python y marque <strong>Add Python to PATH</strong>, o pruebe con <code>py src/main.py</code>.</td>
+<td>Instale Python y marque <strong>Add Python to PATH</strong>, o pruebe con <span class="literal">"py src/main.py"</span>.</td>
 </tr>
 <tr>
-<td><code>No module named 'tkinter'</code></td>
+<td><span class="literal">"No module named 'tkinter'"</span></td>
 <td>En Linux, Tkinter se instala aparte.</td>
-<td><code>sudo apt install python3-tk</code>. En Windows viene incluido.</td>
+<td><span class="literal">"sudo apt install python3-tk"</span>. En Windows viene incluido.</td>
 </tr>
 <tr>
 <td><em>Solo se pueden analizar archivos Markdown con extensión .md</em></td>
-<td>Se eligió un archivo con otra extensión (<code>.txt</code>, por ejemplo).</td>
-<td>Cambie la extensión del archivo a <code>.md</code>, o copie su contenido en el editor y presione <strong>Analizar</strong>.</td>
+<td>Se eligió un archivo con otra extensión (<strong class="nombre">.txt</strong>, por ejemplo).</td>
+<td>Cambie la extensión del archivo a <strong class="nombre">.md</strong>, o copie su contenido en el editor y presione <strong>Analizar</strong>.</td>
 </tr>
 <tr>
 <td><em>El archivo no está en UTF-8</em></td>
@@ -994,32 +999,32 @@ actualiza al momento; también cambia mientras escribe en el editor.</p>
 <tr>
 <td>El botón Árbol no abre una imagen</td>
 <td>Graphviz no está instalado.</td>
-<td>Instálelo (sección 2) o convierta <code>arbol.dot</code> con el comando de la sección 10.5.</td>
+<td>Instálelo (sección 2) o convierta <strong class="nombre">arbol.dot</strong> con el comando de la sección 10.5.</td>
 </tr>
 <tr>
-<td>Un <code>*</code> produce <code>CURSIVA_SIN_CERRAR</code></td>
+<td>Un <span class="literal">"*"</span> produce <strong class="nombre">CURSIVA_SIN_CERRAR</strong></td>
 <td>Un asterisco suelto siempre abre cursiva.</td>
-<td>Escríbalo como código en línea: <code>`*`</code>.</td>
+<td>Escríbalo como código en línea: <span class="literal">"`*`"</span>.</td>
 </tr>
 <tr>
-<td>Una sublista da <code>INDENTACION_INVALIDA</code></td>
+<td>Una sublista da <strong class="nombre">INDENTACION_INVALIDA</strong></td>
 <td>La sangría no es de 2 en 2, o hay una línea en blanco antes de la sublista.</td>
 <td>Revise los espacios y quite la línea en blanco.</td>
 </tr>
 <tr>
 <td>Un enlace se ve con sus corchetes, como texto</td>
-<td>La dirección tiene espacios, falta el <code>)</code> o hay otro <code>[</code> adentro del texto.</td>
-<td>Escriba <code>[texto](direccion)</code> completo en una línea.</td>
+<td>La dirección tiene espacios, falta el <span class="literal">")"</span> o hay otro <span class="literal">"["</span> adentro del texto.</td>
+<td>Escriba <span class="literal">"[texto](direccion)"</span> completo en una línea.</td>
 </tr>
 <tr>
 <td>Una imagen no se ve en el Reporte 1</td>
 <td>La ruta no existe desde la carpeta del reporte.</td>
-<td>Use una ruta relativa a <code>salida/&lt;nombre&gt;/</code> o una dirección <code>https://…</code>.</td>
+<td>Use una ruta relativa a <span class="literal">"salida/&lt;nombre&gt;/"</span> o una dirección <span class="literal">"https://…"</span>.</td>
 </tr>
 <tr>
 <td>El código del Reporte 1 no sale coloreado</td>
 <td>El bloque no dice su lenguaje.</td>
-<td>Escriba el lenguaje después de las tres comillas: <code>```python</code>.</td>
+<td>Escriba el lenguaje después de las tres comillas: <span class="literal">"```python"</span>.</td>
 </tr>
 <tr>
 <td>Aparece la franja amarilla de anidamiento</td>

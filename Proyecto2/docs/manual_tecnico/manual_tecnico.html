@@ -210,6 +210,12 @@ table { font-size: 12.5px; }
 tr, pre { page-break-inside: avoid; }
 td code, th code { white-space: nowrap; }
 pre { font-size: 11.5px; white-space: pre-wrap; }
+
+.nombre { font-weight: 700; }
+.literal { white-space: pre-wrap; }
+td .nombre, td .literal, th .nombre, th .literal { white-space: nowrap; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #000; }
 </style>
 </head>
 <body>
@@ -244,17 +250,17 @@ analiza en dos fases (léxica y sintáctica) y lo traduce a HTML <strong>recorri
 el árbol de derivación</strong> que construye el parser. Además genera estadísticas
 del documento, una tabla de contenido, la tabla de tokens, la tabla de
 errores y el árbol de derivación en Graphviz.</p>
-<p><strong>Subconjunto reconocido:</strong> encabezados (<code>#</code> a <code>######</code>), párrafos, negrita
-(<code>**</code>), cursiva (<code>*</code>), código en línea (<code>`</code>), listas no ordenadas
-(<code>-</code>, <code>*</code>, <code>+</code>) con anidamiento por indentación, citas (<code>&gt;</code>) anidadas,
-bloques de código delimitados por <code>```</code> y regla horizontal (<code>---</code>).</p>
-<p><strong>Alcance opcional (completo, sección 10):</strong> listas numeradas (<code>1.</code>), listas
-de tareas (<code>- [ ]</code> / <code>- [x]</code>), tachado (<code>~~</code>), enlaces (<code>[texto](url)</code>),
-imágenes (<code>![alt](url)</code>), tablas con <code>|</code>, vista previa en vivo dentro de la
+<p><strong>Subconjunto reconocido:</strong> encabezados (<span class="literal">"#"</span> a <span class="literal">"######"</span>), párrafos, negrita
+(<span class="literal">"**"</span>), cursiva (<span class="literal">"*"</span>), código en línea (<span class="literal">"`"</span>), listas no ordenadas
+(<span class="literal">"-"</span>, <span class="literal">"*"</span>, <span class="literal">"+"</span>) con anidamiento por indentación, citas (<span class="literal">"&gt;"</span>) anidadas,
+bloques de código delimitados por <span class="literal">"```"</span> y regla horizontal (<span class="literal">"---"</span>).</p>
+<p><strong>Alcance opcional (completo, sección 10):</strong> listas numeradas (<span class="literal">"1."</span>), listas
+de tareas (<span class="literal">"- [ ]"</span> / <span class="literal">"- [x]"</span>), tachado (<span class="literal">"~~"</span>), enlaces (<span class="literal">"[texto](url)"</span>),
+imágenes (<span class="literal">"![alt](url)"</span>), tablas con <span class="literal">"|"</span>, vista previa en vivo dentro de la
 ventana, advertencia de anidamiento con un máximo configurable y resaltado
 de sintaxis de los bloques de código en el Reporte 1.</p>
 <p><strong>Tecnologías:</strong> Python 3.10 o superior, Tkinter para la interfaz, Graphviz
-para convertir <code>arbol.dot</code> en imagen. Se probó con Python 3.10, 3.12 y 3.13.</p>
+para convertir <strong class="nombre">arbol.dot</strong> en imagen. Se probó con Python 3.10, 3.12 y 3.13.</p>
 <p><strong>Restricciones cumplidas:</strong></p>
 <table>
 <thead>
@@ -265,8 +271,8 @@ para convertir <code>arbol.dot</code> en imagen. Se probó con Python 3.10, 3.12
 </thead>
 <tbody>
 <tr>
-<td>Sin el módulo <code>re</code> para tokenizar</td>
-<td>El AFD recorre el texto carácter por carácter con un índice (<code>self.pos</code>). Las clases de caracteres son listas explícitas (<code>alfabeto.py</code>).</td>
+<td>Sin el módulo <strong class="nombre">re</strong> para tokenizar</td>
+<td>El AFD recorre el texto carácter por carácter con un índice (<strong class="nombre">self.pos</strong>). Las clases de caracteres son listas explícitas (<strong class="nombre">alfabeto.py</strong>).</td>
 </tr>
 <tr>
 <td>Sin librerías de parsing (ply, lark, antlr4…)</td>
@@ -274,7 +280,7 @@ para convertir <code>arbol.dot</code> en imagen. Se probó con Python 3.10, 3.12
 </tr>
 <tr>
 <td>Sin librerías de conversión Markdown</td>
-<td>El HTML lo produce <code>GeneradorHTML</code> recorriendo el AST.</td>
+<td>El HTML lo produce <strong class="nombre">GeneradorHTML</strong> recorriendo el AST.</td>
 </tr>
 <tr>
 <td>HTML a partir del árbol, no por sustitución de texto</td>
@@ -282,24 +288,24 @@ para convertir <code>arbol.dot</code> en imagen. Se probó con Python 3.10, 3.12
 </tr>
 </tbody>
 </table>
-<p>Además, por decisión propia (D-18), el código no usa <code>if</code> ternarios,
-<code>lambda</code>, <em>slicing</em>, <code>sorted()</code>, <code>enumerate</code>, <code>set()</code>, decoradores ni
+<p>Además, por decisión propia (D-18), el código no usa <strong class="nombre">if</strong> ternarios,
+<strong class="nombre">lambda</strong>, <em>slicing</em>, <strong class="nombre">sorted()</strong>, <strong class="nombre">enumerate</strong>, <strong class="nombre">set()</strong>, decoradores ni
 comprensiones, para que cada línea se pueda explicar y modificar en vivo.</p>
 <h2>2. Arquitectura del sistema</h2>
 <p><img alt="Arquitectura" src="img/arquitectura.png" /></p>
 <p>El flujo de un análisis es:</p>
 <ol>
-<li><strong><code>VentanaPrincipal</code></strong> toma el texto del editor y crea un <code>GestorErrores</code>,
-   un <code>AnalizadorLexico</code> y un <code>AnalizadorSintactico</code>.</li>
-<li><strong><code>AnalizadorSintactico</code></strong> pide tokens con <code>siguiente_token()</code> a medida que
-   los necesita y construye el árbol (<code>NodoAST</code>).</li>
-<li><strong><code>AnalizadorLexico</code></strong> analiza una línea completa cada vez que se le acaban
+<li><strong><strong class="nombre">VentanaPrincipal</strong></strong> toma el texto del editor y crea un <strong class="nombre">GestorErrores</strong>,
+   un <strong class="nombre">AnalizadorLexico</strong> y un <strong class="nombre">AnalizadorSintactico</strong>.</li>
+<li><strong><strong class="nombre">AnalizadorSintactico</strong></strong> pide tokens con <strong class="nombre">siguiente_token()</strong> a medida que
+   los necesita y construye el árbol (<strong class="nombre">NodoAST</strong>).</li>
+<li><strong><strong class="nombre">AnalizadorLexico</strong></strong> analiza una línea completa cada vez que se le acaban
    los tokens: el AFD reconoce los tokens de la línea y tres capas
-   posteriores agregan <code>INDENT</code>/<code>DEDENT</code>, validan los delimitadores y los
+   posteriores agregan <strong class="nombre">INDENT</strong>/<strong class="nombre">DEDENT</strong>, validan los delimitadores y los
    ponen en una cola.</li>
-<li>Ambos analizadores registran sus errores en el <strong><code>GestorErrores</code></strong>, que los
+<li>Ambos analizadores registran sus errores en el <strong><strong class="nombre">GestorErrores</strong></strong>, que los
    mantiene ordenados por posición. Ninguno se detiene ante un error.</li>
-<li><strong><code>generar_todos()</code></strong> decide qué reportes escribir según haya o no errores.</li>
+<li><strong><strong class="nombre">generar_todos()</strong></strong> decide qué reportes escribir según haya o no errores.</li>
 </ol>
 <h3>Estructura de carpetas</h3>
 <pre><code>Proyecto2/
@@ -315,9 +321,9 @@ comprensiones, para que cada línea se pueda explicar y modificar en vivo.</p>
 ├── examples/                       archivos .md de entrada y casos/
 └── docs/                           diseño, manuales y casos de prueba
 </code></pre>
-<p>Las dependencias van en un solo sentido: <code>lexico</code> no conoce a nadie más que a
-<code>errores</code>; <code>sintactico</code> conoce a <code>lexico</code>; <code>reportes</code> solo conoce el árbol;
-<code>gui</code> junta todo. Así se puede probar cada fase por separado desde consola.</p>
+<p>Las dependencias van en un solo sentido: <strong class="nombre">lexico</strong> no conoce a nadie más que a
+<strong class="nombre">errores</strong>; <strong class="nombre">sintactico</strong> conoce a <strong class="nombre">lexico</strong>; <strong class="nombre">reportes</strong> solo conoce el árbol;
+<strong class="nombre">gui</strong> junta todo. Así se puede probar cada fase por separado desde consola.</p>
 <div class="salto"></div>
 
 <h2>3. Diagrama de clases</h2>
@@ -332,68 +338,68 @@ comprensiones, para que cada línea se pueda explicar y modificar en vivo.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>Token</code></td>
+<td><strong class="nombre">Token</strong></td>
 <td>Guarda número, lexema, tipo, línea y columna de un token.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>AnalizadorLexico</code></td>
-<td>AFD manual, <code>INDENT</code>/<code>DEDENT</code>, pila de delimitadores, cola de tokens. Expone <code>siguiente_token()</code>.</td>
+<td><strong class="nombre">AnalizadorLexico</strong></td>
+<td>AFD manual, <strong class="nombre">INDENT</strong>/<strong class="nombre">DEDENT</strong>, pila de delimitadores, cola de tokens. Expone <strong class="nombre">siguiente_token()</strong>.</td>
 <td>No conoce el árbol ni el HTML.</td>
 </tr>
 <tr>
-<td><code>NodoAST</code></td>
-<td>Un nodo del árbol: símbolo, token (solo hojas), hijos y atributos (<code>nivel</code>; <code>numerada</code> en listas; <code>alineaciones</code> en tablas).</td>
+<td><strong class="nombre">NodoAST</strong></td>
+<td>Un nodo del árbol: símbolo, token (solo hojas), hijos y atributos (<strong class="nombre">nivel</strong>; <strong class="nombre">numerada</strong> en listas; <strong class="nombre">alineaciones</strong> en tablas).</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>AnalizadorSintactico</code></td>
+<td><strong class="nombre">AnalizadorSintactico</strong></td>
 <td>Una función por no terminal; construye el árbol y se recupera de errores.</td>
 <td>No lee caracteres.</td>
 </tr>
 <tr>
-<td><code>ErrorAnalisis</code></td>
+<td><strong class="nombre">ErrorAnalisis</strong></td>
 <td>Un registro de la tabla de errores.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>GestorErrores</code></td>
+<td><strong class="nombre">GestorErrores</strong></td>
 <td>Acumula los errores de las dos fases, ordenados por posición.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>GeneradorHTML</code></td>
+<td><strong class="nombre">GeneradorHTML</strong></td>
 <td>Reporte 1: traduce el árbol a HTML.</td>
 <td>No mira el texto original.</td>
 </tr>
 <tr>
-<td><code>GeneradorEstadisticas</code></td>
+<td><strong class="nombre">GeneradorEstadisticas</strong></td>
 <td>Reporte 2: cuenta nodos del árbol.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>GeneradorIndice</code></td>
+<td><strong class="nombre">GeneradorIndice</strong></td>
 <td>Reporte 3: tabla de contenido con anclas al Reporte 1.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>GeneradorErrores</code></td>
+<td><strong class="nombre">GeneradorErrores</strong></td>
 <td>Tabla de errores en HTML.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>GeneradorDOT</code></td>
-<td><code>arbol.dot</code> con el árbol de derivación real.</td>
+<td><strong class="nombre">GeneradorDOT</strong></td>
+<td><strong class="nombre">arbol.dot</strong> con el árbol de derivación real.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>VentanaPrincipal</code></td>
+<td><strong class="nombre">VentanaPrincipal</strong></td>
 <td>Interfaz Tkinter: editor, tablas, árbol, vista previa, botones de reportes y aviso de anidamiento.</td>
 <td>No analiza nada por sí misma.</td>
 </tr>
 <tr>
-<td><code>VistaPrevia</code></td>
-<td>Dibuja el documento formateado en un <code>tk.Text</code> recorriendo el árbol.</td>
+<td><strong class="nombre">VistaPrevia</strong></td>
+<td>Dibuja el documento formateado en un <strong class="nombre">tk.Text</strong> recorriendo el árbol.</td>
 <td>No mira el texto original.</td>
 </tr>
 </tbody>
@@ -413,74 +419,74 @@ comprensiones, para que cada línea se pueda explicar y modificar en vivo.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>NUMERAL</code></td>
-<td><code>#</code> a <code>######</code></td>
-<td>Inicio de línea (o tras <code>CITA</code>), seguido de espacio</td>
-<td><code>## Título</code></td>
+<td><strong class="nombre">NUMERAL</strong></td>
+<td><span class="literal">"#"</span> a <span class="literal">"######"</span></td>
+<td>Inicio de línea (o tras <strong class="nombre">CITA</strong>), seguido de espacio</td>
+<td><span class="literal">"## Título"</span></td>
 </tr>
 <tr>
-<td><code>VIÑETA</code></td>
-<td><code>-</code>, <code>*</code>, <code>+</code></td>
+<td><strong class="nombre">VIÑETA</strong></td>
+<td><span class="literal">"-"</span>, <span class="literal">"*"</span>, <span class="literal">"+"</span></td>
 <td>Inicio de línea (tras la sangría), seguido de espacio</td>
-<td><code>- Elemento</code></td>
+<td><span class="literal">"- Elemento"</span></td>
 </tr>
 <tr>
-<td><code>INDENT</code></td>
+<td><strong class="nombre">INDENT</strong></td>
 <td>vacío (virtual)</td>
 <td>Sube un nivel de lista; uno por nivel</td>
 <td>(sin lexema visible)</td>
 </tr>
 <tr>
-<td><code>DEDENT</code></td>
+<td><strong class="nombre">DEDENT</strong></td>
 <td>vacío (virtual)</td>
 <td>Baja un nivel de lista; uno por nivel</td>
 <td>(sin lexema visible)</td>
 </tr>
 <tr>
-<td><code>CITA</code></td>
-<td><code>&gt;</code>, <code>&gt;&gt;</code>, <code>&gt; &gt;</code>…</td>
-<td>Inicio de línea; el nivel es la cantidad de <code>&gt;</code></td>
-<td><code>&gt;&gt; Cita</code></td>
+<td><strong class="nombre">CITA</strong></td>
+<td><span class="literal">"&gt;"</span>, <span class="literal">"&gt;&gt;"</span>, <span class="literal">"&gt; &gt;"</span>…</td>
+<td>Inicio de línea; el nivel es la cantidad de <span class="literal">"&gt;"</span></td>
+<td><span class="literal">"&gt;&gt; Cita"</span></td>
 </tr>
 <tr>
-<td><code>CERCA_CODIGO</code></td>
-<td><code>```</code></td>
+<td><strong class="nombre">CERCA_CODIGO</strong></td>
+<td><span class="literal">"```"</span></td>
 <td>Inicio de línea</td>
-<td><code>```python</code></td>
+<td><span class="literal">"```python"</span></td>
 </tr>
 <tr>
-<td><code>REGLA_HORIZONTAL</code></td>
-<td><code>---</code> o más</td>
+<td><strong class="nombre">REGLA_HORIZONTAL</strong></td>
+<td><span class="literal">"---"</span> o más</td>
 <td>Línea que solo contiene guiones (y espacios al final)</td>
-<td><code>---</code></td>
+<td><span class="literal">"---"</span></td>
 </tr>
 <tr>
-<td><code>NEGRITA</code></td>
-<td><code>**</code></td>
+<td><strong class="nombre">NEGRITA</strong></td>
+<td><span class="literal">"**"</span></td>
 <td>Dentro de una línea</td>
-<td><code>**importante**</code></td>
+<td><span class="literal">"**importante**"</span></td>
 </tr>
 <tr>
-<td><code>CURSIVA</code></td>
-<td><code>*</code></td>
+<td><strong class="nombre">CURSIVA</strong></td>
+<td><span class="literal">"*"</span></td>
 <td>Dentro de una línea, fuera de posición de viñeta</td>
-<td><code>*énfasis*</code></td>
+<td><span class="literal">"*énfasis*"</span></td>
 </tr>
 <tr>
-<td><code>CODIGO_INLINE</code></td>
-<td><code>`</code></td>
+<td><strong class="nombre">CODIGO_INLINE</strong></td>
+<td><span class="literal">"`"</span></td>
 <td>Dentro de una línea</td>
-<td><code>`variable`</code></td>
+<td><span class="literal">"`variable`"</span></td>
 </tr>
 <tr>
-<td><code>TEXTO</code></td>
+<td><strong class="nombre">TEXTO</strong></td>
 <td>texto plano</td>
 <td>Todo lo que no es delimitador</td>
-<td><code>Lenguajes Formales</code></td>
+<td><span class="literal">"Lenguajes Formales"</span></td>
 </tr>
 <tr>
-<td><code>SALTO_PARRAFO</code></td>
-<td><code>\n</code></td>
+<td><strong class="nombre">SALTO_PARRAFO</strong></td>
+<td><span class="literal">"\n"</span></td>
 <td>Línea vacía o de solo espacios</td>
 <td>(línea vacía)</td>
 </tr>
@@ -497,22 +503,22 @@ comprensiones, para que cada línea se pueda explicar y modificar en vivo.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>SALTO_LINEA</code></td>
-<td><code>\n</code></td>
+<td><strong class="nombre">SALTO_LINEA</strong></td>
+<td><span class="literal">"\n"</span></td>
 <td>Marca el fin de cada línea <strong>no vacía</strong>. Sin él, el parser no sabe dónde termina un encabezado o un ítem.</td>
 </tr>
 <tr>
-<td><code>TEXTO_LITERAL</code></td>
+<td><strong class="nombre">TEXTO_LITERAL</strong></td>
 <td>contenido literal</td>
 <td>Interior de un bloque de código (una por línea) o de un código en línea. Aparece en la gramática de referencia pero no en la tabla de tokens del enunciado.</td>
 </tr>
 <tr>
-<td><code>LENGUAJE_CODIGO</code></td>
-<td><code>python</code>, <code>java</code>…</td>
-<td>Texto que sigue a la cerca de apertura. Da el <code>class="language-python"</code>.</td>
+<td><strong class="nombre">LENGUAJE_CODIGO</strong></td>
+<td><strong class="nombre">python</strong>, <strong class="nombre">java</strong>…</td>
+<td>Texto que sigue a la cerca de apertura. Da el <span class="literal">'class="language-python"'</span>.</td>
 </tr>
 <tr>
-<td><code>FIN</code></td>
+<td><strong class="nombre">FIN</strong></td>
 <td>vacío</td>
 <td>Fin de archivo. Le permite al parser saber que no queda nada.</td>
 </tr>
@@ -520,34 +526,34 @@ comprensiones, para que cada línea se pueda explicar y modificar en vivo.</p>
 </table>
 <h3>4.3 Reglas de prioridad</h3>
 <ol>
-<li><strong>Viñeta vs. cursiva.</strong> <code>*</code> solo es <code>VIÑETA</code> en posición inicial de línea y
+<li><strong>Viñeta vs. cursiva.</strong> <span class="literal">"*"</span> solo es <strong class="nombre">VIÑETA</strong> en posición inicial de línea y
    seguido de espacio. En cualquier otro lugar entra al reconocimiento de
    énfasis.</li>
-<li><strong>Negrita vs. cursiva (maximal munch).</strong> Al ver <code>*</code>, el AFD mira el
-   siguiente carácter: si es otro <code>*</code>, reconoce <code>NEGRITA</code>.</li>
-<li><strong>Encabezado vs. texto.</strong> <code>#</code> solo forma <code>NUMERAL</code> al inicio de línea y
-   seguido de espacio. <code>#sinespacio</code> es <code>TEXTO</code>.</li>
-<li><strong>Regla vs. viñeta.</strong> <code>-</code> (guion + espacio) es <code>VIÑETA</code>. Tres o más guiones
-   y nada más en la línea es <code>REGLA_HORIZONTAL</code>. <code>--</code> o <code>--texto</code> es <code>TEXTO</code>.</li>
-<li><strong>Bloque de código.</strong> Tras <code>```</code> de apertura el léxico entra en
-   <strong>modo literal</strong>: cada línea completa es un <code>TEXTO_LITERAL</code>, sin buscar
+<li><strong>Negrita vs. cursiva (maximal munch).</strong> Al ver <span class="literal">"*"</span>, el AFD mira el
+   siguiente carácter: si es otro <span class="literal">"*"</span>, reconoce <strong class="nombre">NEGRITA</strong>.</li>
+<li><strong>Encabezado vs. texto.</strong> <span class="literal">"#"</span> solo forma <strong class="nombre">NUMERAL</strong> al inicio de línea y
+   seguido de espacio. <span class="literal">"#sinespacio"</span> es <strong class="nombre">TEXTO</strong>.</li>
+<li><strong>Regla vs. viñeta.</strong> <span class="literal">"-"</span> (guion + espacio) es <strong class="nombre">VIÑETA</strong>. Tres o más guiones
+   y nada más en la línea es <strong class="nombre">REGLA_HORIZONTAL</strong>. <span class="literal">"--"</span> o <strong class="nombre">--texto</strong> es <strong class="nombre">TEXTO</strong>.</li>
+<li><strong>Bloque de código.</strong> Tras <span class="literal">"```"</span> de apertura el léxico entra en
+   <strong>modo literal</strong>: cada línea completa es un <strong class="nombre">TEXTO_LITERAL</strong>, sin buscar
    ningún otro token, hasta la cerca de cierre.</li>
-<li><strong>Código en línea.</strong> Tras <code>`</code> todo hasta el siguiente <code>`</code> del
-   mismo bloque es <code>TEXTO_LITERAL</code>; adentro no se reconocen <code>*</code> ni <code>**</code>. En
+<li><strong>Código en línea.</strong> Tras <span class="literal">"`"</span> todo hasta el siguiente <span class="literal">"`"</span> del
+   mismo bloque es <strong class="nombre">TEXTO_LITERAL</strong>; adentro no se reconocen <span class="literal">"*"</span> ni <span class="literal">"**"</span>. En
    un párrafo, el cierre puede estar en una línea siguiente: entonces llega
-   un <code>TEXTO_LITERAL</code> por línea, con el <code>SALTO_LINEA</code> entre ellos (D-02).</li>
+   un <strong class="nombre">TEXTO_LITERAL</strong> por línea, con el <strong class="nombre">SALTO_LINEA</strong> entre ellos (D-02).</li>
 <li><strong>Número de lista vs. texto</strong> (alcance opcional). Uno o más dígitos, un
-   <code>.</code> y un espacio al inicio de línea forman <code>NUMERO_LISTA</code>. <code>2024.fue</code> o
-   <code>3.5 es</code> son <code>TEXTO</code>.</li>
-<li><strong>Casilla vs. enlace.</strong> Justo después del marcador de un ítem, <code>[ ]</code> o
-   <code>[x]</code> seguido de espacio es <code>CASILLA</code>. <code>- [x](url)</code> es un enlace.</li>
-<li><strong>Tachado (maximal munch).</strong> <code>~~</code> es <code>TACHADO</code>; un <code>~</code> solo es texto.</li>
-<li><strong>Enlace e imagen solo si están completos.</strong> <code>[</code> es <code>CORCHETE_ABRE</code> (y
-    <code>![</code> es <code>IMAGEN_ABRE</code>) solo si en la misma línea viene el <code>]</code> y, pegado,
-    <code>(url)</code> sin espacios. Si no, el corchete es <code>TEXTO</code>, sin error (D-32).</li>
-<li><strong>Tabla.</strong> Una línea que empieza con <code>|</code> es una fila de tabla: cada <code>|</code>
-    es <code>BARRA</code>. Si solo tiene celdas como <code>---</code>, <code>:--</code>, <code>--:</code> o <code>:-:</code>, la
-    línea completa es un <code>SEPARADOR_TABLA</code>. Fuera de una tabla, <code>|</code> es
+   <span class="literal">"."</span> y un espacio al inicio de línea forman <strong class="nombre">NUMERO_LISTA</strong>. <strong class="nombre">2024.fue</strong> o
+   <span class="literal">"3.5 es"</span> son <strong class="nombre">TEXTO</strong>.</li>
+<li><strong>Casilla vs. enlace.</strong> Justo después del marcador de un ítem, <span class="literal">"[ ]"</span> o
+   <span class="literal">"[x]"</span> seguido de espacio es <strong class="nombre">CASILLA</strong>. <span class="literal">"- [x](url)"</span> es un enlace.</li>
+<li><strong>Tachado (maximal munch).</strong> <span class="literal">"~~"</span> es <strong class="nombre">TACHADO</strong>; un <span class="literal">"~"</span> solo es texto.</li>
+<li><strong>Enlace e imagen solo si están completos.</strong> <span class="literal">"["</span> es <strong class="nombre">CORCHETE_ABRE</strong> (y
+    <span class="literal">"!["</span> es <strong class="nombre">IMAGEN_ABRE</strong>) solo si en la misma línea viene el <span class="literal">"]"</span> y, pegado,
+    <span class="literal">"(url)"</span> sin espacios. Si no, el corchete es <strong class="nombre">TEXTO</strong>, sin error (D-32).</li>
+<li><strong>Tabla.</strong> Una línea que empieza con <span class="literal">"|"</span> es una fila de tabla: cada <span class="literal">"|"</span>
+    es <strong class="nombre">BARRA</strong>. Si solo tiene celdas como <span class="literal">"---"</span>, <span class="literal">":--"</span>, <span class="literal">"--:"</span> o <span class="literal">":-:"</span>, la
+    línea completa es un <strong class="nombre">SEPARADOR_TABLA</strong>. Fuera de una tabla, <span class="literal">"|"</span> es
     texto.</li>
 </ol>
 <h3>4.4 Diagrama del AFD</h3>
@@ -567,129 +573,129 @@ código).</p>
 </thead>
 <tbody>
 <tr>
-<td><code>q0</code></td>
+<td><strong class="nombre">q0</strong></td>
 <td>Inicio de línea (modo normal). Consume la sangría.</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q1</code></td>
-<td>Leyendo <code>#</code> consecutivos</td>
+<td><strong class="nombre">q1</strong></td>
+<td>Leyendo <span class="literal">"#"</span> consecutivos</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q2</code></td>
-<td><code>#</code> + espacio</td>
-<td><code>NUMERAL</code> (≤ 6) / error <code>ENCABEZADO_INVALIDO</code> (&gt; 6)</td>
+<td><strong class="nombre">q2</strong></td>
+<td><span class="literal">"#"</span> + espacio</td>
+<td><strong class="nombre">NUMERAL</strong> (≤ 6) / error <strong class="nombre">ENCABEZADO_INVALIDO</strong> (&gt; 6)</td>
 </tr>
 <tr>
-<td><code>q3</code></td>
-<td>Leído un <code>-</code> al inicio</td>
+<td><strong class="nombre">q3</strong></td>
+<td>Leído un <span class="literal">"-"</span> al inicio</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q4</code></td>
-<td>Leídos <code>--</code></td>
+<td><strong class="nombre">q4</strong></td>
+<td>Leídos <span class="literal">"--"</span></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q5</code></td>
-<td>Leídos <code>---</code> o más</td>
-<td><code>REGLA_HORIZONTAL</code> (al llegar a fin de línea)</td>
+<td><strong class="nombre">q5</strong></td>
+<td>Leídos <span class="literal">"---"</span> o más</td>
+<td><strong class="nombre">REGLA_HORIZONTAL</strong> (al llegar a fin de línea)</td>
 </tr>
 <tr>
-<td><code>q6</code></td>
+<td><strong class="nombre">q6</strong></td>
 <td>Marcador de lista + espacio</td>
-<td><code>VIÑETA</code></td>
+<td><strong class="nombre">VIÑETA</strong></td>
 </tr>
 <tr>
-<td><code>q7</code></td>
-<td>Leído <code>*</code> o <code>+</code> al inicio</td>
+<td><strong class="nombre">q7</strong></td>
+<td>Leído <span class="literal">"*"</span> o <span class="literal">"+"</span> al inicio</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q8</code></td>
-<td>Leyendo <code>&gt;</code></td>
-<td><code>CITA</code></td>
+<td><strong class="nombre">q8</strong></td>
+<td>Leyendo <span class="literal">"&gt;"</span></td>
+<td><strong class="nombre">CITA</strong></td>
 </tr>
 <tr>
-<td><code>q9</code></td>
-<td><code>&gt;</code> + espacio (puede venir otro <code>&gt;</code>)</td>
-<td><code>CITA</code></td>
+<td><strong class="nombre">q9</strong></td>
+<td><span class="literal">"&gt;"</span> + espacio (puede venir otro <span class="literal">"&gt;"</span>)</td>
+<td><strong class="nombre">CITA</strong></td>
 </tr>
 <tr>
-<td><code>q10</code></td>
-<td>Leído <code>`</code> al inicio</td>
+<td><strong class="nombre">q10</strong></td>
+<td>Leído <span class="literal">"`"</span> al inicio</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q11</code></td>
-<td>Leídos <code>``</code> al inicio</td>
+<td><strong class="nombre">q11</strong></td>
+<td>Leídos <span class="literal">"``"</span> al inicio</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q12</code></td>
-<td>Leídos <code>```</code></td>
-<td><code>CERCA_CODIGO</code></td>
+<td><strong class="nombre">q12</strong></td>
+<td>Leídos <span class="literal">"```"</span></td>
+<td><strong class="nombre">CERCA_CODIGO</strong></td>
 </tr>
 <tr>
-<td><code>q13</code></td>
+<td><strong class="nombre">q13</strong></td>
 <td>Resto de la línea de apertura</td>
-<td><code>LENGUAJE_CODIGO</code></td>
+<td><strong class="nombre">LENGUAJE_CODIGO</strong></td>
 </tr>
 <tr>
-<td><code>q14</code></td>
+<td><strong class="nombre">q14</strong></td>
 <td>Inicio de elemento en línea</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q15</code></td>
+<td><strong class="nombre">q15</strong></td>
 <td>Leyendo texto plano</td>
-<td><code>TEXTO</code></td>
+<td><strong class="nombre">TEXTO</strong></td>
 </tr>
 <tr>
-<td><code>q16</code></td>
-<td>Leído <code>*</code> en línea</td>
-<td><code>CURSIVA</code> (si lo siguiente no es <code>*</code>)</td>
+<td><strong class="nombre">q16</strong></td>
+<td>Leído <span class="literal">"*"</span> en línea</td>
+<td><strong class="nombre">CURSIVA</strong> (si lo siguiente no es <span class="literal">"*"</span>)</td>
 </tr>
 <tr>
-<td><code>q17</code></td>
-<td>Leído <code>**</code></td>
-<td><code>NEGRITA</code></td>
+<td><strong class="nombre">q17</strong></td>
+<td>Leído <span class="literal">"**"</span></td>
+<td><strong class="nombre">NEGRITA</strong></td>
 </tr>
 <tr>
-<td><code>q18</code></td>
-<td>Leído <code>`</code> en línea</td>
-<td><code>CODIGO_INLINE</code></td>
+<td><strong class="nombre">q18</strong></td>
+<td>Leído <span class="literal">"`"</span> en línea</td>
+<td><strong class="nombre">CODIGO_INLINE</strong></td>
 </tr>
 <tr>
-<td><code>q19</code></td>
+<td><strong class="nombre">q19</strong></td>
 <td>Dentro de código en línea</td>
-<td><code>TEXTO_LITERAL</code></td>
+<td><strong class="nombre">TEXTO_LITERAL</strong></td>
 </tr>
 <tr>
-<td><code>q20</code></td>
+<td><strong class="nombre">q20</strong></td>
 <td>Fin de línea</td>
-<td><code>SALTO_LINEA</code></td>
+<td><strong class="nombre">SALTO_LINEA</strong></td>
 </tr>
 <tr>
-<td><code>q21</code></td>
+<td><strong class="nombre">q21</strong></td>
 <td>Línea vacía</td>
-<td><code>SALTO_PARRAFO</code></td>
+<td><strong class="nombre">SALTO_PARRAFO</strong></td>
 </tr>
 <tr>
-<td><code>b0</code></td>
+<td><strong class="nombre">b0</strong></td>
 <td>Inicio de línea en <strong>modo literal</strong></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>b1</code>, <code>b2</code>, <code>b3</code></td>
-<td><code>`</code>, <code>``</code>, <code>```</code> en modo literal</td>
-<td><code>CERCA_CODIGO</code> (cierre) en <code>b3</code></td>
+<td><strong class="nombre">b1</strong>, <strong class="nombre">b2</strong>, <strong class="nombre">b3</strong></td>
+<td><span class="literal">"`"</span>, <span class="literal">"``"</span>, <span class="literal">"```"</span> en modo literal</td>
+<td><strong class="nombre">CERCA_CODIGO</strong> (cierre) en <strong class="nombre">b3</strong></td>
 </tr>
 <tr>
-<td><code>b4</code></td>
+<td><strong class="nombre">b4</strong></td>
 <td>Línea de contenido del bloque</td>
-<td><code>TEXTO_LITERAL</code></td>
+<td><strong class="nombre">TEXTO_LITERAL</strong></td>
 </tr>
 </tbody>
 </table>
@@ -705,262 +711,262 @@ código).</p>
 </thead>
 <tbody>
 <tr>
-<td><code>q0</code></td>
+<td><strong class="nombre">q0</strong></td>
 <td>espacio, tab</td>
-<td><code>q0</code></td>
+<td><strong class="nombre">q0</strong></td>
 <td>Cuenta la sangría</td>
 </tr>
 <tr>
-<td><code>q0</code></td>
-<td><code>\n</code> (línea sin contenido)</td>
-<td><code>q21</code></td>
+<td><strong class="nombre">q0</strong></td>
+<td><span class="literal">"\n"</span> (línea sin contenido)</td>
+<td><strong class="nombre">q21</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q0</code></td>
-<td><code>#</code></td>
-<td><code>q1</code></td>
+<td><strong class="nombre">q0</strong></td>
+<td><span class="literal">"#"</span></td>
+<td><strong class="nombre">q1</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q0</code></td>
-<td><code>-</code></td>
-<td><code>q3</code></td>
+<td><strong class="nombre">q0</strong></td>
+<td><span class="literal">"-"</span></td>
+<td><strong class="nombre">q3</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q0</code></td>
-<td><code>*</code>, <code>+</code></td>
-<td><code>q7</code></td>
+<td><strong class="nombre">q0</strong></td>
+<td><span class="literal">"*"</span>, <span class="literal">"+"</span></td>
+<td><strong class="nombre">q7</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q0</code></td>
-<td><code>&gt;</code></td>
-<td><code>q8</code></td>
+<td><strong class="nombre">q0</strong></td>
+<td><span class="literal">"&gt;"</span></td>
+<td><strong class="nombre">q8</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q0</code></td>
-<td><code>`</code></td>
-<td><code>q10</code></td>
+<td><strong class="nombre">q0</strong></td>
+<td><span class="literal">"`"</span></td>
+<td><strong class="nombre">q10</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q0</code></td>
+<td><strong class="nombre">q0</strong></td>
 <td>otro</td>
-<td><code>q14</code></td>
+<td><strong class="nombre">q14</strong></td>
 <td>Sin consumir</td>
 </tr>
 <tr>
-<td><code>q1</code></td>
-<td><code>#</code></td>
-<td><code>q1</code></td>
+<td><strong class="nombre">q1</strong></td>
+<td><span class="literal">"#"</span></td>
+<td><strong class="nombre">q1</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q1</code></td>
+<td><strong class="nombre">q1</strong></td>
 <td>espacio</td>
-<td><code>q2</code></td>
+<td><strong class="nombre">q2</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q1</code></td>
+<td><strong class="nombre">q1</strong></td>
 <td>otro</td>
-<td><code>q15</code></td>
-<td>Los <code>#</code> se vuelven <code>TEXTO</code></td>
+<td><strong class="nombre">q15</strong></td>
+<td>Los <span class="literal">"#"</span> se vuelven <strong class="nombre">TEXTO</strong></td>
 </tr>
 <tr>
-<td><code>q3</code></td>
+<td><strong class="nombre">q3</strong></td>
 <td>espacio</td>
-<td><code>q6</code></td>
+<td><strong class="nombre">q6</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q3</code></td>
-<td><code>-</code></td>
-<td><code>q4</code></td>
+<td><strong class="nombre">q3</strong></td>
+<td><span class="literal">"-"</span></td>
+<td><strong class="nombre">q4</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q3</code></td>
+<td><strong class="nombre">q3</strong></td>
 <td>otro</td>
-<td><code>q15</code></td>
+<td><strong class="nombre">q15</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q4</code></td>
-<td><code>-</code></td>
-<td><code>q5</code></td>
+<td><strong class="nombre">q4</strong></td>
+<td><span class="literal">"-"</span></td>
+<td><strong class="nombre">q5</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q4</code></td>
+<td><strong class="nombre">q4</strong></td>
 <td>otro</td>
-<td><code>q15</code></td>
+<td><strong class="nombre">q15</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q5</code></td>
-<td><code>-</code>, espacio</td>
-<td><code>q5</code></td>
+<td><strong class="nombre">q5</strong></td>
+<td><span class="literal">"-"</span>, espacio</td>
+<td><strong class="nombre">q5</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q5</code></td>
-<td><code>\n</code></td>
+<td><strong class="nombre">q5</strong></td>
+<td><span class="literal">"\n"</span></td>
 <td>acepta</td>
-<td><code>REGLA_HORIZONTAL</code></td>
+<td><strong class="nombre">REGLA_HORIZONTAL</strong></td>
 </tr>
 <tr>
-<td><code>q5</code></td>
+<td><strong class="nombre">q5</strong></td>
 <td>otro</td>
-<td><code>q15</code></td>
-<td>Ej.: <code>---texto</code></td>
+<td><strong class="nombre">q15</strong></td>
+<td>Ej.: <strong class="nombre">---texto</strong></td>
 </tr>
 <tr>
-<td><code>q7</code></td>
+<td><strong class="nombre">q7</strong></td>
 <td>espacio</td>
-<td><code>q6</code></td>
+<td><strong class="nombre">q6</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q7</code></td>
+<td><strong class="nombre">q7</strong></td>
 <td>otro</td>
-<td><code>q14</code></td>
-<td>Sin consumir: el <code>*</code> se reevalúa como énfasis</td>
+<td><strong class="nombre">q14</strong></td>
+<td>Sin consumir: el <span class="literal">"*"</span> se reevalúa como énfasis</td>
 </tr>
 <tr>
-<td><code>q8</code></td>
-<td><code>&gt;</code></td>
-<td><code>q8</code></td>
+<td><strong class="nombre">q8</strong></td>
+<td><span class="literal">"&gt;"</span></td>
+<td><strong class="nombre">q8</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q8</code></td>
+<td><strong class="nombre">q8</strong></td>
 <td>espacio</td>
-<td><code>q9</code></td>
+<td><strong class="nombre">q9</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q9</code></td>
+<td><strong class="nombre">q9</strong></td>
 <td>espacio</td>
-<td><code>q9</code></td>
-<td>Solo si más adelante viene otro <code>&gt;</code></td>
+<td><strong class="nombre">q9</strong></td>
+<td>Solo si más adelante viene otro <span class="literal">"&gt;"</span></td>
 </tr>
 <tr>
-<td><code>q8</code></td>
-<td>otro</td>
-<td>acepta</td>
-<td><code>CITA</code> (el parser revisa la separación, D-11)</td>
-</tr>
-<tr>
-<td><code>q9</code></td>
-<td><code>&gt;</code></td>
-<td><code>q8</code></td>
-<td>Notación <code>&gt; &gt;</code></td>
-</tr>
-<tr>
-<td><code>q9</code></td>
+<td><strong class="nombre">q8</strong></td>
 <td>otro</td>
 <td>acepta</td>
-<td><code>CITA</code>; el contenido empieza en <code>q14</code></td>
+<td><strong class="nombre">CITA</strong> (el parser revisa la separación, D-11)</td>
 </tr>
 <tr>
-<td><code>q10</code></td>
-<td><code>`</code></td>
-<td><code>q11</code></td>
+<td><strong class="nombre">q9</strong></td>
+<td><span class="literal">"&gt;"</span></td>
+<td><strong class="nombre">q8</strong></td>
+<td>Notación <span class="literal">"&gt; &gt;"</span></td>
+</tr>
+<tr>
+<td><strong class="nombre">q9</strong></td>
+<td>otro</td>
+<td>acepta</td>
+<td><strong class="nombre">CITA</strong>; el contenido empieza en <strong class="nombre">q14</strong></td>
+</tr>
+<tr>
+<td><strong class="nombre">q10</strong></td>
+<td><span class="literal">"`"</span></td>
+<td><strong class="nombre">q11</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q10</code></td>
+<td><strong class="nombre">q10</strong></td>
 <td>otro</td>
-<td><code>q14</code></td>
+<td><strong class="nombre">q14</strong></td>
 <td>Sin consumir: es código en línea</td>
 </tr>
 <tr>
-<td><code>q11</code></td>
-<td><code>`</code></td>
-<td><code>q12</code></td>
+<td><strong class="nombre">q11</strong></td>
+<td><span class="literal">"`"</span></td>
+<td><strong class="nombre">q12</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q11</code></td>
+<td><strong class="nombre">q11</strong></td>
 <td>otro</td>
-<td><code>q14</code></td>
+<td><strong class="nombre">q14</strong></td>
 <td>Sin consumir</td>
 </tr>
 <tr>
-<td><code>q12</code></td>
-<td>otro ≠ <code>\n</code></td>
-<td><code>q13</code></td>
+<td><strong class="nombre">q12</strong></td>
+<td>otro ≠ <span class="literal">"\n"</span></td>
+<td><strong class="nombre">q13</strong></td>
 <td>Cambia a <strong>modo literal</strong> al terminar la línea</td>
 </tr>
 <tr>
-<td><code>q14</code></td>
-<td><code>*</code></td>
-<td><code>q16</code></td>
+<td><strong class="nombre">q14</strong></td>
+<td><span class="literal">"*"</span></td>
+<td><strong class="nombre">q16</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q14</code></td>
-<td><code>`</code></td>
-<td><code>q18</code></td>
+<td><strong class="nombre">q14</strong></td>
+<td><span class="literal">"`"</span></td>
+<td><strong class="nombre">q18</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q14</code></td>
-<td><code>\n</code> o fin</td>
-<td><code>q20</code></td>
+<td><strong class="nombre">q14</strong></td>
+<td><span class="literal">"\n"</span> o fin</td>
+<td><strong class="nombre">q20</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q14</code></td>
+<td><strong class="nombre">q14</strong></td>
 <td>otro</td>
-<td><code>q15</code></td>
+<td><strong class="nombre">q15</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q15</code></td>
-<td>otro ≠ <code>*</code>, <code>`</code>, <code>\n</code></td>
-<td><code>q15</code></td>
+<td><strong class="nombre">q15</strong></td>
+<td>otro ≠ <span class="literal">"*"</span>, <span class="literal">"`"</span>, <span class="literal">"\n"</span></td>
+<td><strong class="nombre">q15</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q15</code></td>
-<td><code>*</code>, <code>`</code>, <code>\n</code></td>
+<td><strong class="nombre">q15</strong></td>
+<td><span class="literal">"*"</span>, <span class="literal">"`"</span>, <span class="literal">"\n"</span></td>
 <td>acepta</td>
-<td><code>TEXTO</code>, sin consumir el delimitador</td>
+<td><strong class="nombre">TEXTO</strong>, sin consumir el delimitador</td>
 </tr>
 <tr>
-<td><code>q16</code></td>
-<td><code>*</code></td>
-<td><code>q17</code></td>
+<td><strong class="nombre">q16</strong></td>
+<td><span class="literal">"*"</span></td>
+<td><strong class="nombre">q17</strong></td>
 <td>Maximal munch</td>
 </tr>
 <tr>
-<td><code>q16</code></td>
+<td><strong class="nombre">q16</strong></td>
 <td>otro</td>
 <td>acepta</td>
-<td><code>CURSIVA</code></td>
+<td><strong class="nombre">CURSIVA</strong></td>
 </tr>
 <tr>
-<td><code>q18</code></td>
-<td>otro ≠ <code>`</code>, <code>\n</code></td>
-<td><code>q19</code></td>
-<td>Solo si hay <code>`</code> de cierre en el bloque (D-02, D-21)</td>
+<td><strong class="nombre">q18</strong></td>
+<td>otro ≠ <span class="literal">"`"</span>, <span class="literal">"\n"</span></td>
+<td><strong class="nombre">q19</strong></td>
+<td>Solo si hay <span class="literal">"`"</span> de cierre en el bloque (D-02, D-21)</td>
 </tr>
 <tr>
-<td><code>q19</code></td>
-<td>otro ≠ <code>`</code>, <code>\n</code></td>
-<td><code>q19</code></td>
+<td><strong class="nombre">q19</strong></td>
+<td>otro ≠ <span class="literal">"`"</span>, <span class="literal">"\n"</span></td>
+<td><strong class="nombre">q19</strong></td>
 <td></td>
 </tr>
 <tr>
-<td><code>q19</code></td>
-<td><code>`</code></td>
+<td><strong class="nombre">q19</strong></td>
+<td><span class="literal">"`"</span></td>
 <td>acepta</td>
-<td><code>TEXTO_LITERAL</code>, luego <code>CODIGO_INLINE</code></td>
+<td><strong class="nombre">TEXTO_LITERAL</strong>, luego <strong class="nombre">CODIGO_INLINE</strong></td>
 </tr>
 </tbody>
 </table>
@@ -975,80 +981,80 @@ código).</p>
 </thead>
 <tbody>
 <tr>
-<td><code>b0</code></td>
+<td><strong class="nombre">b0</strong></td>
 <td>espacio</td>
-<td><code>b0</code> (solo para buscar la cerca)</td>
+<td><strong class="nombre">b0</strong> (solo para buscar la cerca)</td>
 </tr>
 <tr>
-<td><code>b0</code></td>
-<td><code>`</code></td>
-<td><code>b1</code> → <code>b2</code> → <code>b3</code></td>
+<td><strong class="nombre">b0</strong></td>
+<td><span class="literal">"`"</span></td>
+<td><strong class="nombre">b1</strong> → <strong class="nombre">b2</strong> → <strong class="nombre">b3</strong></td>
 </tr>
 <tr>
-<td><code>b0</code></td>
+<td><strong class="nombre">b0</strong></td>
 <td>otro</td>
-<td><code>b4</code></td>
+<td><strong class="nombre">b4</strong></td>
 </tr>
 <tr>
-<td><code>b3</code></td>
-<td>espacios hasta <code>\n</code></td>
-<td>acepta <code>CERCA_CODIGO</code>, vuelve a <strong>modo normal</strong></td>
+<td><strong class="nombre">b3</strong></td>
+<td>espacios hasta <span class="literal">"\n"</span></td>
+<td>acepta <strong class="nombre">CERCA_CODIGO</strong>, vuelve a <strong>modo normal</strong></td>
 </tr>
 <tr>
-<td><code>b1</code>, <code>b2</code>, <code>b3</code></td>
+<td><strong class="nombre">b1</strong>, <strong class="nombre">b2</strong>, <strong class="nombre">b3</strong></td>
 <td>otro</td>
-<td><code>b4</code> (la línea es contenido)</td>
+<td><strong class="nombre">b4</strong> (la línea es contenido)</td>
 </tr>
 <tr>
-<td><code>b4</code></td>
-<td>otro ≠ <code>\n</code></td>
-<td><code>b4</code></td>
+<td><strong class="nombre">b4</strong></td>
+<td>otro ≠ <span class="literal">"\n"</span></td>
+<td><strong class="nombre">b4</strong></td>
 </tr>
 <tr>
-<td><code>b4</code></td>
-<td><code>\n</code></td>
-<td>acepta <code>TEXTO_LITERAL</code> (la línea completa, con su sangría)</td>
+<td><strong class="nombre">b4</strong></td>
+<td><span class="literal">"\n"</span></td>
+<td>acepta <strong class="nombre">TEXTO_LITERAL</strong> (la línea completa, con su sangría)</td>
 </tr>
 <tr>
-<td><code>b0</code></td>
-<td><code>\n</code> (línea vacía)</td>
-<td>acepta <code>TEXTO_LITERAL</code> vacío</td>
+<td><strong class="nombre">b0</strong></td>
+<td><span class="literal">"\n"</span> (línea vacía)</td>
+<td>acepta <strong class="nombre">TEXTO_LITERAL</strong> vacío</td>
 </tr>
 <tr>
-<td><code>b0</code></td>
+<td><strong class="nombre">b0</strong></td>
 <td>fin de archivo</td>
-<td>error <code>BLOQUE_CODIGO_SIN_CERRAR</code></td>
+<td>error <strong class="nombre">BLOQUE_CODIGO_SIN_CERRAR</strong></td>
 </tr>
 </tbody>
 </table>
 <h3>4.8 Capas posteriores al autómata</h3>
 <p>El AFD es determinista y no tiene memoria. Hay tres cosas que necesitan
 memoria y por eso van <strong>fuera</strong> del autómata, como capas que el
-<code>AnalizadorLexico</code> aplica después. En el manual técnico hay que decirlo así.</p>
+<strong class="nombre">AnalizadorLexico</strong> aplica después. En el manual técnico hay que decirlo así.</p>
 <ol>
-<li><strong>Contador de nivel de lista.</strong> Al aceptar una <code>VIÑETA</code>, el léxico compara
-   el nivel de sangría (espacios ÷ 2) con <code>nivel_lista</code>. Si sube, emite un
-   <code>INDENT</code> por cada nivel antes de la viñeta; si baja, un <code>DEDENT</code> por cada
+<li><strong>Contador de nivel de lista.</strong> Al aceptar una <strong class="nombre">VIÑETA</strong>, el léxico compara
+   el nivel de sangría (espacios ÷ 2) con <strong class="nombre">nivel_lista</strong>. Si sube, emite un
+   <strong class="nombre">INDENT</strong> por cada nivel antes de la viñeta; si baja, un <strong class="nombre">DEDENT</strong> por cada
    nivel. Una línea que no es ítem (incluida una línea vacía) baja el
    nivel a 0. Al final del archivo, también.</li>
 <li><strong>Pila de delimitadores en línea.</strong> Cada vez que el AFD acepta una
-   <code>NEGRITA</code>, una <code>CURSIVA</code> o un <code>TACHADO</code>, el token pasa por la pila: si es
+   <strong class="nombre">NEGRITA</strong>, una <strong class="nombre">CURSIVA</strong> o un <strong class="nombre">TACHADO</strong>, el token pasa por la pila: si es
    igual a la cima, la <strong>cierra</strong> (se saca); si no, <strong>abre</strong> (se mete). Al terminar el
    <strong>bloque</strong>, lo que quedó en la pila nunca se cerró: se reporta como
-   <code>NEGRITA_SIN_CERRAR</code> o <code>CURSIVA_SIN_CERRAR</code> y ese token pasa a ser
-   <code>TEXTO</code>. El bloque termina con su línea, salvo en un párrafo cuya línea
+   <strong class="nombre">NEGRITA_SIN_CERRAR</strong> o <strong class="nombre">CURSIVA_SIN_CERRAR</strong> y ese token pasa a ser
+   <strong class="nombre">TEXTO</strong>. El bloque termina con su línea, salvo en un párrafo cuya línea
    siguiente también es de texto (D-02). La pila también la consulta el AFD
-   en el caso <code>***</code> (D-04). El texto de un enlace y cada celda de una tabla
+   en el caso <span class="literal">"***"</span> (D-04). El texto de un enlace y cada celda de una tabla
    son ámbitos propios: lo que se abre adentro se tiene que cerrar adentro
    (D-32, D-33).</li>
-<li><strong>Cola de tokens pendientes.</strong> <code>siguiente_token()</code> entrega de esa cola;
+<li><strong>Cola de tokens pendientes.</strong> <strong class="nombre">siguiente_token()</strong> entrega de esa cola;
    cuando se vacía, analiza la línea siguiente. Mientras la pila tenga algo
    no entrega nada, aunque la cola tenga tokens: todavía no se sabe si el
-   delimitador se cierra o pasa a ser <code>TEXTO</code>. Así el parser nunca recibe
+   delimitador se cierra o pasa a ser <strong class="nombre">TEXTO</strong>. Así el parser nunca recibe
    un delimitador sin pareja.</li>
 </ol>
 <h3>4.9 Mapa estado → método</h3>
-<p>Cada estado del diagrama corresponde a un método de <code>AnalizadorLexico</code>:</p>
+<p>Cada estado del diagrama corresponde a un método de <strong class="nombre">AnalizadorLexico</strong>:</p>
 <table>
 <thead>
 <tr>
@@ -1059,58 +1065,58 @@ memoria y por eso van <strong>fuera</strong> del autómata, como capas que el
 <tbody>
 <tr>
 <td>q0, q21</td>
-<td><code>_analizar_linea_normal()</code></td>
+<td><strong class="nombre">_analizar_linea_normal()</strong></td>
 </tr>
 <tr>
 <td>q6, q7</td>
-<td><code>_estado_vineta()</code></td>
+<td><strong class="nombre">_estado_vineta()</strong></td>
 </tr>
 <tr>
 <td>q1, q2</td>
-<td><code>_estado_numeral()</code></td>
+<td><strong class="nombre">_estado_numeral()</strong></td>
 </tr>
 <tr>
 <td>q3, q4, q5</td>
-<td><code>_es_regla_horizontal()</code>, <code>_estado_regla()</code></td>
+<td><strong class="nombre">_es_regla_horizontal()</strong>, <strong class="nombre">_estado_regla()</strong></td>
 </tr>
 <tr>
 <td>q8, q9</td>
-<td><code>_estado_cita()</code></td>
+<td><strong class="nombre">_estado_cita()</strong></td>
 </tr>
 <tr>
 <td>q10 a q13</td>
-<td><code>_estado_cerca_apertura()</code></td>
+<td><strong class="nombre">_estado_cerca_apertura()</strong></td>
 </tr>
 <tr>
 <td>q14</td>
-<td><code>_estado_en_linea()</code></td>
+<td><strong class="nombre">_estado_en_linea()</strong></td>
 </tr>
 <tr>
 <td>q15</td>
-<td><code>_estado_texto()</code></td>
+<td><strong class="nombre">_estado_texto()</strong></td>
 </tr>
 <tr>
 <td>q16, q17</td>
-<td><code>_estado_asterisco()</code></td>
+<td><strong class="nombre">_estado_asterisco()</strong></td>
 </tr>
 <tr>
 <td>q18, q19</td>
-<td><code>_estado_codigo_inline()</code></td>
+<td><strong class="nombre">_estado_codigo_inline()</strong></td>
 </tr>
 <tr>
 <td>q20</td>
-<td><code>_estado_fin_linea()</code></td>
+<td><strong class="nombre">_estado_fin_linea()</strong></td>
 </tr>
 <tr>
 <td>b0 a b4</td>
-<td><code>_analizar_linea_literal()</code></td>
+<td><strong class="nombre">_analizar_linea_literal()</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Además, <code>_es_linea_de_parrafo()</code> y <code>_es_fin_de_bloque()</code> hacen el
+<p>Además, <strong class="nombre">_es_linea_de_parrafo()</strong> y <strong class="nombre">_es_fin_de_bloque()</strong> hacen el
 <em>lookahead</em> que decide si un párrafo sigue en la línea siguiente (D-02): la
-primera repite las decisiones de <code>q0</code> sin consumir, y la segunda la usan la
-pila de delimitadores, el código en línea y el caso <code>***</code> para saber hasta
+primera repite las decisiones de <strong class="nombre">q0</strong> sin consumir, y la segunda la usan la
+pila de delimitadores, el código en línea y el caso <span class="literal">"***"</span> para saber hasta
 dónde llega el bloque.</p>
 <h3>4.10 Tokens del alcance opcional</h3>
 <table>
@@ -1124,82 +1130,82 @@ dónde llega el bloque.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>NUMERO_LISTA</code></td>
-<td><code>1.</code>, <code>10.</code>…</td>
+<td><strong class="nombre">NUMERO_LISTA</strong></td>
+<td><span class="literal">"1."</span>, <span class="literal">"10."</span>…</td>
 <td>Inicio de línea (tras la sangría), seguido de espacio</td>
-<td><code>1. Primero</code></td>
+<td><span class="literal">"1. Primero"</span></td>
 </tr>
 <tr>
-<td><code>CASILLA</code></td>
-<td><code>[ ]</code>, <code>[x]</code>, <code>[X]</code></td>
-<td>Después de <code>VIÑETA</code> o <code>NUMERO_LISTA</code>, seguida de espacio</td>
-<td><code>- [x] Hecho</code></td>
+<td><strong class="nombre">CASILLA</strong></td>
+<td><span class="literal">"[ ]"</span>, <span class="literal">"[x]"</span>, <span class="literal">"[X]"</span></td>
+<td>Después de <strong class="nombre">VIÑETA</strong> o <strong class="nombre">NUMERO_LISTA</strong>, seguida de espacio</td>
+<td><span class="literal">"- [x] Hecho"</span></td>
 </tr>
 <tr>
-<td><code>TACHADO</code></td>
-<td><code>~~</code></td>
+<td><strong class="nombre">TACHADO</strong></td>
+<td><span class="literal">"~~"</span></td>
 <td>Dentro de una línea</td>
-<td><code>~~viejo~~</code></td>
+<td><span class="literal">"~~viejo~~"</span></td>
 </tr>
 <tr>
-<td><code>CORCHETE_ABRE</code></td>
-<td><code>[</code></td>
+<td><strong class="nombre">CORCHETE_ABRE</strong></td>
+<td><span class="literal">"["</span></td>
 <td>Dentro de una línea, si el enlace está completo</td>
-<td><code>[texto](url)</code></td>
+<td><span class="literal">"[texto](url)"</span></td>
 </tr>
 <tr>
-<td><code>IMAGEN_ABRE</code></td>
-<td><code>![</code></td>
+<td><strong class="nombre">IMAGEN_ABRE</strong></td>
+<td><span class="literal">"!["</span></td>
 <td>Dentro de una línea, si la imagen está completa</td>
-<td><code>![alt](img.png)</code></td>
+<td><span class="literal">"![alt](img.png)"</span></td>
 </tr>
 <tr>
-<td><code>CORCHETE_CIERRA</code></td>
-<td><code>]</code></td>
+<td><strong class="nombre">CORCHETE_CIERRA</strong></td>
+<td><span class="literal">"]"</span></td>
 <td>Cierre del texto de un enlace o de una imagen</td>
 <td></td>
 </tr>
 <tr>
-<td><code>PARENTESIS_ABRE</code></td>
-<td><code>(</code></td>
-<td>Justo después del <code>]</code></td>
+<td><strong class="nombre">PARENTESIS_ABRE</strong></td>
+<td><span class="literal">"("</span></td>
+<td>Justo después del <span class="literal">"]"</span></td>
 <td></td>
 </tr>
 <tr>
-<td><code>URL</code></td>
-<td>lo que va entre <code>(</code> y <code>)</code></td>
+<td><strong class="nombre">URL</strong></td>
+<td>lo que va entre <span class="literal">"("</span> y <span class="literal">")"</span></td>
 <td>Destino; sin espacios, puede estar vacío</td>
-<td><code>https://x.org</code></td>
+<td><span class="literal">"https://x.org"</span></td>
 </tr>
 <tr>
-<td><code>PARENTESIS_CIERRA</code></td>
-<td><code>)</code></td>
+<td><strong class="nombre">PARENTESIS_CIERRA</strong></td>
+<td><span class="literal">")"</span></td>
 <td>Fin del destino</td>
 <td></td>
 </tr>
 <tr>
-<td><code>BARRA</code></td>
+<td><strong class="nombre">BARRA</strong></td>
 <td>|</td>
 <td>Cada | de una fila de tabla</td>
 <td>| a | b |</td>
 </tr>
 <tr>
-<td><code>SEPARADOR_TABLA</code></td>
+<td><strong class="nombre">SEPARADOR_TABLA</strong></td>
 <td>la fila completa</td>
-<td>Fila de guiones entre |, con <code>:</code> opcionales</td>
+<td>Fila de guiones entre |, con <span class="literal">":"</span> opcionales</td>
 <td>|:--|--:|</td>
 </tr>
 </tbody>
 </table>
 <h3>4.11 AFD del alcance opcional</h3>
-<p>Estos estados se suman al AFD de la sección 4.4: <code>q0</code>, <code>q6</code>, <code>q14</code> y <code>q15</code>
+<p>Estos estados se suman al AFD de la sección 4.4: <strong class="nombre">q0</strong>, <strong class="nombre">q6</strong>, <strong class="nombre">q14</strong> y <strong class="nombre">q15</strong>
 (en gris) son los mismos estados de ese diagrama. "(la)" marca las
 decisiones que se toman con lookahead.</p>
 <div class="salto"></div>
 
 <p><img src="img/afd_opcional.png" alt="AFD del alcance opcional" style="display: block; margin: 0 auto; max-width: 100%; max-height: 225mm;"></p>
-<p>El diagrama está en <code>afd_alcance_opcional.dot</code> / <code>.png</code>. Parte de los mismos
-<code>q0</code> (inicio de línea), <code>q6</code> (viñeta) y <code>q14</code> (en línea) del AFD principal.</p>
+<p>El diagrama está en <strong class="nombre">afd_alcance_opcional.dot</strong> / <strong class="nombre">.png</strong>. Parte de los mismos
+<strong class="nombre">q0</strong> (inicio de línea), <strong class="nombre">q6</strong> (viñeta) y <strong class="nombre">q14</strong> (en línea) del AFD principal.</p>
 <table>
 <thead>
 <tr>
@@ -1210,81 +1216,81 @@ decisiones que se toman con lookahead.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>q22</code></td>
+<td><strong class="nombre">q22</strong></td>
 <td>Dígitos al inicio de línea</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q23</code></td>
-<td>Dígitos + <code>.</code>, si sigue un espacio</td>
-<td><code>NUMERO_LISTA</code></td>
+<td><strong class="nombre">q23</strong></td>
+<td>Dígitos + <span class="literal">"."</span>, si sigue un espacio</td>
+<td><strong class="nombre">NUMERO_LISTA</strong></td>
 </tr>
 <tr>
-<td><code>q24</code>, <code>q25</code></td>
-<td><code>[</code> y <code>[</code> / <code>[x</code> después del marcador</td>
+<td><strong class="nombre">q24</strong>, <strong class="nombre">q25</strong></td>
+<td><span class="literal">"["</span> y <span class="literal">"["</span> / <span class="literal">"[x"</span> después del marcador</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q26</code></td>
-<td><code>[ ]</code> o <code>[x]</code>, si sigue un espacio</td>
-<td><code>CASILLA</code></td>
+<td><strong class="nombre">q26</strong></td>
+<td><span class="literal">"[ ]"</span> o <span class="literal">"[x]"</span>, si sigue un espacio</td>
+<td><strong class="nombre">CASILLA</strong></td>
 </tr>
 <tr>
-<td><code>q27</code>, <code>q28</code></td>
-<td><code>~</code> y <code>~~</code> en línea</td>
-<td><code>TACHADO</code> en <code>q28</code></td>
+<td><strong class="nombre">q27</strong>, <strong class="nombre">q28</strong></td>
+<td><span class="literal">"~"</span> y <span class="literal">"~~"</span> en línea</td>
+<td><strong class="nombre">TACHADO</strong> en <strong class="nombre">q28</strong></td>
 </tr>
 <tr>
-<td><code>q29</code></td>
-<td><code>[</code> con el enlace completo en la línea (lookahead)</td>
-<td><code>CORCHETE_ABRE</code></td>
+<td><strong class="nombre">q29</strong></td>
+<td><span class="literal">"["</span> con el enlace completo en la línea (lookahead)</td>
+<td><strong class="nombre">CORCHETE_ABRE</strong></td>
 </tr>
 <tr>
-<td><code>q30</code></td>
-<td><code>]</code> dentro de un enlace o imagen</td>
-<td><code>CORCHETE_CIERRA</code></td>
+<td><strong class="nombre">q30</strong></td>
+<td><span class="literal">"]"</span> dentro de un enlace o imagen</td>
+<td><strong class="nombre">CORCHETE_CIERRA</strong></td>
 </tr>
 <tr>
-<td><code>q31</code>, <code>q32</code>, <code>q33</code></td>
-<td><code>(</code>, la URL, <code>)</code></td>
-<td><code>PARENTESIS_ABRE</code>, <code>URL</code>, <code>PARENTESIS_CIERRA</code></td>
+<td><strong class="nombre">q31</strong>, <strong class="nombre">q32</strong>, <strong class="nombre">q33</strong></td>
+<td><span class="literal">"("</span>, la URL, <span class="literal">")"</span></td>
+<td><strong class="nombre">PARENTESIS_ABRE</strong>, <strong class="nombre">URL</strong>, <strong class="nombre">PARENTESIS_CIERRA</strong></td>
 </tr>
 <tr>
-<td><code>q34</code>, <code>q35</code></td>
-<td><code>!</code> y <code>![</code> con la imagen completa</td>
-<td><code>IMAGEN_ABRE</code> en <code>q35</code></td>
+<td><strong class="nombre">q34</strong>, <strong class="nombre">q35</strong></td>
+<td><span class="literal">"!"</span> y <span class="literal">"!["</span> con la imagen completa</td>
+<td><strong class="nombre">IMAGEN_ABRE</strong> en <strong class="nombre">q35</strong></td>
 </tr>
 <tr>
-<td><code>q36</code></td>
+<td><strong class="nombre">q36</strong></td>
 <td>Texto alternativo de la imagen</td>
-<td><code>TEXTO_LITERAL</code></td>
+<td><strong class="nombre">TEXTO_LITERAL</strong></td>
 </tr>
 <tr>
-<td><code>q37</code></td>
+<td><strong class="nombre">q37</strong></td>
 <td>| al inicio de línea</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q38</code></td>
+<td><strong class="nombre">q38</strong></td>
 <td>Cada | de una fila</td>
-<td><code>BARRA</code></td>
+<td><strong class="nombre">BARRA</strong></td>
 </tr>
 <tr>
-<td><code>s0</code>..<code>s3</code></td>
-<td>Una celda de la fila separadora: espacios, <code>:</code>, <code>-</code>+, <code>:</code></td>
+<td><strong class="nombre">s0</strong>..<strong class="nombre">s3</strong></td>
+<td>Una celda de la fila separadora: espacios, <span class="literal">":"</span>, <span class="literal">"-"</span>+, <span class="literal">":"</span></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>q39</code></td>
+<td><strong class="nombre">q39</strong></td>
 <td>Fin de una fila separadora válida</td>
-<td><code>SEPARADOR_TABLA</code></td>
+<td><strong class="nombre">SEPARADOR_TABLA</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Los <code>(la)</code> del diagrama son decisiones con <strong>lookahead</strong>, como la de <code>q18</code>:
-<code>_es_numero_de_lista()</code>, <code>_cierre_de_corchete()</code> y <code>_es_separador_tabla()</code>
+<p>Los <span class="literal">"(la)"</span> del diagrama son decisiones con <strong>lookahead</strong>, como la de <strong class="nombre">q18</strong>:
+<strong class="nombre">_es_numero_de_lista()</strong>, <strong class="nombre">_cierre_de_corchete()</strong> y <strong class="nombre">_es_separador_tabla()</strong>
 miran hacia adelante sin consumir, y el AFD sigue siendo determinista. La
-fila separadora es un AFD pequeño por celda (<code>s0</code>..<code>s3</code>) que se recorre una
+fila separadora es un AFD pequeño por celda (<strong class="nombre">s0</strong>..<strong class="nombre">s3</strong>) que se recorre una
 vez por celda.</p>
 <table>
 <thead>
@@ -1296,31 +1302,31 @@ vez por celda.</p>
 <tbody>
 <tr>
 <td>q22, q23</td>
-<td><code>_es_numero_de_lista()</code>, <code>_estado_numero_lista()</code></td>
+<td><strong class="nombre">_es_numero_de_lista()</strong>, <strong class="nombre">_estado_numero_lista()</strong></td>
 </tr>
 <tr>
 <td>q24 a q26</td>
-<td><code>_estado_casilla()</code></td>
+<td><strong class="nombre">_estado_casilla()</strong></td>
 </tr>
 <tr>
 <td>q27, q28</td>
-<td><code>_estado_tachado()</code></td>
+<td><strong class="nombre">_estado_tachado()</strong></td>
 </tr>
 <tr>
 <td>q29 a q33</td>
-<td><code>_estado_enlace()</code>, <code>_cierre_de_corchete()</code>, <code>_estado_cierre_enlace()</code>, <code>_estado_destino()</code></td>
+<td><strong class="nombre">_estado_enlace()</strong>, <strong class="nombre">_cierre_de_corchete()</strong>, <strong class="nombre">_estado_cierre_enlace()</strong>, <strong class="nombre">_estado_destino()</strong></td>
 </tr>
 <tr>
 <td>q34 a q36</td>
-<td><code>_estado_imagen()</code></td>
+<td><strong class="nombre">_estado_imagen()</strong></td>
 </tr>
 <tr>
 <td>q37, q38</td>
-<td><code>_estado_tabla()</code>, <code>_estado_barra()</code></td>
+<td><strong class="nombre">_estado_tabla()</strong>, <strong class="nombre">_estado_barra()</strong></td>
 </tr>
 <tr>
 <td>s0 a s3, q39</td>
-<td><code>_es_separador_tabla()</code></td>
+<td><strong class="nombre">_es_separador_tabla()</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1401,26 +1407,26 @@ en la sección 12.</p>
 &lt;destino&gt;          ::= PARENTESIS_ABRE &lt;url_opc&gt; PARENTESIS_CIERRA
 &lt;url_opc&gt;          ::= URL | ε
 </code></pre>
-<p>La cita usa el <strong>atributo</strong> <code>n</code> (nivel). <code>CITA[n]</code> significa "un token <code>CITA</code>
-cuyo lexema tiene exactamente <code>n</code> símbolos <code>&gt;</code>". La cita raíz es <code>&lt;cita(1)&gt;</code>.
+<p>La cita usa el <strong>atributo</strong> <strong class="nombre">n</strong> (nivel). <strong class="nombre">CITA[n]</strong> significa "un token <strong class="nombre">CITA</strong>
+cuyo lexema tiene exactamente <strong class="nombre">n</strong> símbolos <span class="literal">"&gt;"</span>". La cita raíz es <strong class="nombre">&lt;cita(1)&gt;</strong>.
 Esto es una gramática con atributos: la estructura sigue siendo libre de
 contexto y el atributo solo decide qué alternativa tomar, igual que un
 predicado semántico.</p>
-<p>La lista usa el atributo <code>t</code>, el tipo de marcador: <code>MARCADOR[t]</code> es una
-<code>VIÑETA</code> en una lista con viñetas y un <code>NUMERO_LISTA</code> en una numerada
+<p>La lista usa el atributo <strong class="nombre">t</strong>, el tipo de marcador: <strong class="nombre">MARCADOR[t]</strong> es una
+<strong class="nombre">VIÑETA</strong> en una lista con viñetas y un <strong class="nombre">NUMERO_LISTA</strong> en una numerada
 (D-29). Si el marcador cambia, termina la lista y empieza otra.</p>
-<p><code>&lt;linea_texto&gt;</code> empieza con un <code>&lt;elemento_linea&gt;</code> obligatorio, así que un
+<p><strong class="nombre">&lt;linea_texto&gt;</strong> empieza con un <strong class="nombre">&lt;elemento_linea&gt;</strong> obligatorio, así que un
 párrafo nunca es vacío. Coincide con lo que entrega el léxico: toda línea sin
-contenido llega como <code>SALTO_PARRAFO</code>, nunca como un <code>SALTO_LINEA</code> solo.</p>
-<p><strong><code>SALTO_LINEA</code> dentro de negrita, cursiva y código en línea (D-02).</strong> En
+contenido llega como <strong class="nombre">SALTO_PARRAFO</strong>, nunca como un <strong class="nombre">SALTO_LINEA</strong> solo.</p>
+<p><strong><strong class="nombre">SALTO_LINEA</strong> dentro de negrita, cursiva y código en línea (D-02).</strong> En
 un párrafo, un delimitador se puede cerrar en una línea siguiente, así que
-el <code>SALTO_LINEA</code> de en medio queda dentro de <code>&lt;negrita&gt;</code>, <code>&lt;cursiva&gt;</code> o
-<code>&lt;codigo_inline&gt;</code>. La gramática lo admite en cualquier <code>&lt;en_linea_n&gt;</code> o
-<code>&lt;en_linea_c&gt;</code>, pero el léxico solo lo entrega así dentro de un párrafo: un
+el <strong class="nombre">SALTO_LINEA</strong> de en medio queda dentro de <strong class="nombre">&lt;negrita&gt;</strong>, <strong class="nombre">&lt;cursiva&gt;</strong> o
+<strong class="nombre">&lt;codigo_inline&gt;</strong>. La gramática lo admite en cualquier <strong class="nombre">&lt;en_linea_n&gt;</strong> o
+<strong class="nombre">&lt;en_linea_c&gt;</strong>, pero el léxico solo lo entrega así dentro de un párrafo: un
 encabezado, un ítem y una línea de cita son de una sola línea. Sigue siendo
-LL(1): FOLLOW(<code>&lt;en_linea_n&gt;</code>) = { <code>NEGRITA</code> } y FOLLOW(<code>&lt;en_linea_c&gt;</code>) =
-{ <code>CURSIVA</code> }, que no contienen <code>SALTO_LINEA</code>; y en <code>&lt;literal_inline&gt;</code> el
-<code>SALTO_LINEA</code> tampoco choca con FOLLOW = { <code>CODIGO_INLINE</code> }.</p>
+LL(1): FOLLOW(<strong class="nombre">&lt;en_linea_n&gt;</strong>) = { <strong class="nombre">NEGRITA</strong> } y FOLLOW(<strong class="nombre">&lt;en_linea_c&gt;</strong>) =
+{ <strong class="nombre">CURSIVA</strong> }, que no contienen <strong class="nombre">SALTO_LINEA</strong>; y en <strong class="nombre">&lt;literal_inline&gt;</strong> el
+<strong class="nombre">SALTO_LINEA</strong> tampoco choca con FOLLOW = { <strong class="nombre">CODIGO_INLINE</strong> }.</p>
 <h3>5.2 Conjuntos FIRST y propiedad LL(1)</h3>
 <table>
 <thead>
@@ -1431,98 +1437,98 @@ LL(1): FOLLOW(<code>&lt;en_linea_n&gt;</code>) = { <code>NEGRITA</code> } y FOLL
 </thead>
 <tbody>
 <tr>
-<td><code>&lt;bloque&gt;</code></td>
-<td><code>NUMERAL</code>, <code>VIÑETA</code>, <code>NUMERO_LISTA</code>, <code>CITA</code>, <code>CERCA_CODIGO</code>, <code>REGLA_HORIZONTAL</code>, <code>BARRA</code>, <code>SEPARADOR_TABLA</code> y los de <code>&lt;parrafo&gt;</code></td>
+<td><strong class="nombre">&lt;bloque&gt;</strong></td>
+<td><strong class="nombre">NUMERAL</strong>, <strong class="nombre">VIÑETA</strong>, <strong class="nombre">NUMERO_LISTA</strong>, <strong class="nombre">CITA</strong>, <strong class="nombre">CERCA_CODIGO</strong>, <strong class="nombre">REGLA_HORIZONTAL</strong>, <strong class="nombre">BARRA</strong>, <strong class="nombre">SEPARADOR_TABLA</strong> y los de <strong class="nombre">&lt;parrafo&gt;</strong></td>
 </tr>
 <tr>
-<td><code>&lt;encabezado&gt;</code></td>
-<td><code>NUMERAL</code></td>
+<td><strong class="nombre">&lt;encabezado&gt;</strong></td>
+<td><strong class="nombre">NUMERAL</strong></td>
 </tr>
 <tr>
-<td><code>&lt;parrafo&gt;</code></td>
-<td><code>TEXTO</code>, <code>NEGRITA</code>, <code>CURSIVA</code>, <code>TACHADO</code>, <code>CODIGO_INLINE</code>, <code>CORCHETE_ABRE</code>, <code>IMAGEN_ABRE</code></td>
+<td><strong class="nombre">&lt;parrafo&gt;</strong></td>
+<td><strong class="nombre">TEXTO</strong>, <strong class="nombre">NEGRITA</strong>, <strong class="nombre">CURSIVA</strong>, <strong class="nombre">TACHADO</strong>, <strong class="nombre">CODIGO_INLINE</strong>, <strong class="nombre">CORCHETE_ABRE</strong>, <strong class="nombre">IMAGEN_ABRE</strong></td>
 </tr>
 <tr>
-<td><code>&lt;lista(t)&gt;</code></td>
-<td><code>VIÑETA</code> o <code>NUMERO_LISTA</code>, según <code>t</code></td>
+<td><strong class="nombre">&lt;lista(t)&gt;</strong></td>
+<td><strong class="nombre">VIÑETA</strong> o <strong class="nombre">NUMERO_LISTA</strong>, según <strong class="nombre">t</strong></td>
 </tr>
 <tr>
-<td><code>&lt;tabla&gt;</code></td>
-<td><code>BARRA</code> (y <code>SEPARADOR_TABLA</code>, para reportar la tabla sin encabezado)</td>
+<td><strong class="nombre">&lt;tabla&gt;</strong></td>
+<td><strong class="nombre">BARRA</strong> (y <strong class="nombre">SEPARADOR_TABLA</strong>, para reportar la tabla sin encabezado)</td>
 </tr>
 <tr>
-<td><code>&lt;cita(n)&gt;</code></td>
-<td><code>CITA</code></td>
+<td><strong class="nombre">&lt;cita(n)&gt;</strong></td>
+<td><strong class="nombre">CITA</strong></td>
 </tr>
 <tr>
-<td><code>&lt;contenido_cita&gt;</code></td>
-<td><code>NUMERAL</code> (→ <code>&lt;encabezado&gt;</code>) / <code>TEXTO</code>, <code>NEGRITA</code>, <code>CURSIVA</code>, <code>CODIGO_INLINE</code>, <code>SALTO_LINEA</code></td>
+<td><strong class="nombre">&lt;contenido_cita&gt;</strong></td>
+<td><strong class="nombre">NUMERAL</strong> (→ <strong class="nombre">&lt;encabezado&gt;</strong>) / <strong class="nombre">TEXTO</strong>, <strong class="nombre">NEGRITA</strong>, <strong class="nombre">CURSIVA</strong>, <strong class="nombre">CODIGO_INLINE</strong>, <strong class="nombre">SALTO_LINEA</strong></td>
 </tr>
 <tr>
-<td><code>&lt;bloque_codigo&gt;</code></td>
-<td><code>CERCA_CODIGO</code></td>
+<td><strong class="nombre">&lt;bloque_codigo&gt;</strong></td>
+<td><strong class="nombre">CERCA_CODIGO</strong></td>
 </tr>
 <tr>
-<td><code>&lt;regla_horizontal&gt;</code></td>
-<td><code>REGLA_HORIZONTAL</code></td>
+<td><strong class="nombre">&lt;regla_horizontal&gt;</strong></td>
+<td><strong class="nombre">REGLA_HORIZONTAL</strong></td>
 </tr>
 <tr>
-<td><code>&lt;en_linea&gt;</code></td>
-<td>los de <code>&lt;parrafo&gt;</code>, ε</td>
+<td><strong class="nombre">&lt;en_linea&gt;</strong></td>
+<td>los de <strong class="nombre">&lt;parrafo&gt;</strong>, ε</td>
 </tr>
 <tr>
-<td><code>&lt;en_linea_n&gt;</code></td>
-<td><code>CURSIVA</code>, <code>TACHADO</code>, <code>CODIGO_INLINE</code>, <code>CORCHETE_ABRE</code>, <code>IMAGEN_ABRE</code>, <code>TEXTO</code>, <code>SALTO_LINEA</code>, ε</td>
+<td><strong class="nombre">&lt;en_linea_n&gt;</strong></td>
+<td><strong class="nombre">CURSIVA</strong>, <strong class="nombre">TACHADO</strong>, <strong class="nombre">CODIGO_INLINE</strong>, <strong class="nombre">CORCHETE_ABRE</strong>, <strong class="nombre">IMAGEN_ABRE</strong>, <strong class="nombre">TEXTO</strong>, <strong class="nombre">SALTO_LINEA</strong>, ε</td>
 </tr>
 <tr>
-<td><code>&lt;en_linea_c&gt;</code></td>
-<td><code>NEGRITA</code>, <code>TACHADO</code>, <code>CODIGO_INLINE</code>, <code>CORCHETE_ABRE</code>, <code>IMAGEN_ABRE</code>, <code>TEXTO</code>, <code>SALTO_LINEA</code>, ε</td>
+<td><strong class="nombre">&lt;en_linea_c&gt;</strong></td>
+<td><strong class="nombre">NEGRITA</strong>, <strong class="nombre">TACHADO</strong>, <strong class="nombre">CODIGO_INLINE</strong>, <strong class="nombre">CORCHETE_ABRE</strong>, <strong class="nombre">IMAGEN_ABRE</strong>, <strong class="nombre">TEXTO</strong>, <strong class="nombre">SALTO_LINEA</strong>, ε</td>
 </tr>
 <tr>
-<td><code>&lt;en_linea_t&gt;</code></td>
-<td><code>NEGRITA</code>, <code>CURSIVA</code>, <code>CODIGO_INLINE</code>, <code>CORCHETE_ABRE</code>, <code>IMAGEN_ABRE</code>, <code>TEXTO</code>, <code>SALTO_LINEA</code>, ε</td>
+<td><strong class="nombre">&lt;en_linea_t&gt;</strong></td>
+<td><strong class="nombre">NEGRITA</strong>, <strong class="nombre">CURSIVA</strong>, <strong class="nombre">CODIGO_INLINE</strong>, <strong class="nombre">CORCHETE_ABRE</strong>, <strong class="nombre">IMAGEN_ABRE</strong>, <strong class="nombre">TEXTO</strong>, <strong class="nombre">SALTO_LINEA</strong>, ε</td>
 </tr>
 <tr>
-<td><code>&lt;celdas&gt;</code></td>
-<td><code>BARRA</code> y los de <code>&lt;en_linea&gt;</code> (la celda puede estar vacía), ε</td>
+<td><strong class="nombre">&lt;celdas&gt;</strong></td>
+<td><strong class="nombre">BARRA</strong> y los de <strong class="nombre">&lt;en_linea&gt;</strong> (la celda puede estar vacía), ε</td>
 </tr>
 </tbody>
 </table>
-<p>Las alternativas de <code>&lt;bloque&gt;</code> tienen FIRST disjuntos, así que un solo token
-de lookahead decide qué función llamar. Lo mismo en <code>&lt;contenido_cita&gt;</code>: como
-la <code>CITA</code> ya se consumió, el token actual decide entre <code>&lt;encabezado&gt;</code> y una
+<p>Las alternativas de <strong class="nombre">&lt;bloque&gt;</strong> tienen FIRST disjuntos, así que un solo token
+de lookahead decide qué función llamar. Lo mismo en <strong class="nombre">&lt;contenido_cita&gt;</strong>: como
+la <strong class="nombre">CITA</strong> ya se consumió, el token actual decide entre <strong class="nombre">&lt;encabezado&gt;</strong> y una
 línea de texto. <strong>Toda la gramática es LL(1)</strong>; el parser trabaja con un solo
-token de lookahead (<code>self.actual</code>).</p>
-<p>En <code>&lt;elemento_cita(n)&gt;</code> la decisión la toma el <strong>atributo</strong>: una <code>CITA</code> de
-nivel mayor que <code>n</code> abre <code>&lt;cita(n+1)&gt;</code>; si no, es una línea de esta cita.</p>
-<p><strong>Por qué hay cuatro versiones de <code>&lt;en_linea&gt;</code>.</strong> Con una sola, dentro de una
-negrita no se sabría si el siguiente <code>**</code> cierra la negrita actual o abre una
-nueva: <code>NEGRITA</code> estaría a la vez en FIRST(<code>&lt;elemento_linea&gt;</code>) y en
-FOLLOW(<code>&lt;en_linea&gt;</code>). Eso es un conflicto LL(1). Quitando la negrita de lo que
+token de lookahead (<strong class="nombre">self.actual</strong>).</p>
+<p>En <strong class="nombre">&lt;elemento_cita(n)&gt;</strong> la decisión la toma el <strong>atributo</strong>: una <strong class="nombre">CITA</strong> de
+nivel mayor que <strong class="nombre">n</strong> abre <strong class="nombre">&lt;cita(n+1)&gt;</strong>; si no, es una línea de esta cita.</p>
+<p><strong>Por qué hay cuatro versiones de <strong class="nombre">&lt;en_linea&gt;</strong>.</strong> Con una sola, dentro de una
+negrita no se sabría si el siguiente <span class="literal">"**"</span> cierra la negrita actual o abre una
+nueva: <strong class="nombre">NEGRITA</strong> estaría a la vez en FIRST(<strong class="nombre">&lt;elemento_linea&gt;</strong>) y en
+FOLLOW(<strong class="nombre">&lt;en_linea&gt;</strong>). Eso es un conflicto LL(1). Quitando la negrita de lo que
 puede ir directamente dentro de una negrita (y la cursiva de una cursiva, y
 el tachado de un tachado), el conflicto desaparece. Negrita dentro de
 cursiva, cursiva dentro de negrita y el tachado con cualquiera de las dos
 siguen permitidos.</p>
 <p><strong>Enlaces y tablas no necesitan otra versión.</strong> El texto de un enlace es un
-<code>&lt;en_linea&gt;</code> completo: termina en <code>CORCHETE_CIERRA</code>, que no está en ningún
+<strong class="nombre">&lt;en_linea&gt;</strong> completo: termina en <strong class="nombre">CORCHETE_CIERRA</strong>, que no está en ningún
 FIRST, así que el ciclo se detiene ahí sin conflicto. Lo mismo la celda con
-la <code>BARRA</code>. En <code>&lt;tabla&gt;</code>, el encabezado y las filas empiezan con <code>BARRA</code> y la
-fila separadora es un solo <code>SEPARADOR_TABLA</code>, así que un token basta.</p>
-<p><strong>Listas y párrafos consecutivos.</strong> Formalmente FOLLOW(<code>&lt;lista&gt;</code>) incluye
-<code>VIÑETA</code>, porque <code>&lt;documento&gt;</code> podría poner dos listas seguidas. Se resuelve
-de forma <strong>voraz</strong>: mientras venga <code>VIÑETA</code>, se extiende la lista actual
+la <strong class="nombre">BARRA</strong>. En <strong class="nombre">&lt;tabla&gt;</strong>, el encabezado y las filas empiezan con <strong class="nombre">BARRA</strong> y la
+fila separadora es un solo <strong class="nombre">SEPARADOR_TABLA</strong>, así que un token basta.</p>
+<p><strong>Listas y párrafos consecutivos.</strong> Formalmente FOLLOW(<strong class="nombre">&lt;lista&gt;</strong>) incluye
+<strong class="nombre">VIÑETA</strong>, porque <strong class="nombre">&lt;documento&gt;</strong> podría poner dos listas seguidas. Se resuelve
+de forma <strong>voraz</strong>: mientras venga <strong class="nombre">VIÑETA</strong>, se extiende la lista actual
 (igual que el <em>dangling else</em>). Lo mismo para las líneas de un párrafo.</p>
 <h3>5.3 Forma EBNF que implementa el parser</h3>
-<p>La recursión por la derecha <code>X ::= a X | a</code> es equivalente a la repetición
-<code>X ::= a { a }</code>, y <code>X ::= a | ε</code> equivale a la parte opcional <code>[ a ]</code>. El
-parser implementa esta forma: una repetición es un <code>while</code> y una parte
-opcional es un <code>if</code>. Por eso desaparecen los no terminales auxiliares de la
-BNF (<code>&lt;resto_parrafo&gt;</code>, <code>&lt;resto_lista&gt;</code>, <code>&lt;resto_cita(n)&gt;</code>, <code>&lt;sublista_opc&gt;</code>,
-<code>&lt;lenguaje_opc&gt;</code>, <code>&lt;literal_inline&gt;</code>, <code>&lt;casilla_opc&gt;</code>, <code>&lt;listas&gt;</code>,
-<code>&lt;resto_listas&gt;</code>, <code>&lt;filas&gt;</code>, <code>&lt;celdas&gt;</code>, <code>&lt;alternativo_opc&gt;</code>, <code>&lt;url_opc&gt;</code>),
+<p>La recursión por la derecha <span class="literal">"X ::= a X | a"</span> es equivalente a la repetición
+<span class="literal">"X ::= a { a }"</span>, y <span class="literal">"X ::= a | ε"</span> equivale a la parte opcional <span class="literal">"[ a ]"</span>. El
+parser implementa esta forma: una repetición es un <strong class="nombre">while</strong> y una parte
+opcional es un <strong class="nombre">if</strong>. Por eso desaparecen los no terminales auxiliares de la
+BNF (<strong class="nombre">&lt;resto_parrafo&gt;</strong>, <strong class="nombre">&lt;resto_lista&gt;</strong>, <strong class="nombre">&lt;resto_cita(n)&gt;</strong>, <strong class="nombre">&lt;sublista_opc&gt;</strong>,
+<strong class="nombre">&lt;lenguaje_opc&gt;</strong>, <strong class="nombre">&lt;literal_inline&gt;</strong>, <strong class="nombre">&lt;casilla_opc&gt;</strong>, <strong class="nombre">&lt;listas&gt;</strong>,
+<strong class="nombre">&lt;resto_listas&gt;</strong>, <strong class="nombre">&lt;filas&gt;</strong>, <strong class="nombre">&lt;celdas&gt;</strong>, <strong class="nombre">&lt;alternativo_opc&gt;</strong>, <strong class="nombre">&lt;url_opc&gt;</strong>),
 y el árbol tiene, por ejemplo, un solo
-nodo <code>&lt;lista&gt;</code> con todos sus <code>&lt;item_lista&gt;</code> como hijos, en vez de una cadena
-de <code>&lt;lista&gt;</code> anidadas.</p>
+nodo <strong class="nombre">&lt;lista&gt;</strong> con todos sus <strong class="nombre">&lt;item_lista&gt;</strong> como hijos, en vez de una cadena
+de <strong class="nombre">&lt;lista&gt;</strong> anidadas.</p>
 <pre><code>&lt;documento&gt;        ::= { &lt;elemento_doc&gt; } FIN
 &lt;elemento_doc&gt;     ::= &lt;bloque&gt; | SALTO_PARRAFO
 &lt;bloque&gt;           ::= &lt;encabezado&gt; | &lt;parrafo&gt; | &lt;lista&gt; | &lt;cita(1)&gt;
@@ -1567,26 +1573,26 @@ de <code>&lt;lista&gt;</code> anidadas.</p>
                        &lt;destino&gt;
 &lt;destino&gt;          ::= PARENTESIS_ABRE [ URL ] PARENTESIS_CIERRA
 </code></pre>
-<p>Son 33 no terminales (24 del alcance obligatorio y 9 del opcional) y el <code>AnalizadorSintactico</code> tiene <strong>una función por
-cada uno</strong> (<code>parsear_documento()</code>, <code>parsear_bloque()</code>…). El mapa completo
-está en el encabezado de <code>analizador_sintactico.py</code>.</p>
+<p>Son 33 no terminales (24 del alcance obligatorio y 9 del opcional) y el <strong class="nombre">AnalizadorSintactico</strong> tiene <strong>una función por
+cada uno</strong> (<strong class="nombre">parsear_documento()</strong>, <strong class="nombre">parsear_bloque()</strong>…). El mapa completo
+está en el encabezado de <strong class="nombre">analizador_sintactico.py</strong>.</p>
 <div class="salto"></div>
 
 <h2>6. Parser descendente recursivo</h2>
 <h3>6.1 Algoritmo</h3>
-<p>El parser mantiene <strong>un solo token de lookahead</strong>, <code>self.actual</code>. Cada no
-terminal de la forma EBNF (sección 5.3) es una función <code>parsear_*</code> que:</p>
+<p>El parser mantiene <strong>un solo token de lookahead</strong>, <strong class="nombre">self.actual</strong>. Cada no
+terminal de la forma EBNF (sección 5.3) es una función <strong class="nombre">parsear_*</strong> que:</p>
 <ol>
-<li>crea el nodo de su no terminal (<code>no_terminal('&lt;lista&gt;')</code>);</li>
+<li>crea el nodo de su no terminal (<strong class="nombre">no_terminal('&lt;lista&gt;')</strong>);</li>
 <li>consume los terminales que exige la producción con
-   <code>_coincidir(tipo, nodo)</code>, que los agrega como hojas;</li>
+   <strong class="nombre">_coincidir(tipo, nodo)</strong>, que los agrega como hojas;</li>
 <li>llama a la función de cada no terminal que contiene y agrega como hijo el
    nodo que esa función devuelve;</li>
 <li>devuelve su nodo.</li>
 </ol>
-<p>Las repeticiones <code>{ … }</code> son ciclos <code>while</code> controlados por el conjunto FIRST
-de lo que se repite; las partes opcionales <code>[ … ]</code> son <code>if</code>. Las alternativas
-se eligen mirando <code>self.actual</code>, porque sus FIRST son disjuntos.</p>
+<p>Las repeticiones <span class="literal">"{ … }"</span> son ciclos <strong class="nombre">while</strong> controlados por el conjunto FIRST
+de lo que se repite; las partes opcionales <span class="literal">"[ … ]"</span> son <strong class="nombre">if</strong>. Las alternativas
+se eligen mirando <strong class="nombre">self.actual</strong>, porque sus FIRST son disjuntos.</p>
 <table>
 <thead>
 <tr>
@@ -1597,191 +1603,191 @@ se eligen mirando <code>self.actual</code>, porque sus FIRST son disjuntos.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>&lt;documento&gt;</code></td>
-<td><code>parsear_documento()</code></td>
-<td>Repite <code>&lt;elemento_doc&gt;</code> hasta <code>FIN</code>.</td>
+<td><strong class="nombre">&lt;documento&gt;</strong></td>
+<td><strong class="nombre">parsear_documento()</strong></td>
+<td>Repite <strong class="nombre">&lt;elemento_doc&gt;</strong> hasta <strong class="nombre">FIN</strong>.</td>
 </tr>
 <tr>
-<td><code>&lt;elemento_doc&gt;</code></td>
-<td><code>parsear_elemento_doc(padre)</code></td>
-<td><code>SALTO_PARRAFO</code>, un bloque o recuperación.</td>
+<td><strong class="nombre">&lt;elemento_doc&gt;</strong></td>
+<td><strong class="nombre">parsear_elemento_doc(padre)</strong></td>
+<td><strong class="nombre">SALTO_PARRAFO</strong>, un bloque o recuperación.</td>
 </tr>
 <tr>
-<td><code>&lt;bloque&gt;</code></td>
-<td><code>parsear_bloque()</code></td>
-<td>Por el token actual: <code>NUMERAL</code>, <code>VIÑETA</code> o <code>NUMERO_LISTA</code>, <code>CITA</code>, <code>CERCA_CODIGO</code>, <code>REGLA_HORIZONTAL</code>, <code>BARRA</code> o <code>SEPARADOR_TABLA</code>, o texto.</td>
+<td><strong class="nombre">&lt;bloque&gt;</strong></td>
+<td><strong class="nombre">parsear_bloque()</strong></td>
+<td>Por el token actual: <strong class="nombre">NUMERAL</strong>, <strong class="nombre">VIÑETA</strong> o <strong class="nombre">NUMERO_LISTA</strong>, <strong class="nombre">CITA</strong>, <strong class="nombre">CERCA_CODIGO</strong>, <strong class="nombre">REGLA_HORIZONTAL</strong>, <strong class="nombre">BARRA</strong> o <strong class="nombre">SEPARADOR_TABLA</strong>, o texto.</td>
 </tr>
 <tr>
-<td><code>&lt;encabezado&gt;</code></td>
-<td><code>parsear_encabezado()</code></td>
-<td><code>nivel</code> = cantidad de <code>#</code>.</td>
+<td><strong class="nombre">&lt;encabezado&gt;</strong></td>
+<td><strong class="nombre">parsear_encabezado()</strong></td>
+<td><strong class="nombre">nivel</strong> = cantidad de <span class="literal">"#"</span>.</td>
 </tr>
 <tr>
-<td><code>&lt;parrafo&gt;</code></td>
-<td><code>parsear_parrafo()</code></td>
+<td><strong class="nombre">&lt;parrafo&gt;</strong></td>
+<td><strong class="nombre">parsear_parrafo()</strong></td>
 <td>Sigue mientras la línea siguiente pueda empezar un párrafo.</td>
 </tr>
 <tr>
-<td><code>&lt;linea_texto&gt;</code></td>
-<td><code>parsear_linea_texto()</code></td>
+<td><strong class="nombre">&lt;linea_texto&gt;</strong></td>
+<td><strong class="nombre">parsear_linea_texto()</strong></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>&lt;lista(t)&gt;</code></td>
-<td><code>parsear_lista(nivel)</code></td>
-<td><code>t</code> = marcador del primer ítem; sigue mientras venga el mismo marcador.</td>
+<td><strong class="nombre">&lt;lista(t)&gt;</strong></td>
+<td><strong class="nombre">parsear_lista(nivel)</strong></td>
+<td><strong class="nombre">t</strong> = marcador del primer ítem; sigue mientras venga el mismo marcador.</td>
 </tr>
 <tr>
-<td><code>&lt;item_lista(t)&gt;</code></td>
-<td><code>parsear_item_lista(nivel, marcador)</code></td>
-<td><code>CASILLA</code> opcional; si viene <code>INDENT</code>, hay sublista.</td>
+<td><strong class="nombre">&lt;item_lista(t)&gt;</strong></td>
+<td><strong class="nombre">parsear_item_lista(nivel, marcador)</strong></td>
+<td><strong class="nombre">CASILLA</strong> opcional; si viene <strong class="nombre">INDENT</strong>, hay sublista.</td>
 </tr>
 <tr>
-<td><code>&lt;sublista&gt;</code></td>
-<td><code>parsear_sublista(nivel)</code></td>
-<td>Llama a <code>parsear_lista(nivel + 1)</code> mientras venga un marcador; recuperación de <code>INDENT</code> doble.</td>
+<td><strong class="nombre">&lt;sublista&gt;</strong></td>
+<td><strong class="nombre">parsear_sublista(nivel)</strong></td>
+<td>Llama a <strong class="nombre">parsear_lista(nivel + 1)</strong> mientras venga un marcador; recuperación de <strong class="nombre">INDENT</strong> doble.</td>
 </tr>
 <tr>
-<td><code>&lt;cita(n)&gt;</code></td>
-<td><code>parsear_cita(n)</code></td>
-<td>Sigue mientras venga una <code>CITA</code> de nivel ≥ n.</td>
+<td><strong class="nombre">&lt;cita(n)&gt;</strong></td>
+<td><strong class="nombre">parsear_cita(n)</strong></td>
+<td>Sigue mientras venga una <strong class="nombre">CITA</strong> de nivel ≥ n.</td>
 </tr>
 <tr>
-<td><code>&lt;elemento_cita(n)&gt;</code></td>
-<td><code>parsear_elemento_cita(padre, n)</code></td>
-<td>Nivel &gt; n: <code>parsear_cita(n + 1)</code>; si no, línea de esta cita.</td>
+<td><strong class="nombre">&lt;elemento_cita(n)&gt;</strong></td>
+<td><strong class="nombre">parsear_elemento_cita(padre, n)</strong></td>
+<td>Nivel &gt; n: <strong class="nombre">parsear_cita(n + 1)</strong>; si no, línea de esta cita.</td>
 </tr>
 <tr>
-<td><code>&lt;contenido_cita&gt;</code></td>
-<td><code>parsear_contenido_cita()</code></td>
-<td><code>NUMERAL</code>: encabezado; si no, texto.</td>
+<td><strong class="nombre">&lt;contenido_cita&gt;</strong></td>
+<td><strong class="nombre">parsear_contenido_cita()</strong></td>
+<td><strong class="nombre">NUMERAL</strong>: encabezado; si no, texto.</td>
 </tr>
 <tr>
-<td><code>&lt;bloque_codigo&gt;</code></td>
-<td><code>parsear_bloque_codigo()</code></td>
+<td><strong class="nombre">&lt;bloque_codigo&gt;</strong></td>
+<td><strong class="nombre">parsear_bloque_codigo()</strong></td>
 <td>Lenguaje opcional.</td>
 </tr>
 <tr>
-<td><code>&lt;contenido_codigo&gt;</code></td>
-<td><code>parsear_contenido_codigo()</code></td>
-<td>Sigue mientras venga <code>TEXTO_LITERAL</code>.</td>
+<td><strong class="nombre">&lt;contenido_codigo&gt;</strong></td>
+<td><strong class="nombre">parsear_contenido_codigo()</strong></td>
+<td>Sigue mientras venga <strong class="nombre">TEXTO_LITERAL</strong>.</td>
 </tr>
 <tr>
-<td><code>&lt;regla_horizontal&gt;</code></td>
-<td><code>parsear_regla_horizontal()</code></td>
+<td><strong class="nombre">&lt;regla_horizontal&gt;</strong></td>
+<td><strong class="nombre">parsear_regla_horizontal()</strong></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>&lt;tabla&gt;</code></td>
-<td><code>parsear_tabla()</code></td>
-<td>Encabezado, <code>SEPARADOR_TABLA</code> y filas mientras venga <code>BARRA</code>; <code>TABLA_MAL_FORMADA</code>.</td>
+<td><strong class="nombre">&lt;tabla&gt;</strong></td>
+<td><strong class="nombre">parsear_tabla()</strong></td>
+<td>Encabezado, <strong class="nombre">SEPARADOR_TABLA</strong> y filas mientras venga <strong class="nombre">BARRA</strong>; <strong class="nombre">TABLA_MAL_FORMADA</strong>.</td>
 </tr>
 <tr>
-<td><code>&lt;fila_tabla&gt;</code></td>
-<td><code>parsear_fila_tabla()</code></td>
-<td>Celda y <code>BARRA</code> mientras haya algo que empiece una celda.</td>
+<td><strong class="nombre">&lt;fila_tabla&gt;</strong></td>
+<td><strong class="nombre">parsear_fila_tabla()</strong></td>
+<td>Celda y <strong class="nombre">BARRA</strong> mientras haya algo que empiece una celda.</td>
 </tr>
 <tr>
-<td><code>&lt;celda&gt;</code></td>
-<td><code>parsear_celda()</code></td>
+<td><strong class="nombre">&lt;celda&gt;</strong></td>
+<td><strong class="nombre">parsear_celda()</strong></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>&lt;en_linea&gt;</code></td>
-<td><code>parsear_en_linea()</code></td>
+<td><strong class="nombre">&lt;en_linea&gt;</strong></td>
+<td><strong class="nombre">parsear_en_linea()</strong></td>
 <td>Sigue mientras venga un elemento en línea.</td>
 </tr>
 <tr>
-<td><code>&lt;elemento_linea&gt;</code></td>
-<td><code>parsear_elemento_linea(padre)</code></td>
+<td><strong class="nombre">&lt;elemento_linea&gt;</strong></td>
+<td><strong class="nombre">parsear_elemento_linea(padre)</strong></td>
 <td>Negrita, cursiva, tachado, código, enlace, imagen o texto.</td>
 </tr>
 <tr>
-<td><code>&lt;negrita&gt;</code></td>
-<td><code>parsear_negrita()</code></td>
+<td><strong class="nombre">&lt;negrita&gt;</strong></td>
+<td><strong class="nombre">parsear_negrita()</strong></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>&lt;en_linea_n&gt;</code></td>
-<td><code>parsear_en_linea_n()</code></td>
-<td>El siguiente <code>NEGRITA</code> siempre cierra.</td>
+<td><strong class="nombre">&lt;en_linea_n&gt;</strong></td>
+<td><strong class="nombre">parsear_en_linea_n()</strong></td>
+<td>El siguiente <strong class="nombre">NEGRITA</strong> siempre cierra.</td>
 </tr>
 <tr>
-<td><code>&lt;elemento_n&gt;</code></td>
-<td><code>parsear_elemento_n(padre)</code></td>
-<td>Cursiva, tachado, código, enlace, imagen, texto o <code>SALTO_LINEA</code> (negrita en varias líneas).</td>
+<td><strong class="nombre">&lt;elemento_n&gt;</strong></td>
+<td><strong class="nombre">parsear_elemento_n(padre)</strong></td>
+<td>Cursiva, tachado, código, enlace, imagen, texto o <strong class="nombre">SALTO_LINEA</strong> (negrita en varias líneas).</td>
 </tr>
 <tr>
-<td><code>&lt;cursiva&gt;</code></td>
-<td><code>parsear_cursiva()</code></td>
+<td><strong class="nombre">&lt;cursiva&gt;</strong></td>
+<td><strong class="nombre">parsear_cursiva()</strong></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>&lt;en_linea_c&gt;</code></td>
-<td><code>parsear_en_linea_c()</code></td>
-<td>El siguiente <code>CURSIVA</code> siempre cierra.</td>
+<td><strong class="nombre">&lt;en_linea_c&gt;</strong></td>
+<td><strong class="nombre">parsear_en_linea_c()</strong></td>
+<td>El siguiente <strong class="nombre">CURSIVA</strong> siempre cierra.</td>
 </tr>
 <tr>
-<td><code>&lt;elemento_c&gt;</code></td>
-<td><code>parsear_elemento_c(padre)</code></td>
-<td>Negrita, tachado, código, enlace, imagen, texto o <code>SALTO_LINEA</code> (cursiva en varias líneas).</td>
+<td><strong class="nombre">&lt;elemento_c&gt;</strong></td>
+<td><strong class="nombre">parsear_elemento_c(padre)</strong></td>
+<td>Negrita, tachado, código, enlace, imagen, texto o <strong class="nombre">SALTO_LINEA</strong> (cursiva en varias líneas).</td>
 </tr>
 <tr>
-<td><code>&lt;tachado&gt;</code></td>
-<td><code>parsear_tachado()</code></td>
+<td><strong class="nombre">&lt;tachado&gt;</strong></td>
+<td><strong class="nombre">parsear_tachado()</strong></td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>&lt;en_linea_t&gt;</code></td>
-<td><code>parsear_en_linea_t()</code></td>
-<td>El siguiente <code>TACHADO</code> siempre cierra.</td>
+<td><strong class="nombre">&lt;en_linea_t&gt;</strong></td>
+<td><strong class="nombre">parsear_en_linea_t()</strong></td>
+<td>El siguiente <strong class="nombre">TACHADO</strong> siempre cierra.</td>
 </tr>
 <tr>
-<td><code>&lt;elemento_t&gt;</code></td>
-<td><code>parsear_elemento_t(padre)</code></td>
-<td>Negrita, cursiva, código, enlace, imagen, texto o <code>SALTO_LINEA</code>.</td>
+<td><strong class="nombre">&lt;elemento_t&gt;</strong></td>
+<td><strong class="nombre">parsear_elemento_t(padre)</strong></td>
+<td>Negrita, cursiva, código, enlace, imagen, texto o <strong class="nombre">SALTO_LINEA</strong>.</td>
 </tr>
 <tr>
-<td><code>&lt;codigo_inline&gt;</code></td>
-<td><code>parsear_codigo_inline()</code></td>
-<td>Repite <code>TEXTO_LITERAL</code> o <code>SALTO_LINEA</code> hasta el <code>CODIGO_INLINE</code> de cierre.</td>
+<td><strong class="nombre">&lt;codigo_inline&gt;</strong></td>
+<td><strong class="nombre">parsear_codigo_inline()</strong></td>
+<td>Repite <strong class="nombre">TEXTO_LITERAL</strong> o <strong class="nombre">SALTO_LINEA</strong> hasta el <strong class="nombre">CODIGO_INLINE</strong> de cierre.</td>
 </tr>
 <tr>
-<td><code>&lt;enlace&gt;</code></td>
-<td><code>parsear_enlace()</code></td>
-<td>El texto es un <code>&lt;en_linea&gt;</code> que termina en <code>CORCHETE_CIERRA</code>.</td>
+<td><strong class="nombre">&lt;enlace&gt;</strong></td>
+<td><strong class="nombre">parsear_enlace()</strong></td>
+<td>El texto es un <strong class="nombre">&lt;en_linea&gt;</strong> que termina en <strong class="nombre">CORCHETE_CIERRA</strong>.</td>
 </tr>
 <tr>
-<td><code>&lt;imagen&gt;</code></td>
-<td><code>parsear_imagen()</code></td>
+<td><strong class="nombre">&lt;imagen&gt;</strong></td>
+<td><strong class="nombre">parsear_imagen()</strong></td>
 <td>Texto alternativo opcional.</td>
 </tr>
 <tr>
-<td><code>&lt;destino&gt;</code></td>
-<td><code>parsear_destino()</code></td>
+<td><strong class="nombre">&lt;destino&gt;</strong></td>
+<td><strong class="nombre">parsear_destino()</strong></td>
 <td>URL opcional.</td>
 </tr>
 </tbody>
 </table>
 <h3>6.2 Dónde está la recursión</h3>
 <ul>
-<li><strong>Recursión mutua en línea.</strong> <code>parsear_negrita()</code> llama a
-  <code>parsear_en_linea_n()</code>, que puede llamar a <code>parsear_cursiva()</code>, que llama a
-  <code>parsear_en_linea_c()</code>, que puede llamar otra vez a <code>parsear_negrita()</code>.
-  Por eso <code>*a **b *c* d** e*</code> se reconoce con tres niveles alternados. El
+<li><strong>Recursión mutua en línea.</strong> <strong class="nombre">parsear_negrita()</strong> llama a
+  <strong class="nombre">parsear_en_linea_n()</strong>, que puede llamar a <strong class="nombre">parsear_cursiva()</strong>, que llama a
+  <strong class="nombre">parsear_en_linea_c()</strong>, que puede llamar otra vez a <strong class="nombre">parsear_negrita()</strong>.
+  Por eso <span class="literal">"*a **b *c* d** e*"</span> se reconoce con tres niveles alternados. El
   tachado entra en el mismo ciclo, y un enlace vuelve a llamar a
-  <code>parsear_en_linea()</code> para su texto.</li>
-<li><strong>Listas.</strong> <code>parsear_lista(n)</code> → <code>parsear_item_lista(n)</code> →
-  <code>parsear_sublista(n)</code> → <code>parsear_lista(n + 1)</code>. Cada nivel de sangría es
-  una llamada más profunda; el <code>DEDENT</code> hace que la llamada interna termine y
+  <strong class="nombre">parsear_en_linea()</strong> para su texto.</li>
+<li><strong>Listas.</strong> <strong class="nombre">parsear_lista(n)</strong> → <strong class="nombre">parsear_item_lista(n)</strong> →
+  <strong class="nombre">parsear_sublista(n)</strong> → <strong class="nombre">parsear_lista(n + 1)</strong>. Cada nivel de sangría es
+  una llamada más profunda; el <strong class="nombre">DEDENT</strong> hace que la llamada interna termine y
   el control vuelva al nivel de afuera.</li>
-<li><strong>Citas.</strong> <code>parsear_cita(n)</code> → <code>parsear_elemento_cita(padre, n)</code> →
-  <code>parsear_cita(n + 1)</code>. Es la recursión directa de <code>&lt;cita&gt;</code> que menciona el
-  enunciado, guiada por el atributo <code>n</code>.</li>
+<li><strong>Citas.</strong> <strong class="nombre">parsear_cita(n)</strong> → <strong class="nombre">parsear_elemento_cita(padre, n)</strong> →
+  <strong class="nombre">parsear_cita(n + 1)</strong>. Es la recursión directa de <strong class="nombre">&lt;cita&gt;</strong> que menciona el
+  enunciado, guiada por el atributo <strong class="nombre">n</strong>.</li>
 </ul>
 <h3>6.3 Traza de ejemplo</h3>
-<p>Entrada: <code>- a</code> / <code>- b</code> / <code>- c</code>. Tokens:
-<code>VIÑETA TEXTO SALTO_LINEA INDENT VIÑETA TEXTO SALTO_LINEA DEDENT VIÑETA TEXTO SALTO_LINEA FIN</code>.</p>
+<p>Entrada: <span class="literal">"- a"</span> / <span class="literal">"- b"</span> / <span class="literal">"- c"</span>. Tokens:
+<span class="literal">"VIÑETA TEXTO SALTO_LINEA INDENT VIÑETA TEXTO SALTO_LINEA DEDENT VIÑETA TEXTO SALTO_LINEA FIN"</span>.</p>
 <pre><code>parsear_documento()                         actual = VIÑETA
   parsear_bloque()                          VIÑETA -&gt; lista
     parsear_lista(1)
@@ -1800,12 +1806,12 @@ se eligen mirando <code>self.actual</code>, porque sus FIRST son disjuntos.</p>
 <h3>6.4 Construcción del árbol</h3>
 <p><strong>D-17 — Forma del árbol.</strong> Cada función del parser crea un nodo con el
 nombre de su no terminal, y todo terminal consumido es una hoja. Las
-repeticiones <code>{ }</code> son hijos de un mismo nodo y lo que va entre <code>[ ]</code> cuelga
-del nodo padre (sección 5.3). Las <strong>selecciones</strong> <code>&lt;elemento_doc&gt;</code>,
-<code>&lt;elemento_cita(n)&gt;</code>, <code>&lt;elemento_linea&gt;</code>, <code>&lt;elemento_n&gt;</code>, <code>&lt;elemento_c&gt;</code> y
-<code>&lt;elemento_t&gt;</code> tienen su función, pero no crean nodo propio: agregan al padre lo que
+repeticiones <span class="literal">"{ }"</span> son hijos de un mismo nodo y lo que va entre <span class="literal">"[ ]"</span> cuelga
+del nodo padre (sección 5.3). Las <strong>selecciones</strong> <strong class="nombre">&lt;elemento_doc&gt;</strong>,
+<strong class="nombre">&lt;elemento_cita(n)&gt;</strong>, <strong class="nombre">&lt;elemento_linea&gt;</strong>, <strong class="nombre">&lt;elemento_n&gt;</strong>, <strong class="nombre">&lt;elemento_c&gt;</strong> y
+<strong class="nombre">&lt;elemento_t&gt;</strong> tienen su función, pero no crean nodo propio: agregan al padre lo que
 reconocen. Así lo hace el ejemplo DOT del enunciado (sección 4.10), que
-cuelga <code>TEXTO</code> directamente de <code>&lt;en_linea&gt;</code>. <code>&lt;bloque&gt;</code> sí crea nodo, porque
+cuelga <strong class="nombre">TEXTO</strong> directamente de <strong class="nombre">&lt;en_linea&gt;</strong>. <strong class="nombre">&lt;bloque&gt;</strong> sí crea nodo, porque
 ese mismo ejemplo lo muestra.</p>
 <p>Las pruebas verifican una propiedad que define a un árbol de derivación: sus
 hojas, leídas de izquierda a derecha, son <strong>exactamente todos los tokens</strong> de
@@ -1815,17 +1821,17 @@ documentos generados al azar.</p>
 <div class="salto"></div>
 
 <h2>7. Árbol de derivación y Graphviz</h2>
-<p><code>GeneradorDOT</code> recorre el árbol en preorden. Cada nodo recibe un
-identificador (<code>n0</code>, <code>n1</code>, …) y una arista desde su padre. Colores
-(sección 4.10 del enunciado): la raíz <code>&lt;documento&gt;</code> en azul oscuro, los no
+<p><strong class="nombre">GeneradorDOT</strong> recorre el árbol en preorden. Cada nodo recibe un
+identificador (<strong class="nombre">n0</strong>, <strong class="nombre">n1</strong>, …) y una arista desde su padre. Colores
+(sección 4.10 del enunciado): la raíz <strong class="nombre">&lt;documento&gt;</strong> en azul oscuro, los no
 terminales en azul claro y los terminales (tokens) en amarillo, con su tipo y
-su lexema. Los atributos <code>nivel</code> de listas, citas y encabezados aparecen en
+su lexema. Los atributos <strong class="nombre">nivel</strong> de listas, citas y encabezados aparecen en
 la etiqueta.</p>
-<p>Árbol del caso pequeño <code># Hola</code> / <code>Texto **fuerte** y *suave*.</code> /
-<code>- a</code> / <code>- b</code> / <code>&gt; cita</code>:</p>
+<p>Árbol del caso pequeño <span class="literal">"# Hola"</span> / <span class="literal">"Texto **fuerte** y *suave*."</span> /
+<span class="literal">"- a"</span> / <span class="literal">"- b"</span> / <span class="literal">"&gt; cita"</span>:</p>
 <p><img class="ancha" src="img/arbol_caso_pequeno.png" alt="Árbol de derivación de un caso pequeño"></p>
 <p>El árbol completo del ejemplo de la sección 4.7 del enunciado está en el
-anexo (sección 13). El archivo <code>arbol.dot</code> se genera <strong>siempre</strong>, también
+anexo (sección 13). El archivo <strong class="nombre">arbol.dot</strong> se genera <strong>siempre</strong>, también
 cuando hay errores, porque muestra hasta dónde llegó el parser.</p>
 <div class="salto"></div>
 
@@ -1841,107 +1847,107 @@ cuando hay errores, porque muestra hasta dónde llegó el parser.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>NEGRITA_SIN_CERRAR</code></td>
+<td><strong class="nombre">NEGRITA_SIN_CERRAR</strong></td>
 <td>Léxico</td>
 <td>Pila de delimitadores, al terminar el bloque (D-02)</td>
-<td>El <code>**</code> pasa a <code>TEXTO</code></td>
+<td>El <span class="literal">"**"</span> pasa a <strong class="nombre">TEXTO</strong></td>
 </tr>
 <tr>
-<td><code>CURSIVA_SIN_CERRAR</code></td>
+<td><strong class="nombre">CURSIVA_SIN_CERRAR</strong></td>
 <td>Léxico</td>
 <td>Pila de delimitadores, al terminar el bloque (D-02)</td>
-<td>El <code>*</code> pasa a <code>TEXTO</code></td>
+<td>El <span class="literal">"*"</span> pasa a <strong class="nombre">TEXTO</strong></td>
 </tr>
 <tr>
-<td><code>CODIGO_INLINE_SIN_CERRAR</code></td>
+<td><strong class="nombre">CODIGO_INLINE_SIN_CERRAR</strong></td>
 <td>Léxico</td>
-<td>AFD, al ver <code>`</code> sin cierre en el bloque (D-21)</td>
-<td>El <code>`</code> pasa a <code>TEXTO</code></td>
+<td>AFD, al ver <span class="literal">"`"</span> sin cierre en el bloque (D-21)</td>
+<td>El <span class="literal">"`"</span> pasa a <strong class="nombre">TEXTO</strong></td>
 </tr>
 <tr>
-<td><code>BLOQUE_CODIGO_SIN_CERRAR</code></td>
+<td><strong class="nombre">BLOQUE_CODIGO_SIN_CERRAR</strong></td>
 <td>Léxico</td>
 <td>Modo literal al llegar a fin de archivo</td>
 <td>El bloque llega hasta el fin de archivo; el parser no exige la cerca de cierre en ese caso</td>
 </tr>
 <tr>
-<td><code>ENCABEZADO_INVALIDO</code></td>
+<td><strong class="nombre">ENCABEZADO_INVALIDO</strong></td>
 <td>Léxico</td>
-<td>AFD en <code>q2</code> con más de 6 <code>#</code></td>
+<td>AFD en <strong class="nombre">q2</strong> con más de 6 <span class="literal">"#"</span></td>
 <td>La línea se analiza como texto</td>
 </tr>
 <tr>
-<td><code>INDENTACION_INVALIDA</code></td>
+<td><strong class="nombre">INDENTACION_INVALIDA</strong></td>
 <td>Léxico</td>
 <td>Sangría que no es múltiplo de 2</td>
 <td>Se toma el nivel completo inferior</td>
 </tr>
 <tr>
-<td><code>INDENTACION_INVALIDA</code></td>
+<td><strong class="nombre">INDENTACION_INVALIDA</strong></td>
 <td>Sintáctico</td>
-<td><code>parsear_sublista()</code>: después de un <code>INDENT</code> viene otro (salto de 2+ niveles)</td>
-<td>El nivel que sobra se analiza como otra <code>&lt;sublista&gt;</code> (llamada recursiva): cada <code>INDENT</code> encuentra su <code>DEDENT</code></td>
+<td><strong class="nombre">parsear_sublista()</strong>: después de un <strong class="nombre">INDENT</strong> viene otro (salto de 2+ niveles)</td>
+<td>El nivel que sobra se analiza como otra <strong class="nombre">&lt;sublista&gt;</strong> (llamada recursiva): cada <strong class="nombre">INDENT</strong> encuentra su <strong class="nombre">DEDENT</strong></td>
 </tr>
 <tr>
-<td><code>INDENTACION_INVALIDA</code></td>
+<td><strong class="nombre">INDENTACION_INVALIDA</strong></td>
 <td>Sintáctico</td>
-<td><code>parsear_elemento_doc()</code>: un <code>INDENT</code> donde empieza un bloque (D-24)</td>
-<td>Se analiza como <code>&lt;sublista&gt;</code> sin ítem padre, colgada del documento</td>
+<td><strong class="nombre">parsear_elemento_doc()</strong>: un <strong class="nombre">INDENT</strong> donde empieza un bloque (D-24)</td>
+<td>Se analiza como <strong class="nombre">&lt;sublista&gt;</strong> sin ítem padre, colgada del documento</td>
 </tr>
 <tr>
-<td><code>CITA_MAL_FORMADA</code></td>
+<td><strong class="nombre">CITA_MAL_FORMADA</strong></td>
 <td>Sintáctico</td>
-<td><code>_revisar_separacion_cita()</code>: el token siguiente está pegado al último <code>&gt;</code> (D-11, D-23)</td>
+<td><strong class="nombre">_revisar_separacion_cita()</strong>: el token siguiente está pegado al último <span class="literal">"&gt;"</span> (D-11, D-23)</td>
 <td>La línea se acepta como parte de la cita</td>
 </tr>
 <tr>
-<td><code>TACHADO_SIN_CERRAR</code></td>
+<td><strong class="nombre">TACHADO_SIN_CERRAR</strong></td>
 <td>Léxico</td>
 <td>Pila de delimitadores, al terminar el bloque (D-31)</td>
-<td>El <code>~~</code> pasa a <code>TEXTO</code></td>
+<td>El <span class="literal">"~~"</span> pasa a <strong class="nombre">TEXTO</strong></td>
 </tr>
 <tr>
-<td><code>TABLA_MAL_FORMADA</code></td>
+<td><strong class="nombre">TABLA_MAL_FORMADA</strong></td>
 <td>Sintáctico</td>
-<td><code>parsear_tabla()</code> y <code>parsear_fila_tabla()</code>: falta el encabezado o la fila separadora, la separadora se repite, una fila no termina en | o no tiene tantas celdas como el encabezado (D-33)</td>
+<td><strong class="nombre">parsear_tabla()</strong> y <strong class="nombre">parsear_fila_tabla()</strong>: falta el encabezado o la fila separadora, la separadora se repite, una fila no termina en | o no tiene tantas celdas como el encabezado (D-33)</td>
 <td>La tabla se sigue analizando; lo reconocido queda en el árbol</td>
 </tr>
 <tr>
-<td><code>TOKEN_INESPERADO</code></td>
+<td><strong class="nombre">TOKEN_INESPERADO</strong></td>
 <td>Sintáctico</td>
-<td><code>_coincidir()</code>: el token no es el que exige la gramática</td>
-<td>Modo pánico: descarta hasta <code>SALTO_LINEA</code>, <code>SALTO_PARRAFO</code> o <code>FIN</code>. Si ese era el token esperado, se consume y se sigue</td>
+<td><strong class="nombre">_coincidir()</strong>: el token no es el que exige la gramática</td>
+<td>Modo pánico: descarta hasta <strong class="nombre">SALTO_LINEA</strong>, <strong class="nombre">SALTO_PARRAFO</strong> o <strong class="nombre">FIN</strong>. Si ese era el token esperado, se consume y se sigue</td>
 </tr>
 <tr>
-<td><code>TOKEN_INESPERADO</code></td>
+<td><strong class="nombre">TOKEN_INESPERADO</strong></td>
 <td>Sintáctico</td>
-<td><code>parsear_elemento_doc()</code>: un token que no puede empezar un bloque</td>
-<td>Se descarta el resto de la línea, incluido su <code>SALTO_LINEA</code></td>
+<td><strong class="nombre">parsear_elemento_doc()</strong>: un token que no puede empezar un bloque</td>
+<td>Se descarta el resto de la línea, incluido su <strong class="nombre">SALTO_LINEA</strong></td>
 </tr>
 </tbody>
 </table>
 <p>Mensajes: los del enunciado, con línea y columna del token que abre el
 problema. El parser <strong>no vuelve a reportar</strong> algo que el léxico ya reportó.</p>
-<p>Con este léxico, <code>TOKEN_INESPERADO</code> no aparece en la práctica: el léxico
+<p>Con este léxico, <strong class="nombre">TOKEN_INESPERADO</strong> no aparece en la práctica: el léxico
 siempre entrega secuencias que la gramática acepta, salvo los errores
-diseñados (<code>INDENT</code> de más y citas pegadas). Es una red de seguridad, y se
+diseñados (<strong class="nombre">INDENT</strong> de más y citas pegadas). Es una red de seguridad, y se
 prueba con un léxico falso que entrega secuencias de tokens al azar: el
-modo pánico siempre llega a <code>FIN</code>.</p>
+modo pánico siempre llega a <strong class="nombre">FIN</strong>.</p>
 <h3>8.1 Modo pánico</h3>
 <ul>
 <li><strong>Léxico.</strong> Ningún error detiene el AFD. Un delimitador sin pareja se
-  convierte en <code>TEXTO</code> al terminar su bloque, un <code>#</code> de más deja la línea como
+  convierte en <strong class="nombre">TEXTO</strong> al terminar su bloque, un <span class="literal">"#"</span> de más deja la línea como
   texto, una sangría impar toma el nivel inferior y un bloque de código sin
   cerrar llega hasta el fin del archivo.</li>
-<li><strong>Sintáctico.</strong> <code>_coincidir()</code> reporta <code>TOKEN_INESPERADO</code> y llama a
-  <code>_sincronizar()</code>, que descarta tokens hasta un punto seguro (<code>SALTO_LINEA</code>,
-  <code>SALTO_PARRAFO</code> o <code>FIN</code>). Si ese punto es justo el token esperado, se
+<li><strong>Sintáctico.</strong> <strong class="nombre">_coincidir()</strong> reporta <strong class="nombre">TOKEN_INESPERADO</strong> y llama a
+  <strong class="nombre">_sincronizar()</strong>, que descarta tokens hasta un punto seguro (<strong class="nombre">SALTO_LINEA</strong>,
+  <strong class="nombre">SALTO_PARRAFO</strong> o <strong class="nombre">FIN</strong>). Si ese punto es justo el token esperado, se
   consume y el análisis sigue como si nada.</li>
-<li><strong>Indentación.</strong> Cada <code>INDENT</code> sobrante se analiza como otra <code>&lt;sublista&gt;</code>,
-  así cada uno encuentra su <code>DEDENT</code> y el resto del archivo no se desbalancea.</li>
+<li><strong>Indentación.</strong> Cada <strong class="nombre">INDENT</strong> sobrante se analiza como otra <strong class="nombre">&lt;sublista&gt;</strong>,
+  así cada uno encuentra su <strong class="nombre">DEDENT</strong> y el resto del archivo no se desbalancea.</li>
 <li><strong>Sin duplicados.</strong> Mientras el parser se recupera no repite un error del
   mismo tipo, línea y fase (D-22).</li>
-<li><strong>Orden.</strong> <code>GestorErrores.agregar()</code> inserta cada error en su lugar según
+<li><strong>Orden.</strong> <strong class="nombre">GestorErrores.agregar()</strong> inserta cada error en su lugar según
   línea y columna (ordenamiento por inserción), porque los errores no se
   detectan en el orden del archivo: una negrita sin cerrar solo se conoce al
   terminar su párrafo.</li>
@@ -1962,28 +1968,28 @@ desarrollo.</p>
 <tbody>
 <tr>
 <td>1. Documento</td>
-<td><code>reporte1_documento.html</code></td>
-<td><code>GeneradorHTML</code>: una función por no terminal; la recursión del recorrido reproduce el anidamiento.</td>
+<td><strong class="nombre">reporte1_documento.html</strong></td>
+<td><strong class="nombre">GeneradorHTML</strong>: una función por no terminal; la recursión del recorrido reproduce el anidamiento.</td>
 </tr>
 <tr>
 <td>2. Estadísticas</td>
-<td><code>reporte2_estadisticas.html</code></td>
-<td><code>GeneradorEstadisticas</code>: cada número es la cantidad de nodos de un no terminal o el <code>nivel</code> máximo.</td>
+<td><strong class="nombre">reporte2_estadisticas.html</strong></td>
+<td><strong class="nombre">GeneradorEstadisticas</strong>: cada número es la cantidad de nodos de un no terminal o el <strong class="nombre">nivel</strong> máximo.</td>
 </tr>
 <tr>
 <td>3. Índice</td>
-<td><code>reporte3_indice.html</code></td>
-<td><code>GeneradorIndice</code>: solo los nodos <code>&lt;encabezado&gt;</code>, con anclas <code>seccion-k</code>.</td>
+<td><strong class="nombre">reporte3_indice.html</strong></td>
+<td><strong class="nombre">GeneradorIndice</strong>: solo los nodos <strong class="nombre">&lt;encabezado&gt;</strong>, con anclas <strong class="nombre">seccion-k</strong>.</td>
 </tr>
 <tr>
 <td>Errores</td>
-<td><code>reporte_errores.html</code></td>
-<td><code>GeneradorErrores</code>: la tabla del <code>GestorErrores</code>.</td>
+<td><strong class="nombre">reporte_errores.html</strong></td>
+<td><strong class="nombre">GeneradorErrores</strong>: la tabla del <strong class="nombre">GestorErrores</strong>.</td>
 </tr>
 <tr>
 <td>Árbol</td>
-<td><code>arbol.dot</code> (y <code>arbol.png</code> si hay Graphviz)</td>
-<td><code>GeneradorDOT</code>.</td>
+<td><strong class="nombre">arbol.dot</strong> (y <strong class="nombre">arbol.png</strong> si hay Graphviz)</td>
+<td><strong class="nombre">GeneradorDOT</strong>.</td>
 </tr>
 </tbody>
 </table>
@@ -1997,61 +2003,61 @@ desarrollo.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>&lt;encabezado&gt;</code> nivel n</td>
-<td><code>&lt;hn id="seccion-k"&gt;</code></td>
+<td><strong class="nombre">&lt;encabezado&gt;</strong> nivel n</td>
+<td><span class="literal">'&lt;hn id="seccion-k"&gt;'</span></td>
 </tr>
 <tr>
-<td><code>&lt;parrafo&gt;</code></td>
-<td><code>&lt;p&gt;</code> (sus líneas en un mismo párrafo)</td>
+<td><strong class="nombre">&lt;parrafo&gt;</strong></td>
+<td><strong class="nombre">&lt;p&gt;</strong> (sus líneas en un mismo párrafo)</td>
 </tr>
 <tr>
-<td><code>&lt;lista&gt;</code> / <code>&lt;item_lista&gt;</code></td>
-<td><code>&lt;ul&gt;</code> / <code>&lt;li&gt;</code>, con la sublista dentro del <code>&lt;li&gt;</code> del ítem padre</td>
+<td><strong class="nombre">&lt;lista&gt;</strong> / <strong class="nombre">&lt;item_lista&gt;</strong></td>
+<td><strong class="nombre">&lt;ul&gt;</strong> / <strong class="nombre">&lt;li&gt;</strong>, con la sublista dentro del <strong class="nombre">&lt;li&gt;</strong> del ítem padre</td>
 </tr>
 <tr>
-<td><code>&lt;cita&gt;</code></td>
-<td><code>&lt;blockquote&gt;</code>, anidado a la misma profundidad</td>
+<td><strong class="nombre">&lt;cita&gt;</strong></td>
+<td><strong class="nombre">&lt;blockquote&gt;</strong>, anidado a la misma profundidad</td>
 </tr>
 <tr>
-<td><code>&lt;bloque_codigo&gt;</code></td>
-<td><code>&lt;pre&gt;&lt;code class="language-x"&gt;</code> con el contenido literal</td>
+<td><strong class="nombre">&lt;bloque_codigo&gt;</strong></td>
+<td><span class="literal">'&lt;pre&gt;&lt;code class="language-x"&gt;'</span> con el contenido literal</td>
 </tr>
 <tr>
-<td><code>&lt;regla_horizontal&gt;</code></td>
-<td><code>&lt;hr&gt;</code></td>
+<td><strong class="nombre">&lt;regla_horizontal&gt;</strong></td>
+<td><strong class="nombre">&lt;hr&gt;</strong></td>
 </tr>
 <tr>
-<td><code>&lt;negrita&gt;</code>, <code>&lt;cursiva&gt;</code>, <code>&lt;codigo_inline&gt;</code></td>
-<td><code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;code&gt;</code></td>
+<td><strong class="nombre">&lt;negrita&gt;</strong>, <strong class="nombre">&lt;cursiva&gt;</strong>, <strong class="nombre">&lt;codigo_inline&gt;</strong></td>
+<td><strong class="nombre">&lt;strong&gt;</strong>, <strong class="nombre">&lt;em&gt;</strong>, <strong class="nombre">&lt;code&gt;</strong></td>
 </tr>
 <tr>
-<td><code>&lt;lista&gt;</code> numerada</td>
-<td><code>&lt;ol&gt;</code>, con <code>start</code> si el primer número no es 1</td>
+<td><strong class="nombre">&lt;lista&gt;</strong> numerada</td>
+<td><strong class="nombre">&lt;ol&gt;</strong>, con <strong class="nombre">start</strong> si el primer número no es 1</td>
 </tr>
 <tr>
-<td><code>CASILLA</code></td>
-<td><code>&lt;li class="tarea"&gt;&lt;input type="checkbox" disabled&gt;</code>, con <code>checked</code> si es <code>[x]</code></td>
+<td><strong class="nombre">CASILLA</strong></td>
+<td><span class="literal">'&lt;li class="tarea"&gt;&lt;input type="checkbox" disabled&gt;'</span>, con <strong class="nombre">checked</strong> si es <span class="literal">"[x]"</span></td>
 </tr>
 <tr>
-<td><code>&lt;tachado&gt;</code></td>
-<td><code>&lt;del&gt;</code></td>
+<td><strong class="nombre">&lt;tachado&gt;</strong></td>
+<td><strong class="nombre">&lt;del&gt;</strong></td>
 </tr>
 <tr>
-<td><code>&lt;enlace&gt;</code></td>
-<td><code>&lt;a href="url"&gt;</code> con el texto del enlace traducido adentro</td>
+<td><strong class="nombre">&lt;enlace&gt;</strong></td>
+<td><span class="literal">'&lt;a href="url"&gt;'</span> con el texto del enlace traducido adentro</td>
 </tr>
 <tr>
-<td><code>&lt;imagen&gt;</code></td>
-<td><code>&lt;img src="url" alt="texto"&gt;</code></td>
+<td><strong class="nombre">&lt;imagen&gt;</strong></td>
+<td><span class="literal">'&lt;img src="url" alt="texto"&gt;'</span></td>
 </tr>
 <tr>
-<td><code>&lt;tabla&gt;</code></td>
-<td><code>&lt;table&gt;</code> con <code>&lt;thead&gt;</code>/<code>&lt;th&gt;</code> para el encabezado y <code>&lt;tbody&gt;</code>/<code>&lt;td&gt;</code>; cada celda con la alineación de su columna</td>
+<td><strong class="nombre">&lt;tabla&gt;</strong></td>
+<td><strong class="nombre">&lt;table&gt;</strong> con <strong class="nombre">&lt;thead&gt;</strong>/<strong class="nombre">&lt;th&gt;</strong> para el encabezado y <strong class="nombre">&lt;tbody&gt;</strong>/<strong class="nombre">&lt;td&gt;</strong>; cada celda con la alineación de su columna</td>
 </tr>
 </tbody>
 </table>
-<p>Todo texto se escapa (<code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>"</code>), así que un <code>&lt;script&gt;</code> escrito en
-el <code>.md</code> se muestra como texto. Los tres reportes llevan su CSS embebido y se
+<p>Todo texto se escapa (<span class="literal">"&amp;"</span>, <span class="literal">"&lt;"</span>, <span class="literal">"&gt;"</span>, <span class="literal">'"'</span>), así que un <strong class="nombre">&lt;script&gt;</strong> escrito en
+el <strong class="nombre">.md</strong> se muestra como texto. Los tres reportes llevan su CSS embebido y se
 abren en cualquier navegador sin archivos adicionales. Si el documento tiene
 un bloque de código con lenguaje, el Reporte 1 también lleva embebido
 highlight.js para colorearlo (D-36); sigue siendo un solo archivo y no
@@ -2059,7 +2065,7 @@ necesita internet.</p>
 <h2>10. Alcance opcional</h2>
 <p>Los siete puntos del alcance opcional (sección 4.2 del enunciado) están
 implementados. Cada uno sigue el mismo camino que lo obligatorio: tokens del
-AFD, una producción con su función <code>parsear_*</code>, un nodo del árbol y su
+AFD, una producción con su función <strong class="nombre">parsear_*</strong>, un nodo del árbol y su
 traducción recorriendo el árbol.</p>
 <table>
 <thead>
@@ -2074,50 +2080,50 @@ traducción recorriendo el árbol.</p>
 <tbody>
 <tr>
 <td>Listas ordenadas</td>
-<td><code>NUMERO_LISTA</code> (<code>q22</code>, <code>q23</code>)</td>
-<td><code>&lt;lista(t)&gt;</code> con el atributo <code>t</code></td>
-<td><code>&lt;ol start&gt;</code></td>
+<td><strong class="nombre">NUMERO_LISTA</strong> (<strong class="nombre">q22</strong>, <strong class="nombre">q23</strong>)</td>
+<td><strong class="nombre">&lt;lista(t)&gt;</strong> con el atributo <strong class="nombre">t</strong></td>
+<td><span class="literal">"&lt;ol start&gt;"</span></td>
 <td>D-29</td>
 </tr>
 <tr>
 <td>Listas de tareas</td>
-<td><code>CASILLA</code> (<code>q24</code>..<code>q26</code>)</td>
-<td><code>[ CASILLA ]</code> en <code>&lt;item_lista&gt;</code></td>
+<td><strong class="nombre">CASILLA</strong> (<strong class="nombre">q24</strong>..<strong class="nombre">q26</strong>)</td>
+<td><span class="literal">"[ CASILLA ]"</span> en <strong class="nombre">&lt;item_lista&gt;</strong></td>
 <td>casilla marcada o vacía</td>
 <td>D-30</td>
 </tr>
 <tr>
 <td>Tachado</td>
-<td><code>TACHADO</code> (<code>q27</code>, <code>q28</code>), en la pila</td>
-<td><code>&lt;tachado&gt;</code>, <code>&lt;en_linea_t&gt;</code></td>
-<td><code>&lt;del&gt;</code></td>
+<td><strong class="nombre">TACHADO</strong> (<strong class="nombre">q27</strong>, <strong class="nombre">q28</strong>), en la pila</td>
+<td><strong class="nombre">&lt;tachado&gt;</strong>, <strong class="nombre">&lt;en_linea_t&gt;</strong></td>
+<td><strong class="nombre">&lt;del&gt;</strong></td>
 <td>D-31</td>
 </tr>
 <tr>
 <td>Enlaces e imágenes</td>
-<td><code>CORCHETE_ABRE</code>, <code>IMAGEN_ABRE</code>, <code>CORCHETE_CIERRA</code>, <code>PARENTESIS_*</code>, <code>URL</code></td>
-<td><code>&lt;enlace&gt;</code>, <code>&lt;imagen&gt;</code>, <code>&lt;destino&gt;</code></td>
-<td><code>&lt;a&gt;</code>, <code>&lt;img&gt;</code></td>
+<td><strong class="nombre">CORCHETE_ABRE</strong>, <strong class="nombre">IMAGEN_ABRE</strong>, <strong class="nombre">CORCHETE_CIERRA</strong>, <strong class="nombre">PARENTESIS_*</strong>, <strong class="nombre">URL</strong></td>
+<td><strong class="nombre">&lt;enlace&gt;</strong>, <strong class="nombre">&lt;imagen&gt;</strong>, <strong class="nombre">&lt;destino&gt;</strong></td>
+<td><strong class="nombre">&lt;a&gt;</strong>, <strong class="nombre">&lt;img&gt;</strong></td>
 <td>D-32</td>
 </tr>
 <tr>
 <td>Tablas</td>
-<td><code>BARRA</code>, <code>SEPARADOR_TABLA</code> (<code>s0</code>..<code>s3</code>)</td>
-<td><code>&lt;tabla&gt;</code>, <code>&lt;fila_tabla&gt;</code>, <code>&lt;celda&gt;</code></td>
-<td><code>&lt;table&gt;</code> alineada</td>
+<td><strong class="nombre">BARRA</strong>, <strong class="nombre">SEPARADOR_TABLA</strong> (<strong class="nombre">s0</strong>..<strong class="nombre">s3</strong>)</td>
+<td><strong class="nombre">&lt;tabla&gt;</strong>, <strong class="nombre">&lt;fila_tabla&gt;</strong>, <strong class="nombre">&lt;celda&gt;</strong></td>
+<td><strong class="nombre">&lt;table&gt;</strong> alineada</td>
 <td>D-33</td>
 </tr>
 <tr>
 <td>Vista previa en vivo</td>
 <td>—</td>
 <td>árbol del texto del editor</td>
-<td><code>VistaPrevia</code> (Tkinter)</td>
+<td><strong class="nombre">VistaPrevia</strong> (Tkinter)</td>
 <td>D-34</td>
 </tr>
 <tr>
 <td>Advertencia de anidamiento</td>
 <td>—</td>
-<td>atributo <code>nivel</code> de <code>&lt;lista&gt;</code> y <code>&lt;cita&gt;</code></td>
+<td>atributo <strong class="nombre">nivel</strong> de <strong class="nombre">&lt;lista&gt;</strong> y <strong class="nombre">&lt;cita&gt;</strong></td>
 <td>franja amarilla y líneas marcadas</td>
 <td>D-35</td>
 </tr>
@@ -2130,26 +2136,26 @@ traducción recorriendo el árbol.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Errores nuevos.</strong> <code>TACHADO_SIN_CERRAR</code> (léxico) sigue la misma regla que la
+<p><strong>Errores nuevos.</strong> <strong class="nombre">TACHADO_SIN_CERRAR</strong> (léxico) sigue la misma regla que la
 negrita: se reporta en su apertura cuando termina el bloque.
-<code>TABLA_MAL_FORMADA</code> (sintáctico) se reporta cuando falta el encabezado o la
+<strong class="nombre">TABLA_MAL_FORMADA</strong> (sintáctico) se reporta cuando falta el encabezado o la
 fila separadora, cuando la separadora se repite, o cuando una fila no
-termina en <code>|</code> o no tiene tantas celdas como el encabezado. Un corchete que
+termina en <span class="literal">"|"</span> o no tiene tantas celdas como el encabezado. Un corchete que
 no forma un enlace completo es texto, no un error.</p>
 <p><strong>Ámbitos de la pila.</strong> El texto de un enlace y cada celda de una tabla son
 ámbitos propios de la pila de delimitadores: al abrir un enlace se mete el
-<code>CORCHETE_ABRE</code> como marca, y al llegar a su <code>]</code> (o a la <code>BARRA</code> de la
+<strong class="nombre">CORCHETE_ABRE</strong> como marca, y al llegar a su <span class="literal">"]"</span> (o a la <strong class="nombre">BARRA</strong> de la
 celda) se reporta lo que quedó abierto. Así el parser nunca recibe una
-negrita que cruce el <code>]</code> de un enlace o la <code>|</code> de una celda.</p>
-<p><strong>Vista previa en vivo.</strong> <code>VistaPrevia</code> es otro destino de la misma
+negrita que cruce el <span class="literal">"]"</span> de un enlace o la <span class="literal">"|"</span> de una celda.</p>
+<p><strong>Vista previa en vivo.</strong> <strong class="nombre">VistaPrevia</strong> es otro destino de la misma
 traducción dirigida por la sintaxis: recorre el árbol con una función por no
-terminal, igual que <code>GeneradorHTML</code>, pero escribe en un <code>tk.Text</code> con
-etiquetas de formato. <code>Estilo</code> acumula el formato al bajar por el árbol
+terminal, igual que <strong class="nombre">GeneradorHTML</strong>, pero escribe en un <strong class="nombre">tk.Text</strong> con
+etiquetas de formato. <strong class="nombre">Estilo</strong> acumula el formato al bajar por el árbol
 (dentro de una negrita todo es negrita), porque Tkinter solo admite una
 fuente por fragmento. Se actualiza 400 ms después de la última tecla
-(<code>after()</code> / <code>after_cancel()</code>), con su propio <code>GestorErrores</code>.</p>
-<p><strong>Advertencia de anidamiento.</strong> <code>recorridos.excesos_de_anidamiento(raiz,
-maximo)</code> devuelve cada <code>&lt;lista&gt;</code> y <code>&lt;cita&gt;</code> cuyo <code>nivel</code> pasa del máximo,
+(<strong class="nombre">after()</strong> / <strong class="nombre">after_cancel()</strong>), con su propio <strong class="nombre">GestorErrores</strong>.</p>
+<p><strong>Advertencia de anidamiento.</strong> <strong class="nombre">recorridos.excesos_de_anidamiento(raiz,
+maximo)</strong> devuelve cada <strong class="nombre">&lt;lista&gt;</strong> y <strong class="nombre">&lt;cita&gt;</strong> cuyo <strong class="nombre">nivel</strong> pasa del máximo,
 con las líneas que ocupa. La ventana muestra el nivel más profundo de cada
 una en una franja amarilla y marca esas líneas en el editor. El máximo se
 cambia en la barra inferior y la advertencia se recalcula al momento.</p>
@@ -2164,27 +2170,27 @@ cambia en la barra inferior y la advertencia se recalcula al momento.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>tests/prueba_lexico.py</code></td>
-<td>Tokens, posiciones, prioridades, errores léxicos, <code>INDENT</code>/<code>DEDENT</code>, modo literal, archivos de Windows, línea y columna exactas de cada token en los 19 ejemplos, delimitadores que cruzan líneas de un párrafo, tokens del alcance opcional</td>
+<td><strong class="nombre">tests/prueba_lexico.py</strong></td>
+<td>Tokens, posiciones, prioridades, errores léxicos, <strong class="nombre">INDENT</strong>/<strong class="nombre">DEDENT</strong>, modo literal, archivos de Windows, línea y columna exactas de cada token en los 19 ejemplos, delimitadores que cruzan líneas de un párrafo, tokens del alcance opcional</td>
 <td>109</td>
 </tr>
 <tr>
-<td><code>tests/prueba_sintactico.py</code></td>
-<td>Árbol del ejemplo, recursión en línea, listas y citas anidadas, errores sintácticos, documentos y tokens al azar, negrita y código en varias líneas, listas numeradas, tachado, enlaces, tablas y <code>TABLA_MAL_FORMADA</code></td>
+<td><strong class="nombre">tests/prueba_sintactico.py</strong></td>
+<td>Árbol del ejemplo, recursión en línea, listas y citas anidadas, errores sintácticos, documentos y tokens al azar, negrita y código en varias líneas, listas numeradas, tachado, enlaces, tablas y <strong class="nombre">TABLA_MAL_FORMADA</strong></td>
 <td>101</td>
 </tr>
 <tr>
-<td><code>tests/prueba_reportes.py</code></td>
-<td>HTML exacto del Reporte 1, escape, <code>arbol.dot</code>, valores del Reporte 2, índice, selección de reportes, limpieza de reportes viejos, saltos dentro de negrita y código, HTML y estadísticas del alcance opcional, resaltado de sintaxis</td>
+<td><strong class="nombre">tests/prueba_reportes.py</strong></td>
+<td>HTML exacto del Reporte 1, escape, <strong class="nombre">arbol.dot</strong>, valores del Reporte 2, índice, selección de reportes, limpieza de reportes viejos, saltos dentro de negrita y código, HTML y estadísticas del alcance opcional, resaltado de sintaxis</td>
 <td>76</td>
 </tr>
 <tr>
-<td><code>tests/prueba_interfaz.py</code></td>
-<td>La ventana: carga (solo <code>.md</code>), análisis, tablas, botones, saltos al editor, vista previa en vivo y advertencia de anidamiento</td>
+<td><strong class="nombre">tests/prueba_interfaz.py</strong></td>
+<td>La ventana: carga (solo <strong class="nombre">.md</strong>), análisis, tablas, botones, saltos al editor, vista previa en vivo y advertencia de anidamiento</td>
 <td>37</td>
 </tr>
 <tr>
-<td><code>tests/prueba_casos.py</code></td>
+<td><strong class="nombre">tests/prueba_casos.py</strong></td>
 <td>Los 15 casos documentados en <em>Casos de Prueba</em></td>
 <td>82</td>
 </tr>
@@ -2192,159 +2198,165 @@ cambia en la barra inferior y la advertencia se recalcula al momento.</p>
 </table>
 <p>Durante el desarrollo del alcance opcional se comprobó además, con
 documentos generados al azar: 50 000 documentos con su sintaxis sin
-excepciones, sin <code>TOKEN_INESPERADO</code>, con la frontera completa, cada lexema en
+excepciones, sin <strong class="nombre">TOKEN_INESPERADO</strong>, con la frontera completa, cada lexema en
 su línea y columna y el HTML bien cerrado; 4000 documentos válidos con 0
 errores y estadísticas iguales a las esperadas; y 20 000 secuencias de tokens
-al azar en las que el modo pánico siempre llegó a <code>FIN</code>.</p>
+al azar en las que el modo pánico siempre llegó a <strong class="nombre">FIN</strong>.</p>
 <h2>12. Decisiones de diseño</h2>
-<p><strong>D-01 — Se agregan <code>SALTO_LINEA</code> y <code>FIN</code>.</strong> La tabla del enunciado no tiene
+<p><strong>D-01 — Se agregan <strong class="nombre">SALTO_LINEA</strong> y <strong class="nombre">FIN</strong>.</strong> La tabla del enunciado no tiene
 un token de fin de línea, pero la gramática lo necesita: sin él,
-<code># Título</code> seguido de <code>texto</code> en la línea siguiente llega al parser como
-<code>NUMERAL TEXTO TEXTO</code> y no hay forma de saber dónde terminó el encabezado.
-Toda línea no vacía termina en <code>SALTO_LINEA</code>, aunque el archivo no termine en
-<code>\n</code>. El <code>\r</code> de los archivos de Windows se ignora.</p>
+<span class="literal">"# Título"</span> seguido de <strong class="nombre">texto</strong> en la línea siguiente llega al parser como
+<span class="literal">"NUMERAL TEXTO TEXTO"</span> y no hay forma de saber dónde terminó el encabezado.
+Toda línea no vacía termina en <strong class="nombre">SALTO_LINEA</strong>, aunque el archivo no termine en
+<span class="literal">"\n"</span>. El <span class="literal">"\r"</span> de los archivos de Windows se ignora.</p>
 <p><strong>D-02 — Los delimitadores en línea se cierran dentro de su bloque.</strong> El
-enunciado (4.5 y 4.9) dice que un <code>**</code>, <code>*</code> o <code>`</code> es error si "el bloque
+enunciado (4.5 y 4.9) dice que un <span class="literal">"**"</span>, <span class="literal">"*"</span> o <span class="literal">"`"</span> es error si "el bloque
 actual (párrafo, ítem de lista, etc.) termina" sin cerrarlo. En este
 subconjunto el <strong>párrafo</strong> es el único bloque de varias líneas: un
 encabezado, un ítem de lista y una línea de cita terminan con su línea
 (D-10, D-13). Entonces:</p>
 <ul>
-<li>en un párrafo, <code>Texto con **negrita que</code> / <code>sigue aquí** y termina.</code> es
+<li>en un párrafo, <span class="literal">"Texto con **negrita que"</span> / <span class="literal">"sigue aquí** y termina."</span> es
   una sola negrita, sin error;</li>
 <li>el párrafo termina en una línea vacía, en una línea que empieza otro
   bloque o en el fin del archivo; ahí, lo que siga abierto se reporta en su
   posición de apertura.</li>
 </ul>
-<p>El léxico sabe si el párrafo sigue con <em>lookahead</em>: <code>_es_linea_de_parrafo()</code>
+<p>El léxico sabe si el párrafo sigue con <em>lookahead</em>: <strong class="nombre">_es_linea_de_parrafo()</strong>
 mira el inicio de la línea siguiente sin consumirla y repite las decisiones
-de <code>q0</code> (línea vacía, ítem, encabezado, regla, cita, cerca de código). La
+de <strong class="nombre">q0</strong> (línea vacía, ítem, encabezado, regla, cita, cerca de código). La
 misma función decide si la línea actual es de párrafo, así las dos
 decisiones nunca se contradicen. La primera versión del diseño exigía
 cerrar en la misma línea; se cambió para seguir el texto del enunciado.</p>
-<p><strong>D-03 — El balanceo de <code>**</code> y <code>*</code> es una capa posterior al AFD.</strong> Decidir si
-un <code>*</code> abre o cierra requiere memoria (una pila), y un AFD no la tiene. El
-<code>AnalizadorLexico</code> arma los tokens con el AFD y luego los recorre
+<p><strong>D-03 — El balanceo de <span class="literal">"**"</span> y <span class="literal">"*"</span> es una capa posterior al AFD.</strong> Decidir si
+un <span class="literal">"*"</span> abre o cierra requiere memoria (una pila), y un AFD no la tiene. El
+<strong class="nombre">AnalizadorLexico</strong> arma los tokens con el AFD y luego los recorre
 con una pila (sección 4.8). El código en línea no necesita pila: al ver
-<code>`</code> el AFD mira hacia adelante si hay otro <code>`</code> en el bloque (D-21).</p>
+<span class="literal">"`"</span> el AFD mira hacia adelante si hay otro <span class="literal">"`"</span> en el bloque (D-21).</p>
 <p><strong>D-04 — Un delimitador igual a la cima de la pila siempre cierra.</strong> Por eso
-<code>**a **b** c**</code> produce dos negritas seguidas, no una negrita anidada, y eso
+<span class="literal">"**a **b** c**"</span> produce dos negritas seguidas, no una negrita anidada, y eso
 coincide con la gramática (D-05). Hay dos excepciones, y las dos aplican
 solo con <strong>exactamente</strong> tres asteriscos; en cualquier otro caso manda el
 <em>maximal munch</em>:</p>
 <ul>
-<li><strong><code>***</code> que cierra.</strong> Si la cima es una <code>CURSIVA</code>, el primer <code>*</code> cierra la
-  cursiva y luego <code>**</code> cierra la negrita, para que <code>***texto***</code> funcione.</li>
-<li><strong><code>***</code> que abre</strong> (sin <code>**</code> ni <code>*</code> en la cima: la pila vacía, o un tachado o un enlace recién abiertos). El orden de apertura depende de cómo se
-  cierran: en <code>***a* b**</code> la negrita va afuera, pero en <code>***a** b*</code> es la
+<li><strong><span class="literal">"***"</span> que cierra.</strong> Si la cima es una <strong class="nombre">CURSIVA</strong>, el primer <span class="literal">"*"</span> cierra la
+  cursiva y luego <span class="literal">"**"</span> cierra la negrita, para que <span class="literal">"***texto***"</span> funcione.</li>
+<li><strong><span class="literal">"***"</span> que abre</strong> (sin <span class="literal">"**"</span> ni <span class="literal">"*"</span> en la cima: la pila vacía, o un tachado o un enlace recién abiertos). El orden de apertura depende de cómo se
+  cierran: en <span class="literal">"***a* b**"</span> la negrita va afuera, pero en <span class="literal">"***a** b*"</span> es la
   cursiva. El analizador simula el resto del bloque con una pila pequeña:
   si abriendo primero la negrita todo se cierra, la usa (es lo normal); si
   no, prueba con la cursiva afuera. Si ninguna de las dos cierra, deja la
   negrita afuera y los errores se reportan como siempre.</li>
 </ul>
-<p><strong>D-05 — Variantes de <code>&lt;en_linea&gt;</code>.</strong> Explicado en 4.2: elimina el
-conflicto LL(1). Son tres en el alcance obligatorio (<code>&lt;en_linea&gt;</code>,
-<code>&lt;en_linea_n&gt;</code>, <code>&lt;en_linea_c&gt;</code>) y una más con el tachado (<code>&lt;en_linea_t&gt;</code>).
+<p><strong>D-05 — Variantes de <strong class="nombre">&lt;en_linea&gt;</strong>.</strong> Explicado en 4.2: elimina el
+conflicto LL(1). Son tres en el alcance obligatorio (<strong class="nombre">&lt;en_linea&gt;</strong>,
+<strong class="nombre">&lt;en_linea_n&gt;</strong>, <strong class="nombre">&lt;en_linea_c&gt;</strong>) y una más con el tachado (<strong class="nombre">&lt;en_linea_t&gt;</strong>).
 Cada una se implementa en el parser con su función, para respetar "una
 función por no terminal".</p>
-<p><strong>D-06 — Un <code>INDENT</code> o <code>DEDENT</code> por nivel.</strong> Pasar de 0 a 4 espacios emite
-<strong>dos</strong> <code>INDENT</code>. La gramática dice que después de un <code>INDENT</code> viene una
-<code>VIÑETA</code>; si viene otro <code>INDENT</code>, el parser detecta <code>INDENTACION_INVALIDA</code>
-como error sintáctico, tal como clasifica el enunciado. Como cada <code>INDENT</code>
-tiene su <code>DEDENT</code>, la recuperación no desbalancea nada.</p>
+<p><strong>D-06 — Un <strong class="nombre">INDENT</strong> o <strong class="nombre">DEDENT</strong> por nivel.</strong> Pasar de 0 a 4 espacios emite
+<strong>dos</strong> <strong class="nombre">INDENT</strong>. La gramática dice que después de un <strong class="nombre">INDENT</strong> viene una
+<strong class="nombre">VIÑETA</strong>; si viene otro <strong class="nombre">INDENT</strong>, el parser detecta <strong class="nombre">INDENTACION_INVALIDA</strong>
+como error sintáctico, tal como clasifica el enunciado. Como cada <strong class="nombre">INDENT</strong>
+tiene su <strong class="nombre">DEDENT</strong>, la recuperación no desbalancea nada. El error se reporta
+en la línea y la columna del marcador del ítem (la <strong class="nombre">VIÑETA</strong> o el
+<strong class="nombre">NUMERO_LISTA</strong> que viene después de los <strong class="nombre">INDENT</strong>), la misma que usa el error
+léxico de sangría impar (D-07): <span class="literal">"- a"</span> seguido de <span class="literal">"- b"</span> con 4 espacios de
+sangría da 2:5. Para eso el parser anota el error al ver el <strong class="nombre">INDENT</strong> que
+sobra y lo reporta cuando consume el último, con el marcador ya como token
+actual.</p>
 <p><strong>D-07 — Sangría impar o con tabulador.</strong> Un tabulador cuenta como 2
 espacios. Una sangría impar (3 espacios) se reporta en el léxico como
-<code>INDENTACION_INVALIDA</code> y se toma el nivel inferior (3 → nivel 1).</p>
-<p><strong>D-08 — Una línea vacía termina la lista y la cita.</strong> <code>- a</code>, línea vacía,
-<code>- b</code> son dos listas. Simplifica la gramática: una lista nunca contiene
-<code>SALTO_PARRAFO</code>.</p>
-<p><strong>D-09 — Nivel de cita por cantidad de <code>&gt;</code>.</strong> <code>&gt;&gt;</code> y <code>&gt; &gt;</code> son nivel 2.
-<code>&lt;cita(n)&gt;</code> se llama a sí misma con <code>n+1</code> cuando aparece una línea de nivel
+<strong class="nombre">INDENTACION_INVALIDA</strong> y se toma el nivel inferior (3 → nivel 1).</p>
+<p><strong>D-08 — Una línea vacía termina la lista y la cita.</strong> <span class="literal">"- a"</span>, línea vacía,
+<span class="literal">"- b"</span> son dos listas. Simplifica la gramática: una lista nunca contiene
+<strong class="nombre">SALTO_PARRAFO</strong>.</p>
+<p><strong>D-09 — Nivel de cita por cantidad de <span class="literal">"&gt;"</span>.</strong> <span class="literal">"&gt;&gt;"</span> y <span class="literal">"&gt; &gt;"</span> son nivel 2.
+<strong class="nombre">&lt;cita(n)&gt;</strong> se llama a sí misma con <span class="literal">"n+1"</span> cuando aparece una línea de nivel
 mayor. Si se salta de nivel 1 a nivel 3, se crea una cita de nivel 2 vacía en
 medio, igual que lo haría Markdown.</p>
 <p><strong>D-10 — Qué puede ir dentro de una cita.</strong> Encabezados y texto en línea.
 Listas, código y reglas dentro de citas quedan fuera del subconjunto. Cada
-línea de cita con texto es su propio <code>&lt;p&gt;</code>, y no cuenta como párrafo en el
+línea de cita con texto es su propio <strong class="nombre">&lt;p&gt;</strong>, y no cuenta como párrafo en el
 Reporte 2 (se cuenta como "línea de cita", igual que en el ejemplo).</p>
-<p><strong>D-11 — <code>CITA_MAL_FORMADA</code> la detecta el parser.</strong> El enunciado la clasifica
-como sintáctica. El léxico emite la <code>CITA</code> igual, y el parser compara
+<p><strong>D-11 — <strong class="nombre">CITA_MAL_FORMADA</strong> la detecta el parser.</strong> El enunciado la clasifica
+como sintáctica. El léxico emite la <strong class="nombre">CITA</strong> igual, y el parser compara
 posiciones: si el token siguiente empieza en la columna inmediatamente
-después del último <code>&gt;</code>, falta el espacio.</p>
-<p><strong>D-12 — Bloques de código.</strong> El texto después de <code>```</code> es un token
-<code>LENGUAJE_CODIGO</code>. El contenido se emite como un <code>TEXTO_LITERAL</code> por línea,
+después del último <span class="literal">"&gt;"</span>, falta el espacio.</p>
+<p><strong>D-12 — Bloques de código.</strong> El texto después de <span class="literal">"```"</span> es un token
+<strong class="nombre">LENGUAJE_CODIGO</strong>. El contenido se emite como un <strong class="nombre">TEXTO_LITERAL</strong> por línea,
 con su sangría intacta, incluidas las líneas vacías. Solo una línea que sea
-exactamente <code>```</code> (con espacios alrededor) cierra el bloque.</p>
+exactamente <span class="literal">"```"</span> (con espacios alrededor) cierra el bloque.</p>
 <p><strong>D-13 — Párrafo = líneas de texto consecutivas.</strong> Termina en una línea vacía
 o en una línea que empiece otro bloque. En el HTML, sus líneas van dentro de
-un mismo <code>&lt;p&gt;</code>.</p>
+un mismo <strong class="nombre">&lt;p&gt;</strong>.</p>
 <p><strong>D-14 — Conteo de palabras.</strong> Se unen los textos de cada línea (sin los
-delimitadores) y se separa por espacios; un <code>SALTO_LINEA</code> dentro de una
+delimitadores) y se separa por espacios; un <strong class="nombre">SALTO_LINEA</strong> dentro de una
 negrita, cursiva o código que cruza líneas vale un espacio. Cuenta
 encabezados, párrafos, ítems, citas y código en línea; <strong>no</strong> cuenta
 bloques de código. Con esta regla el ejemplo del enunciado da exactamente
 <strong>67</strong>, como en su Reporte 2.</p>
-<p><strong>D-15 — Anclas del Reporte 3.</strong> Cada encabezado recibe <code>id="seccion-1"</code>,
-<code>seccion-2</code>… en orden de aparición. No hay que inventar <em>slugs</em> con tildes ni
+<p><strong>D-15 — Anclas del Reporte 3.</strong> Cada encabezado recibe <span class="literal">'id="seccion-1"'</span>,
+<strong class="nombre">seccion-2</strong>… en orden de aparición. No hay que inventar <em>slugs</em> con tildes ni
 manejar títulos repetidos.</p>
 <p><strong>D-16 — Qué se genera y cuándo.</strong> Los 3 reportes HTML solo sin errores, como
-pide el enunciado. La tabla de tokens, la tabla de errores y <code>arbol.dot</code> se
-generan siempre. Con errores, además se genera <code>reporte_errores.html</code>.</p>
+pide el enunciado. La tabla de tokens, la tabla de errores y <strong class="nombre">arbol.dot</strong> se
+generan siempre. Con errores, además se genera <strong class="nombre">reporte_errores.html</strong>.</p>
 <p><strong>D-17 — Forma del árbol.</strong> Cada función del parser crea un nodo con el
 nombre de su no terminal, y todo terminal consumido es una hoja. Las
-repeticiones <code>{ }</code> son hijos de un mismo nodo y lo que va entre <code>[ ]</code> cuelga
-del nodo padre (sección 5.3). Las <strong>selecciones</strong> <code>&lt;elemento_doc&gt;</code>,
-<code>&lt;elemento_cita(n)&gt;</code>, <code>&lt;elemento_linea&gt;</code>, <code>&lt;elemento_n&gt;</code>, <code>&lt;elemento_c&gt;</code> y
-<code>&lt;elemento_t&gt;</code> tienen su función, pero no crean nodo propio: agregan al padre lo que
+repeticiones <span class="literal">"{ }"</span> son hijos de un mismo nodo y lo que va entre <span class="literal">"[ ]"</span> cuelga
+del nodo padre (sección 5.3). Las <strong>selecciones</strong> <strong class="nombre">&lt;elemento_doc&gt;</strong>,
+<strong class="nombre">&lt;elemento_cita(n)&gt;</strong>, <strong class="nombre">&lt;elemento_linea&gt;</strong>, <strong class="nombre">&lt;elemento_n&gt;</strong>, <strong class="nombre">&lt;elemento_c&gt;</strong> y
+<strong class="nombre">&lt;elemento_t&gt;</strong> tienen su función, pero no crean nodo propio: agregan al padre lo que
 reconocen. Así lo hace el ejemplo DOT del enunciado (sección 4.10), que
-cuelga <code>TEXTO</code> directamente de <code>&lt;en_linea&gt;</code>. <code>&lt;bloque&gt;</code> sí crea nodo, porque
+cuelga <strong class="nombre">TEXTO</strong> directamente de <strong class="nombre">&lt;en_linea&gt;</strong>. <strong class="nombre">&lt;bloque&gt;</strong> sí crea nodo, porque
 ese mismo ejemplo lo muestra.</p>
-<p><strong>D-18 — Estilo del código.</strong> Sin <code>if</code> ternarios, <code>lambda</code>, <em>slicing</em>,
-<code>sorted()</code>, <code>enumerate</code>, <code>set()</code>, decoradores ni comprensiones. Recorridos
-con <code>while</code> e índice. Todo tiene que poder explicarse y modificarse en vivo.</p>
+<p><strong>D-18 — Estilo del código.</strong> Sin <strong class="nombre">if</strong> ternarios, <strong class="nombre">lambda</strong>, <em>slicing</em>,
+<strong class="nombre">sorted()</strong>, <strong class="nombre">enumerate</strong>, <strong class="nombre">set()</strong>, decoradores ni comprensiones. Recorridos
+con <strong class="nombre">while</strong> e índice. Todo tiene que poder explicarse y modificarse en vivo.</p>
 <p><strong>D-19 — Posiciones.</strong> La línea y la columna empiezan en 1. La columna cuenta
 caracteres: un tabulador ocupa una columna (aunque en la sangría valga dos
-espacios, D-07). El <code>\r</code> de Windows y la marca BOM se eliminan antes de
-analizar, así que no ocupan columna. Los tokens virtuales (<code>INDENT</code>,
-<code>DEDENT</code>, <code>FIN</code> y el <code>SALTO_LINEA</code> final sin <code>\n</code>) tienen lexema vacío;
-<code>DEDENT</code> lleva la columna 1 de la línea que lo provoca.</p>
-<p><strong>D-20 — Un <code>*</code> entre espacios también abre cursiva.</strong> El enunciado dice que,
-fuera de la posición de viñeta, <code>*</code> <em>siempre</em> inicia una cursiva. Por eso
-<code>5 * 3</code> produce <code>CURSIVA_SIN_CERRAR</code>. Para escribir un asterisco literal se
-usa código en línea: <code>`5 * 3`</code>.</p>
-<p><strong>D-21 — Un <code>`</code> abre código en línea si hay otro <code>`</code> en el bloque.</strong>
+espacios, D-07). El <span class="literal">"\r"</span> de Windows y la marca BOM se eliminan antes de
+analizar, así que no ocupan columna. Los tokens virtuales (<strong class="nombre">INDENT</strong>,
+<strong class="nombre">DEDENT</strong>, <strong class="nombre">FIN</strong> y el <strong class="nombre">SALTO_LINEA</strong> final sin <span class="literal">"\n"</span>) tienen lexema vacío;
+<strong class="nombre">DEDENT</strong> lleva la columna 1 de la línea que lo provoca.</p>
+<p><strong>D-20 — Un <span class="literal">"*"</span> entre espacios también abre cursiva.</strong> El enunciado dice que,
+fuera de la posición de viñeta, <span class="literal">"*"</span> <em>siempre</em> inicia una cursiva. Por eso
+<span class="literal">"5 * 3"</span> produce <strong class="nombre">CURSIVA_SIN_CERRAR</strong>. Para escribir un asterisco literal se
+usa código en línea: <span class="literal">"`5 * 3`"</span>.</p>
+<p><strong>D-21 — Un <span class="literal">"`"</span> abre código en línea si hay otro <span class="literal">"`"</span> en el bloque.</strong>
 Se decide con <em>lookahead</em> antes de consumir, así que no hace falta pila. En
 un párrafo el cierre puede estar en una línea siguiente (D-02); entonces la
-línea siguiente empieza dentro del código (<code>dentro_de_codigo</code>) y su sangría
+línea siguiente empieza dentro del código (<strong class="nombre">dentro_de_codigo</strong>) y su sangría
 no es parte del contenido. En el HTML, el salto de línea dentro de
-<code>&lt;code&gt;</code> se escribe como un espacio, igual que en Markdown. Dos acentos
-pegados (<code>``</code>) forman un código en línea vacío.</p>
+<strong class="nombre">&lt;code&gt;</strong> se escribe como un espacio, igual que en Markdown. Dos acentos
+pegados (<span class="literal">"``"</span>) forman un código en línea vacío.</p>
 <p><strong>D-22 — Un error no se repite mientras el parser se recupera.</strong> Si ya hay un
 error sintáctico del mismo tipo en la misma línea, no se agrega otro. Un
-salto de 0 a 6 espacios emite tres <code>INDENT</code>, pero se reporta una sola
-<code>INDENTACION_INVALIDA</code>. La comparación incluye la fase: una sangría de 5
+salto de 0 a 6 espacios emite tres <strong class="nombre">INDENT</strong>, pero se reporta una sola
+<strong class="nombre">INDENTACION_INVALIDA</strong>. La comparación incluye la fase: una sangría de 5
 espacios tiene un error léxico (impar) y uno sintáctico (salto de nivel), y
 se reportan los dos porque son problemas distintos.</p>
-<p><strong>D-23 — Columna de <code>CITA_MAL_FORMADA</code>.</strong> Se reporta en la columna del último
-<code>&gt;</code>, que es el símbolo al que le falta el espacio: <code>&gt;&gt;texto</code> da columna 2.</p>
+<p><strong>D-23 — Columna de <strong class="nombre">CITA_MAL_FORMADA</strong>.</strong> Se reporta en la columna del último
+<span class="literal">"&gt;"</span>, que es el símbolo al que le falta el espacio: <span class="literal">"&gt;&gt;texto"</span> da columna 2.</p>
 <p><strong>D-24 — Una lista no puede empezar con sangría.</strong> Un ítem con sangría
 donde empieza un bloque (por ejemplo, después de una línea vacía, que ya
 cerró la lista por D-08) no tiene ítem padre. Se reporta como
-<code>INDENTACION_INVALIDA</code> (sintáctico), con el detalle "sublista sin ítem
-padre". Markdown estándar tolera hasta 3 espacios antes de una lista; aquí
+<strong class="nombre">INDENTACION_INVALIDA</strong> (sintáctico), con el detalle "sublista sin ítem
+padre", en la columna del marcador (D-06): <span class="literal">"- a"</span> al inicio da 1:3. Markdown estándar tolera hasta 3 espacios antes de una lista; aquí
 se exige que el nivel de sangría sea el de la estructura, porque así lo
 define la regla de indentación del enunciado.</p>
-<p><strong>D-25 — Traducción a HTML.</strong> El <code>GeneradorHTML</code> tiene una función por cada
+<p><strong>D-25 — Traducción a HTML.</strong> El <strong class="nombre">GeneradorHTML</strong> tiene una función por cada
 no terminal que produce etiquetas y recorre el árbol con la misma recursión
-del parser. Detalles: la <code>&lt;sublista&gt;</code> no tiene etiqueta propia (su <code>&lt;ul&gt;</code>
-queda dentro del <code>&lt;li&gt;</code> del ítem padre); una línea de cita vacía (<code>&gt;</code>) no
-produce un <code>&lt;p&gt;</code> vacío; <code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code> y <code>"</code> se escapan siempre, también
-dentro del código. Las anclas salen de <code>recorridos.encabezados()</code>, la misma
+del parser. Detalles: la <strong class="nombre">&lt;sublista&gt;</strong> no tiene etiqueta propia (su <strong class="nombre">&lt;ul&gt;</strong>
+queda dentro del <strong class="nombre">&lt;li&gt;</strong> del ítem padre); una línea de cita vacía (<span class="literal">"&gt;"</span>) no
+produce un <strong class="nombre">&lt;p&gt;</strong> vacío; <span class="literal">"&amp;"</span>, <span class="literal">"&lt;"</span>, <span class="literal">"&gt;"</span> y <span class="literal">'"'</span> se escapan siempre, también
+dentro del código. Las anclas salen de <strong class="nombre">recorridos.encabezados()</strong>, la misma
 función que usará el Reporte 3, así que los enlaces del índice siempre
 apuntan al encabezado correcto.</p>
 <p><strong>D-26 — Qué cuenta el Reporte 2.</strong> Cada estadística es la cantidad de nodos
 de un no terminal: "Listas" y "Citas" cuentan solo las de primer nivel
-(<code>nivel 1</code>), porque una sublista es parte de su lista; "Ítems" y "Líneas de
-cita" cuentan todos los <code>&lt;item_lista&gt;</code> y <code>&lt;contenido_cita&gt;</code>. Las líneas de
+(<span class="literal">"nivel 1"</span>), porque una sublista es parte de su lista; "Ítems" y "Líneas de
+cita" cuentan todos los <strong class="nombre">&lt;item_lista&gt;</strong> y <strong class="nombre">&lt;contenido_cita&gt;</strong>. Las líneas de
 cita no cuentan como párrafos (D-10). Con estas reglas el ejemplo del
 enunciado da exactamente los valores de su captura: 67 palabras, 2
 párrafos, 2 encabezados, 8 ítems, 2 líneas de cita, 1 bloque de código y
@@ -2354,73 +2366,73 @@ tachados, los enlaces, las imágenes y las tablas; si no, el reporte queda
 igual que el del enunciado.</p>
 <p><strong>D-27 — La interfaz analiza lo que hay en el editor.</strong> "Analizar" toma el
 texto del editor, no el archivo del disco, para poder probar cambios sin
-guardar. Los reportes de cada archivo van a <code>salida/&lt;nombre&gt;/</code>, así no se
+guardar. Los reportes de cada archivo van a <span class="literal">"salida/&lt;nombre&gt;/"</span>, así no se
 mezclan. Al elegir un token o un error en las tablas, el editor salta a esa
 posición y la resalta; los errores quedan marcados en rojo. Si Graphviz
-está instalado, <code>arbol.dot</code> se convierte también en <code>arbol.png</code>. Solo se
-abren archivos con extensión <code>.md</code> (el enunciado pide archivos Markdown);
+está instalado, <strong class="nombre">arbol.dot</strong> se convierte también en <strong class="nombre">arbol.png</strong>. Solo se
+abren archivos con extensión <strong class="nombre">.md</strong> (el enunciado pide archivos Markdown);
 otro archivo se rechaza con un mensaje. Antes de generar, se borran los
 reportes del análisis anterior del mismo documento, para que nunca quede un
-<code>reporte_errores.html</code> viejo junto a los reportes de un documento ya
+<strong class="nombre">reporte_errores.html</strong> viejo junto a los reportes de un documento ya
 corregido (ni al revés).</p>
 <p><strong>D-28 — Alcance opcional completo.</strong> Se implementan los siete puntos de la
 sección 4.2 del enunciado: listas ordenadas (D-29), listas de tareas (D-30),
 tachado (D-31), enlaces e imágenes (D-32), tablas (D-33), vista previa en
 vivo (D-34), advertencia de anidamiento (D-35) y resaltado de sintaxis
 (D-36). Todo pasa por el mismo camino que el alcance obligatorio: tokens del
-AFD, producciones de la gramática con su función <code>parsear_*</code>, nodos del
+AFD, producciones de la gramática con su función <strong class="nombre">parsear_*</strong>, nodos del
 árbol y traducción recorriendo el árbol. Lo obligatorio no cambia: los 13
 casos anteriores dan los mismos resultados.</p>
-<p><strong>D-29 — Listas numeradas con el atributo <code>t</code>.</strong> <code>1.</code> es un
-<code>NUMERO_LISTA</code>; la sangría funciona igual que con las viñetas (2 espacios
-por nivel), así que <code>INDENT</code> y <code>DEDENT</code> no cambian. La lista tiene el
-atributo <code>t</code>, el tipo de marcador de su primer ítem, igual que la cita tiene
-<code>n</code>: <code>&lt;lista(t)&gt;</code> sigue mientras venga un ítem con el mismo marcador. Si
-cambia (<code>- a</code> y luego <code>1. b</code>), empieza otra lista, como en Markdown; por eso
-una <code>&lt;sublista&gt;</code> puede tener más de una <code>&lt;lista&gt;</code>. En el HTML es <code>&lt;ol&gt;</code>, con
-<code>start</code> cuando el primer número no es 1; los demás números no importan.</p>
-<p><strong>D-30 — Listas de tareas.</strong> Justo después del marcador de un ítem, <code>[ ]</code>,
-<code>[x]</code> o <code>[X]</code> seguido de un espacio es una <code>CASILLA</code>, que queda como hoja
-del <code>&lt;item_lista&gt;</code>. En el HTML, el ítem lleva una casilla desactivada,
-marcada o vacía. <code>- [x](url)</code> no es una tarea sino un enlace, porque después
-del <code>]</code> no hay espacio.</p>
-<p><strong>D-31 — Tachado en la misma pila.</strong> <code>~~</code> es <code>TACHADO</code> y pasa por la pila
-de delimitadores igual que <code>**</code>: si es igual a la cima la cierra; si no,
-abre. Así un tachado sin cerrar se reporta como <code>TACHADO_SIN_CERRAR</code> (léxico,
+<p><strong>D-29 — Listas numeradas con el atributo <strong class="nombre">t</strong>.</strong> <span class="literal">"1."</span> es un
+<strong class="nombre">NUMERO_LISTA</strong>; la sangría funciona igual que con las viñetas (2 espacios
+por nivel), así que <strong class="nombre">INDENT</strong> y <strong class="nombre">DEDENT</strong> no cambian. La lista tiene el
+atributo <strong class="nombre">t</strong>, el tipo de marcador de su primer ítem, igual que la cita tiene
+<strong class="nombre">n</strong>: <strong class="nombre">&lt;lista(t)&gt;</strong> sigue mientras venga un ítem con el mismo marcador. Si
+cambia (<span class="literal">"- a"</span> y luego <span class="literal">"1. b"</span>), empieza otra lista, como en Markdown; por eso
+una <strong class="nombre">&lt;sublista&gt;</strong> puede tener más de una <strong class="nombre">&lt;lista&gt;</strong>. En el HTML es <strong class="nombre">&lt;ol&gt;</strong>, con
+<strong class="nombre">start</strong> cuando el primer número no es 1; los demás números no importan.</p>
+<p><strong>D-30 — Listas de tareas.</strong> Justo después del marcador de un ítem, <span class="literal">"[ ]"</span>,
+<span class="literal">"[x]"</span> o <span class="literal">"[X]"</span> seguido de un espacio es una <strong class="nombre">CASILLA</strong>, que queda como hoja
+del <strong class="nombre">&lt;item_lista&gt;</strong>. En el HTML, el ítem lleva una casilla desactivada,
+marcada o vacía. <span class="literal">"- [x](url)"</span> no es una tarea sino un enlace, porque después
+del <span class="literal">"]"</span> no hay espacio.</p>
+<p><strong>D-31 — Tachado en la misma pila.</strong> <span class="literal">"~~"</span> es <strong class="nombre">TACHADO</strong> y pasa por la pila
+de delimitadores igual que <span class="literal">"**"</span>: si es igual a la cima la cierra; si no,
+abre. Así un tachado sin cerrar se reporta como <strong class="nombre">TACHADO_SIN_CERRAR</strong> (léxico,
 error agregado) en su posición de apertura cuando termina el bloque, con el
-mismo criterio que la negrita (D-02). En la gramática, <code>&lt;en_linea_t&gt;</code> deja
-afuera al tachado por la misma razón que <code>&lt;en_linea_n&gt;</code> deja afuera a la
+mismo criterio que la negrita (D-02). En la gramática, <strong class="nombre">&lt;en_linea_t&gt;</strong> deja
+afuera al tachado por la misma razón que <strong class="nombre">&lt;en_linea_n&gt;</strong> deja afuera a la
 negrita (D-05).</p>
-<p><strong>D-32 — Enlaces e imágenes, solo si están completos.</strong> Un <code>[</code> abre un
-enlace solo si, en la misma línea, viene su <code>]</code> sin otro <code>[</code> antes y, pegado,
-<code>(url)</code> sin espacios. Si no, el <code>[</code> es texto y <strong>no</strong> es un error: en
-Markdown un corchete suelto es texto normal. Por la regla del <code>[</code> interno,
-<code>[a [b](u)</code> es el texto <code>[a</code> seguido del enlace <code>b</code>, igual que en
-CommonMark. El texto del enlace es un <code>&lt;en_linea&gt;</code> y es un <strong>ámbito</strong> de la
-pila: al abrir el enlace se mete el <code>CORCHETE_ABRE</code> como marca, y al llegar
-al <code>]</code> lo que quedó abierto encima de la marca se reporta. Por eso
-<code>[**a](u)**</code> da dos negritas sin cerrar. En una imagen, el texto alternativo
-es literal (un <code>TEXTO_LITERAL</code>) y no cuenta palabras en el Reporte 2, porque
+<p><strong>D-32 — Enlaces e imágenes, solo si están completos.</strong> Un <span class="literal">"["</span> abre un
+enlace solo si, en la misma línea, viene su <span class="literal">"]"</span> sin otro <span class="literal">"["</span> antes y, pegado,
+<span class="literal">"(url)"</span> sin espacios. Si no, el <span class="literal">"["</span> es texto y <strong>no</strong> es un error: en
+Markdown un corchete suelto es texto normal. Por la regla del <span class="literal">"["</span> interno,
+<span class="literal">"[a [b](u)"</span> es el texto <span class="literal">"[a"</span> seguido del enlace <strong class="nombre">b</strong>, igual que en
+CommonMark. El texto del enlace es un <strong class="nombre">&lt;en_linea&gt;</strong> y es un <strong>ámbito</strong> de la
+pila: al abrir el enlace se mete el <strong class="nombre">CORCHETE_ABRE</strong> como marca, y al llegar
+al <span class="literal">"]"</span> lo que quedó abierto encima de la marca se reporta. Por eso
+<span class="literal">"[**a](u)**"</span> da dos negritas sin cerrar. En una imagen, el texto alternativo
+es literal (un <strong class="nombre">TEXTO_LITERAL</strong>) y no cuenta palabras en el Reporte 2, porque
 no se ve en el documento.</p>
-<p><strong>D-33 — Tablas.</strong> Una línea que empieza con <code>|</code> es una fila de tabla, y
-toda fila empieza y termina con <code>|</code>. La fila separadora se reconoce con un
-AFD pequeño por celda (<code>s0</code>..<code>s3</code>) y es un solo <code>SEPARADOR_TABLA</code>, como la
+<p><strong>D-33 — Tablas.</strong> Una línea que empieza con <span class="literal">"|"</span> es una fila de tabla, y
+toda fila empieza y termina con <span class="literal">"|"</span>. La fila separadora se reconoce con un
+AFD pequeño por celda (<strong class="nombre">s0</strong>..<strong class="nombre">s3</strong>) y es un solo <strong class="nombre">SEPARADOR_TABLA</strong>, como la
 regla horizontal; de su lexema sale la alineación de cada columna, que queda
-como atributo de la <code>&lt;tabla&gt;</code>. En las demás filas, cada <code>|</code> es una <code>BARRA</code>,
+como atributo de la <strong class="nombre">&lt;tabla&gt;</strong>. En las demás filas, cada <span class="literal">"|"</span> es una <strong class="nombre">BARRA</strong>,
 y cada celda es un bloque para los delimitadores: lo que se abre en una
 celda se cierra en ella. Una tabla es de una línea por fila: no continúa
-párrafos. <code>TABLA_MAL_FORMADA</code> (sintáctico, error agregado) se reporta cuando
+párrafos. <strong class="nombre">TABLA_MAL_FORMADA</strong> (sintáctico, error agregado) se reporta cuando
 falta el encabezado o la fila separadora, cuando la separadora se repite, y
-cuando una fila no termina en <code>|</code> o no tiene tantas celdas como el
+cuando una fila no termina en <span class="literal">"|"</span> o no tiene tantas celdas como el
 encabezado; la tabla se sigue analizando.</p>
 <p><strong>D-34 — Vista previa en vivo.</strong> Tkinter no puede mostrar HTML, así que la
-vista previa (<code>gui/vista_previa.py</code>) hace la misma traducción que
-<code>GeneradorHTML</code> pero con otro destino: recorre el árbol y escribe en un
-<code>tk.Text</code> con etiquetas de formato (títulos grandes, negrita, cursiva,
+vista previa (<strong class="nombre">gui/vista_previa.py</strong>) hace la misma traducción que
+<strong class="nombre">GeneradorHTML</strong> pero con otro destino: recorre el árbol y escribe en un
+<strong class="nombre">tk.Text</strong> con etiquetas de formato (títulos grandes, negrita, cursiva,
 tachado, enlaces que se abren con un clic, sangría de listas, barras de cita,
 tablas en columnas). Se actualiza sola 400 ms después de la última tecla:
 cada tecla cancela la actualización pendiente y programa otra, así se analiza
-una vez cuando se deja de escribir. Usa su propio <code>GestorErrores</code>, así que no
+una vez cuando se deja de escribir. Usa su propio <strong class="nombre">GestorErrores</strong>, así que no
 cambia las tablas ni los reportes, que siguen siendo del último "Analizar".
 Si el texto tiene errores, igual muestra lo que se pudo reconocer y lo avisa.</p>
 <p><strong>D-35 — Advertencia de anidamiento.</strong> La barra inferior tiene el
@@ -2431,17 +2443,17 @@ marcan en el editor. No es un error: no entra a la tabla de errores ni
 impide los reportes. Se revisa con el árbol del texto actual (D-34), así que
 cambia mientras se escribe y al mover el máximo.</p>
 <p><strong>D-36 — Resaltado de sintaxis con highlight.js.</strong> El Reporte 1 colorea los
-bloques de código que dicen su lenguaje (<code>```python</code>) con highlight.js
-11.9.0 (licencia BSD-3, en <code>src/reportes/recursos/</code>). La librería y su tema
+bloques de código que dicen su lenguaje (<span class="literal">"```python"</span>) con highlight.js
+11.9.0 (licencia BSD-3, en <strong class="nombre">src/reportes/recursos/</strong>). La librería y su tema
 se <strong>embeben</strong> en la página, así el reporte sigue siendo un solo archivo y
 funciona sin internet. Es puramente visual, como pide el enunciado: el
-léxico y el parser no cambian, el bloque sigue siendo un <code>TEXTO_LITERAL</code> por
-línea y el HTML del bloque es el mismo <code>&lt;pre&gt;&lt;code class="language-x"&gt;</code>. Solo
+léxico y el parser no cambian, el bloque sigue siendo un <strong class="nombre">TEXTO_LITERAL</strong> por
+línea y el HTML del bloque es el mismo <span class="literal">'&lt;pre&gt;&lt;code class="language-x"&gt;'</span>. Solo
 se agrega a la página si hay un bloque con lenguaje.</p>
 <div class="salto"></div>
 
 <h2>13. Anexo: árbol de derivación completo del ejemplo del enunciado</h2>
-<p>Árbol generado por <code>GeneradorDOT</code> para <code>examples/ejemplo_valido.md</code>
+<p>Árbol generado por <strong class="nombre">GeneradorDOT</strong> para <strong class="nombre">examples/ejemplo_valido.md</strong>
 (sección 4.7 del enunciado): 77 hojas, una por token.</p>
 <p>Como es muy ancho, se muestra en cuatro franjas que se leen de izquierda a
 derecha; cada franja repite un borde de la anterior para no perder el hilo.</p>
