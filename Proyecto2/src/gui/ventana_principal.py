@@ -129,8 +129,9 @@ class VentanaPrincipal:
     def _construir_estado(self):
         estado = ttk.Frame(self.ventana, padding=(8, 4))
         estado.pack(side=tk.BOTTOM, fill=tk.X)
-        self.etiqueta_estado = ttk.Label(estado, text='')
-        self.etiqueta_estado.pack(side=tk.LEFT)
+        # Primero lo de la derecha: Tk reparte el espacio en el orden en que
+        # se empaqueta, asi un mensaje largo se recorta y no tapa el
+        # selector ni la posicion del cursor.
         self.etiqueta_cursor = ttk.Label(estado, text='Línea 1, columna 1')
         self.etiqueta_cursor.pack(side=tk.RIGHT)
 
@@ -144,6 +145,9 @@ class VentanaPrincipal:
         self.selector_maximo.bind('<KeyRelease>', self._al_cambiar_maximo)
         ttk.Label(estado, text='Anidamiento máximo:').pack(side=tk.RIGHT,
                                                            padx=(12, 6))
+
+        self.etiqueta_estado = ttk.Label(estado, text='')
+        self.etiqueta_estado.pack(side=tk.LEFT)
 
     def _construir_aviso(self):
         """

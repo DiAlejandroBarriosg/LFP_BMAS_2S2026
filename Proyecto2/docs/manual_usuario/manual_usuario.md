@@ -299,7 +299,7 @@ por posición.
 | Tipo | La categoría del error (tabla de abajo). |
 | Fase | **Léxico** (en rojo oscuro): un problema con las piezas del texto. **Sintáctico** (en azul): las piezas están bien, pero en un orden que no es válido. |
 | Descripción | El mensaje, con la línea y la columna donde empieza el problema. |
-| Línea, Columna | La posición del error. |
+| Línea, Columna | La posición del error. En un error de sangría es la del guion o el número del elemento de lista. |
 
 **Haga clic en un error** y el editor salta a esa posición y la resalta. Los
 errores también quedan marcados en rojo en el editor. Con errores, los
